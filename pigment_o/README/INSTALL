@@ -1,0 +1,7 @@
+:Installation:
+
+1- Open the resources folder for Krita:
+Settings > Manage Resources > Open Resources Folder
+2- Head to the Python Folder called pykrita:
+krita > pykrita
+3- Place the unzipped folders inside.
