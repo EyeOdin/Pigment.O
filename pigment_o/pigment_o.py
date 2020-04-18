@@ -41,8 +41,8 @@ unit = 1
 null = 0
 # Brush Tip Default
 size = 40
-opacity = 100
-flow = 100
+opacity = 1
+flow = 1
 
 # Create Docker
 class PigmentODocker(DockWidget):
