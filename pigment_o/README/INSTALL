@@ -1,7 +1,15 @@
-:Installation:
+:Installation Method A:
+
+0- Requires "Python Plugin Importer" script to be active
+1- Tools > Scripts > Import Python Plugin
+2- Browse for Zip file > Open
+
+
+
+:Installation Method B:
 
 1- Open the resources folder for Krita:
 Settings > Manage Resources > Open Resources Folder
 2- Head to the Python Folder called pykrita:
 krita > pykrita
-3- Place the unzipped folders inside.
+3- Place the unzipped folders inside
