@@ -55,7 +55,6 @@ black = str("background-color: rgba(0, 0, 0, 255); ")
 ss_white = str("background-color: rgb(255, 255, 255); border: 1px solid rgba(56, 56, 56, 255) ;")
 ss_grey = str("background-color: rgb(127, 127, 127); border: 1px solid rgba(56, 56, 56, 255) ;")
 ss_black = str("background-color: rgb(0, 0, 0); border: 1px solid rgba(56, 56, 56, 255) ;")
-# black_border = str("background-color: rgb(%f, %f, %f); border: 1px solid rgba(56, 56, 56, 255) ;" % (0, 0, 0))
 
 # Create Docker
 class PigmentODocker(DockWidget):
