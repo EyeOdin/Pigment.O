@@ -94,7 +94,6 @@ class Channel_Linear(QWidget):
             painter.drawPolygon(diamond)
         # Finish QPainter
         painter.end()
-        self.update()
 
     def mousePressEvent(self, event):
         if (event.modifiers() == QtCore.Qt.ShiftModifier or event.modifiers() == QtCore.Qt.ControlModifier or event.modifiers() == QtCore.Qt.AltModifier):
