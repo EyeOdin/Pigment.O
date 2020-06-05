@@ -96,7 +96,6 @@ class Mixer_Gradient(QWidget):
             painter.drawPolygon(triangle)
         # Finish QPainter
         painter.end()
-        self.update()
 
     def mousePressevent(self, event):
         if (event.modifiers() == QtCore.Qt.ShiftModifier or event.modifiers() == QtCore.Qt.ControlModifier or event.modifiers() == QtCore.Qt.AltModifier):
