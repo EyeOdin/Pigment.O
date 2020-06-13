@@ -1400,6 +1400,7 @@ class PigmentODocker(DockWidget):
         if self.layout.check.isChecked():
             font.setBold(True)
             self.layout.check.setText("ON")
+            self.Krita_Update()
         else:
             font.setBold(False)
             self.layout.check.setText("OFF")
