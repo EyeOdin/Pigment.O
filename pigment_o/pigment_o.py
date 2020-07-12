@@ -3855,8 +3855,8 @@ class PigmentODocker(DockWidget):
             self.layout.rgb_g1.setStyleSheet(bg_alpha)
         # Mixer RGB 2
         if (self.color_rgb_l2[0] == "True" and self.color_rgb_r2[0] == "True"):
-            input_rgb_l2 = [self.color_rgb_l1[1], self.color_rgb_l2[2], self.color_rgb_l2[3]]
-            input_rgb_r2 = [self.color_rgb_r1[1], self.color_rgb_r2[2], self.color_rgb_r2[3]]
+            input_rgb_l2 = [self.color_rgb_l2[1], self.color_rgb_l2[2], self.color_rgb_l2[3]]
+            input_rgb_r2 = [self.color_rgb_r2[1], self.color_rgb_r2[2], self.color_rgb_r2[3]]
             mix_rgb_g2 = self.RGB_Gradient(self.layout.rgb_g2.width(), input_rgb_l2, input_rgb_r2)
             self.layout.rgb_g2.setStyleSheet(mix_rgb_g2)
         else:
