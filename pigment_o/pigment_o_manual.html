@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head><title>Pigment.O</title></head>
+<body>
+
+<h1>Pigment.O</h1>
+<br/>
+<h2>Switch</h2>
+<dt><b>Check :</b> Turn Pigment.O ON or OFF when required, by default it will be ON.</dt>
+<br/>
+<h2>Operators</h2>
+<dt><b>Letter :</b> Middle Value of the Channel. Except in Hue case where it selects nearest Pure Hue.</dt>
+<dt><b>Minus One :</b> Minus one point on the Channel.</dt>
+<dt><b>Slider :</b> Move Slider to select amount. Press any modifier key (Shift, Ctrl, Alt) to pin to nearest percetual value (delta=10%) or purest hue (delta=60º).</dt>
+<dt><b>Plus One :</b> Plus one point on the Channel.</dt>
+<dt><b>Value :</b> Numerical value of the Channel.</dt>
+<dt><b>Hex :</b> Hex color code of the Selected Color.</dt>
+<br/>
+<h2>Channels</h2>
+<dt><b>A    :</b> Activate Alpha / BW color space panel. Alpha=Transparency BW = Black White</dt>
+<dt><b>RGB  :</b> Activate RGB color space panel. RGB = Red Green Blue</dt>
+<dt><b>HSV  :</b> Activate HSV color space panel. HSV = Hue Saturation Value. Works in RGB color space.</dt>
+<dt><b>HSL  :</b> Activate HSL color space panel. HSV = Hue Saturation Lightness. Works in RGB color space.</dt>
+<dt><b>CMYK :</b> Activate HSV color space panel. CMYK = Cyan Magenta Yellow Key.</dt>
+<br/>
+<h2>Options</h2>
+<dt><b>TIP :</b> Brush TIP options. Brush size(S), opacity(O) and flow(F). Palette color with 10 slots.</dt>
+<dt><b>TTS :</b> Select costum color to mix TTS (Tint Tone Shade) in RGB interpolation.</dt>
+<dt><b>MIX RGB  :</b> Select costum colors to mix in RGB interpolation.</dt>
+<dt><b>MIX HSV  :</b> Select costum colors to mix in HSV interpolation.</dt>
+<dt><b>MIX HSL  :</b> Select costum colors to mix in HSL interpolation.</dt>
+<dt><b>MIX CMYK :</b> Select costum colors to mix in CMYK interpolation.</dt>
+<br/>
+<h2>Option Controls</h2>
+<dt><b>Neutral + x2Click</b> to <b>Apply</b> current settings.</dt>
+<dt><b>Shift + x1Click</b> to <b>Apply</b> current settings.</dt>
+<dt><b>Ctrl + x1Click</b> to <b>Save</b> current settings.</dt>
+<dt><b>Alt + x1Click</b> to <b>Clean</b> settings.</dt>
+<dt><b>Shift/Ctrl/Alt + Drag Slider</b> to pin to nearest percetual value (delta=10% or delta=60º).</dt>
+<br/>
+<h2>Panel</h2>
+<dt><b>PANEL :</b> Left Mouse Button to "Select" color in panel plane. "Highlight" selected color with Right Mouse Button or with Pen vertical Tilt (Up or Down).</dt>
+<dt><b>PANEL RGB  :</b> Pick RGB with Red, Green and Blue axis with display. Updates on Mouse Release and Mouse Enter.</dt>
+<dt><b>PANEL RGB0 :</b> Pick RGB with Red, Green and Blue axis without any color display. Updates on Mouse Release and Mouse Enter.</dt>
+<dt><b>PANEL HSV  :</b> Pick HSV with Sat and Value axis with display.</dt>
+<dt><b>PANEL HSV0 :</b> Pick HSV with Sat and Value axis without any color display.</dt>
+<dt><b>PANEL HSL  :</b> Pick HSL with Sat and Lightness axis with display.</dt>
+<dt><b>PANEL HSL0 :</b> Pick HSL with Sat and Lightness axis without any color display.</dt>
+<br/>
+<h2>Updates</h2>
+<dt><b>Time Check :</b> Every second there will be a Krita color Check (default). This delta time can be changed to be slower (more than 1000) or disabled (anything less than 1000) on the code(check_timer). 1000ms = 1second.</dt>
+<dt><b>Mouse Enter :</b> Entering the Pigment.O panel will update itself and stops the timer.</dt>
+<dt><b>Mouse Leave :</b> Leaving the Pigment.O panel starts the timer.</dt>
+<dt><b>Memory :</b> Last session selected options (TIP, TTS, MIX) wil be retainned in memory until change or deletion.</dt>
+<br/>
+<h2>Frequently Asked Questions</h2>
+<dt><b>Why using any Slider or Panel causes a huge Slowdown?</b></dt>
+<dt>If your in this situation I recommend changing to Pigment.O Lite.</dt>
+<dt>The most noticiable culprit for this situation is Linux's version of PyQt5 on how it handles Signals.</dt>
+<br/>
+<dt><b>Why do my Sliders have squares instead of triangle arrows?</b></dt>
+<dt>Your lacking fonts on your OS. For Linux users you need to install "Symbola Font".</dt>
+<br/>
+<dt><b>Why does Krita periodicly stresses out every second with Pigment.O active?</b></dt>
+<dt>The cause of that is Pigment.O's periodic pulse to check any color changes within Krita.</dt>
+<dt>If this is the case you can go to the code and change the "check_timer" value to adjust or disable the check.</dt>
+<br/>
+<dt><b>Why is Krita x color picker fighting against Pigment.O color?</b></dt>
+<dt>In the Filters area there are some color pickers that have a different behaviour than when in the painting area.</dt>
+<dt>To aid on this I made a ON/OFF switch to quickly disable Pigment.O as needed.</dt>
+<br/>
+<dt><b>Why are there checkers just above the Sliders?</b></dt>
+<dt>These squares are visual indicators of 10% increments.</dt>
+<dt>While editing any value the percentage of that Slider will be displayed over the checkers.</dt>
+<dt>Pressing Ctrl while editing the Slider will pin the cursor to these increments and the only noticiable exception is the HUE slide that instead goes in 60º increments.</dt>
+<br/>
+<dt><b>Why does the RGB panel feel heavier to use?</b></dt>
+<dt>In short it does a alot more calculations to accomodate it's ease of use and technicaly it has everything going against it while doing so, despite that the panel works as expected.</dt>
+<dt>Even if it is a RGB panel I should add that it works in a custom space called UVD internally that overlays over the standard RGB space.</dt>
+<dt>If there is confusion regarding the use of this panel I recommend taking a look at the preview folder for it's illustrations or on the Krita-Artists forum where I explain it in the Pigment.O thread.</dt>
+<br/>
+<dt><b>What is that talk about Pigment.O being Agnostic?</b></dt>
+<dt>Pigment.O is independant of any color scale on all color spaces.</dt>
+<dt>Noticiable cases of need:</dt>
+<dt>- Wanting to work in percentual values, from 0 to 100.</dt>
+<dt>- HSV and HSL is a case where the color scale is wrong but works better as it is given. Normaly HSV/HSL is (360,100,100) unlike what is used (360,255,255) but the fact is that you loose more colors during conversions if you use the Standard.</dt>
+<dt>- 16 bit integer color depth is a case where color ranges from 0 to 65535. Pigment.O is by default set to work on 8 bit so you need to change it if you want to work on higher bit depths.</dt>
+<dt>- 16 and 32 bit float color depth is a case where it ranges from 0 to 1. This range is how Pigment.O works internally and then it is scalled up, but this range should not be used due to some widgets behaviour that mess up decimal values by rounding them out and so a 0 to 100 range should be used instead.</dt>
+<dt>To use this hidden feature go to the code and you can change the variables (kritaAAA, kritaRGB, kritaHUE, kritaSVL, kritaCMYK) as needed.</dt>
+<dt>This however will not affect the HEX color conversion unless explicity said by changing the variables (hexAAA, hexRGB, hexHUE, hexSVL, hexCMYK) however this is not recommended and is marked as such with "# DO NOT TOUCH !".</dt>
+
+</dl>
+</body>
+</html>
