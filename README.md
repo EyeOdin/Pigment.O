@@ -1,6 +1,6 @@
 ### Purpose
 
-Pigment.O is a Krita plugin Color Picker and Mixer.
+Pigment.O is a Krita plugin Compact Color Picker and Mixer.
 
 ### Features
 
