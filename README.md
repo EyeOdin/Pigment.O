@@ -8,7 +8,7 @@ Pigment.O is a Krita plugin Compact Color Picker and Mixer.
 * Adjustable and Scalable UI.
 * Current and Previously Selected Color.
 * Percentile Ruler with Numerical Display while Editing.
-* Channel "50% Value" or "Nearest Pure Color Click".
+* Channel "50% Value" or "Nearest Pure Color" Click.
 * Sliders with Incremental Lock of 10% or 60º.
 * Save & Load Brush Tip settings (Size, Opacity and Flow).
 * Mini Color Palette with 11 slots.
