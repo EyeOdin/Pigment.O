@@ -1,6 +1,7 @@
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/Previews/pigment_o.png)
+
 ### Purpose
 
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/Previews/pigment_o.png)
 Pigment.O is a Krita plugin Compact Color Picker and Mixer.
 
 ### Features
