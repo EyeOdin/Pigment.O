@@ -2,15 +2,16 @@
 
 ### Purpose
 
-Pigment.O is a Krita plugin Compact Color Picker and Mixer.
+Pigment.O is a Krita plugin Color Picker and Mixer.
 
 ### Features
 
-* Current and Previously Selected Color.
-* Hex Codes for multiple channels.
-* Work in several standard color spaces: A, RGB, ARD, HSV, HSL, HCY, CMY & CMYK
+* Active Color display and Previously Selected.
+* Hex color coding independent of color space(Agnostic).
 * Brush: Size, Opacity & Flow.
-* Light Color Temperature and temperature weighted Colors set by Kelvin.
+* Work in the color spaces: A, RGB, ARD, HSV, HSL, HCY, CMY & CMYK
+* A Channel Displays Monochrome Gray and weighted Perceptual Gray.
+* Light Color Temperature and weighted Colors affected by temperature in Kelvin.
 * Percentile Ruler with Numerical Display.
 * Channels with compact options.
 * Color Harmony display considering the selected Color Theory Rule.
@@ -26,22 +27,21 @@ Pigment.O is a Krita plugin Compact Color Picker and Mixer.
 * Gray Display of Sliders & Panels.
 * Saves & Load last session Settings.
 * Adjustable and Scalable UI.
-* Agnostic UI Color Scaling.
+* Krita Theme Sensitive.
 * ON / OFF / P>K switch.
 
 ### Preview
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/Previews/01_boot.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/channels.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/fgc.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/rgb.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/ard.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/hsv.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/display_black_zoom_percent.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/hsl.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/hue_triangle.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/theme_sensitive.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/harmony.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/dot.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/object.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/sof_palette_tts_mixer.png)
 
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/Previews/02_channels.png)
-
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/Previews/03_mixers.png)
-
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/Previews/04_hsv.png)
-
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/Previews/05_ard_uvd.png)
-
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/Previews/06_object.png)
-
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/Previews/07_corner.png)
-
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/Previews/08_menu.png)
