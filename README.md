@@ -42,12 +42,9 @@ Pigment.O is a Krita plugin Color Picker and Mixer.
 ![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/ard.png)
 
 ![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/dot.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/object.png)
+
 ![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/harmony.png)
-
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/object.png)
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/channels.png)
-
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/object.png)
 ![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/channels.png)
 
 ![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/fgc.png)
