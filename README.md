@@ -31,17 +31,24 @@ Pigment.O is a Krita plugin Color Picker and Mixer.
 * ON / OFF / P>K switch.
 
 ### Preview
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/channels.png)
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/fgc.png)
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/rgb.png)
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/ard.png)
 ![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/hsv.png)
 ![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/display_black_zoom_percent.png)
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/hsl.png)
+
 ![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/hue_triangle.png)
 ![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/theme_sensitive.png)
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/harmony.png)
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/dot.png)
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/object.png)
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/sof_palette_tts_mixer.png)
 
+
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/rgb.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/ard.png)
+
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/dot.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/harmony.png)
+
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/object.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/channels.png)
+
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/object.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/channels.png)
+
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/fgc.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pykrita/pigment_o/PREVIEWS/sof_palette_tts_mixer.png)
