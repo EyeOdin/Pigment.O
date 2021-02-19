@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Service
+ServiceTypes=Krita/PythonPlugin
+X-KDE-Library=pigment_o
+X-Python-2-Compatible=false
+X-Krita-Manual=pigment_o_manual.html
+Name=Pigment.O
+Comment=Color Picker and Mixer
