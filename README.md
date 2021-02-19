@@ -20,7 +20,7 @@ Pigment.O is a Krita plugin Color Picker and Mixer.
 * Channel Sliders and Values: SOF, A, RGB, ARD, HSV, HSL, HCY, YUV, RYB, CMY, CMYK and K(Kelvin).
 * A channel displays Monochrome Gray and Weighted Perceptual Gray.
 * CMYK channel lock for stable color mix.
-* K channel displays Light Color Temperature and Active Color weighted with light Temperature.
+* K channel displays Light Color Temperature and Active Color weighted with light Temperature with Reference Illuminants.
 * Save TIP: Size, Opacity & Flow settings (SOF).
 * Save TIP color to a 11 slot palette.
 * Mix 1 Color for Tint, Tone and Shade (TTS).
