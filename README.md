@@ -25,6 +25,7 @@ Pigment.O is a Krita plugin Color Picker and Mixer.
 * Save TIP color up to a 11 slots in the palette.
 * Mix 1 Color for Tint, Tone(perceptual) and Shade (TTS).
 * Mix 2 Colors with different interpolation methods (MIXER): RGB, ARD, HSV, HSL, HCY, YUV, RYB and CMYK.
+* Color History.
 * Color Name Display and select Closest Color with a name.
 * Gray calculations according to BT.601 and BT.709.
 * Color Wheel modes: CMY(Standard) and RYB.
