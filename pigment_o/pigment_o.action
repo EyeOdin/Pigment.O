@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ActionCollection version="2" name="Scripts">
+    <Actions category="Scripts">
+        <text>Pigment.O</text>
+
+        <Action name="pykrita_pigment_o_extension_key_1_plus">
+          <text>P. K1 Plus</text>
+          <shortcut>none</shortcut>
+          <isCheckable>false</isCheckable>
+        </Action>
+        <Action name="pykrita_pigment_o_extension_key_1_minus">
+          <text>P. K1 Minus</text>
+          <shortcut>none</shortcut>
+          <isCheckable>false</isCheckable>
+        </Action>
+
+        <Action name="pykrita_pigment_o_extension_key_2_plus">
+          <text>P. K2 Plus</text>
+          <shortcut>none</shortcut>
+          <isCheckable>false</isCheckable>
+        </Action>
+        <Action name="pykrita_pigment_o_extension_key_2_minus">
+          <text>P. K2 Minus</text>
+          <shortcut>none</shortcut>
+          <isCheckable>false</isCheckable>
+        </Action>
+
+        <Action name="pykrita_pigment_o_extension_key_3_plus">
+          <text>P. K3 Plus</text>
+          <shortcut>none</shortcut>
+          <isCheckable>false</isCheckable>
+        </Action>
+        <Action name="pykrita_pigment_o_extension_key_3_minus">
+          <text>P. K3 Minus</text>
+          <shortcut>none</shortcut>
+          <isCheckable>false</isCheckable>
+        </Action>
+
+        <Action name="pykrita_pigment_o_extension_key_4_plus">
+          <text>P. K4 Plus</text>
+          <shortcut>none</shortcut>
+          <isCheckable>false</isCheckable>
+        </Action>
+        <Action name="pykrita_pigment_o_extension_key_4_minus">
+          <text>P. K4 Minus</text>
+          <shortcut>none</shortcut>
+          <isCheckable>false</isCheckable>
+        </Action>
+
+        <Action name="pykrita_pigment_o_extension_panel_hud">
+          <text>P. Panel HUD</text>
+          <shortcut>none</shortcut>
+          <isCheckable>false</isCheckable>
+        </Action>
+
+    </Actions>
+</ActionCollection>
