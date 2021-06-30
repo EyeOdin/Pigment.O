@@ -6,12 +6,12 @@ Pigment.O is a Krita plugin Color Picker and Mixer.
 
 ### Features
 
-* Active Color and Previous Color display.
+* Active Color,  Previous Color display & Background Color.
 * Luminosity Lock.
 * Harmony Colors display on: Active Color and ARD, HSV, HSL, HUE panels.
 * Harmony Rules: Monochromatic, Complementary, Analogous, Split Complementary and Double Split Complementary.
 * 5 unique Colors of the Day (COTD).
-* Multiple Panel display: FGC, RGB, ARD, HSV, HSL, YUV, HUE, GAM, DOT & OBJ.
+* Multiple Panel display: FGC, RGB, ARD, HSV, HSL, YUV, HUE, GAM, DOT, OBJ & IMG.
 * FGC panel can display color Temperature and Harmony set.
 * OBJ panel can display a USER created object.
 * Panel GUI modifier to adjust 3rd axis.
