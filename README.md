@@ -1,4 +1,4 @@
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/pigment_o_logo_S.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/pigment_o_logo_L.png)
 
 ### Purpose
 
