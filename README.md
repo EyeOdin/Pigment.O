@@ -1,4 +1,4 @@
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/pigment_o.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/pigment_o_logo_S.png)
 
 ### Purpose
 
@@ -43,13 +43,16 @@ Pigment.O is a Krita plugin Color Picker and Mixer.
 
 
 ### Preview
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/default_boot.png)
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/channels_all.png)
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/luminosity_lock.png)
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/panel_fgc.png)
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/panel_rgb.png)
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/panel_ard.png)
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/panel_hue_triangle.png)
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/panel_gam_mask_triangle.png)
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/panel_dot.png)
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/panel_obj_sphere_swap.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/pigment_o_00.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/pigment_o_01.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/pigment_o_02.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/pigment_o_03.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/pigment_o_04.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/pigment_o_05.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/pigment_o_06.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/pigment_o_07.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/pigment_o_08_1.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/pigment_o_09_4.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/pigment_o_10.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/pigment_o_11.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/pigment_o_12.png)
