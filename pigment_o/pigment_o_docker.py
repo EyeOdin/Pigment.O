@@ -65,7 +65,7 @@ check_timer = 30  # 1000 = 1 SECOND (Zero will Disable checks)
 pigment_o_version = "2021_09_25"
 
 # Color Space Constants
-k_AAA = 255
+k_AAA = 100
 k_RGB = 255 # 65535 or 100 or 255
 k_CMY = 255
 k_CMYK = 255
@@ -74,7 +74,7 @@ k_YYY = 255
 k_UV = 255
 k_UVD = 255  # U(horizontal) V(Vertical) Diagonal
 k_HUE = 360  # Hue + Angle
-k_SVL = 255  # Saturation + Value + Lightness + Chroma + Luma
+k_SVL = 100  # Saturation + Value + Lightness + Chroma + Luma
 k_XYZ = 255
 k_XYY = 255
 k_LUV = 255
