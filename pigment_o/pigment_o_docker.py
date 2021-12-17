@@ -7760,7 +7760,7 @@ class PigmentO_Docker(DockWidget):
     # HCY (My Paint Version)
     def rgb_to_hcy(self, r, g, b):
         # In case Krita is NOT in Linear Format
-        if self.d_cd != "U8": # == vs !=
+        if self.d_cd == "U8": # == vs !=
             lsl = self.srgb_to_lrgb(r, g, b)
             r = lsl[0]
             g = lsl[1]
@@ -7786,10 +7786,10 @@ class PigmentO_Docker(DockWidget):
             c = 0.0
         else:
             c = max((y-n)/y, (p-y)/(1-y))
-        # y = y**(1/self.gamma_y) # Gama compression of the luma value
+        y = y**(1/self.gamma_y) # Gama compression of the luma value
         return [h, c, y]
     def hcy_to_rgb(self, h, c, y):
-        # y = y**(self.gamma_y) # Gama compression of the luma value
+        y = y**(self.gamma_y) # Gama compression of the luma value
         if c == 0:
             r = y
             g = y
@@ -7849,7 +7849,7 @@ class PigmentO_Docker(DockWidget):
             g = n
             b = o
         # In case Krita is NOT in Linear Format
-        if self.d_cd != "U8": # == vs !=
+        if self.d_cd == "U8": # == vs !=
             lsl = self.lrgb_to_srgb(r, g, b)
             r = lsl[0]
             g = lsl[1]
