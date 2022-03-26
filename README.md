@@ -59,4 +59,6 @@ Pigment.O is a Krita plugin Color Picker and Mixer.
 
 
 ### Support Development
-[![paypal](https://pics.paypal.com/00/s/NjA2OWU0ZmEtNjQ4MC00MWZhLTk5YzctM2VhZDA1MzgyMDQ0/file.PNG "Donation Link")](https://www.paypal.com/donate/?hosted_button_id=9FARNUYBC9R3J)
+<a href="https://www.paypal.com/donate/?hosted_button_id=9FARNUYBC9R3J">
+  <img src="https://pics.paypal.com/00/s/NjA2OWU0ZmEtNjQ4MC00MWZhLTk5YzctM2VhZDA1MzgyMDQ0/file.PNG" width="200" alt="Donation Link">
+</a>
