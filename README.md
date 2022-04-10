@@ -1,4 +1,4 @@
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/pigment_o_logo_L.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/pigment_o_logo_S.png)
 
 ### Purpose
 
@@ -10,8 +10,7 @@ Pigment.O is a Krita plugin Color Picker and Mixer.
 * Color Scale Agnostic.
 * Harmony Colors displayed at panels: ARD, HSV, HSL, HUE.
 * Harmony Rules: Monochromatic, Complementary, Analogous, Split Complementary and Double Split Complementary.
-* Colors of the Day (COTD).
-* Multiple Panel display: FGC, RGB, YUV, ARD, HSV, HSL, HUE, GAM, DOT, OBJ & IMG.
+* Multiple Panel display: FGC, RGB, ARD, HSV, HSL, HUE, GAM, DOT, OBJ & IMG.
 * FGC panel can display: Harmony and Kelvin
 * OBJ panel can display a USER created object.
 * Panel GUI modifier to adjust 3rd axis.
@@ -25,8 +24,7 @@ Pigment.O is a Krita plugin Color Picker and Mixer.
 * Channel Options: Values, Hue-Shine, Hex-CP(Copy Paste Hex code), Cursor(Shape), %(Channels on Percentile Ruler)
 * Palette with 11 slots.
 * Palette slots can apply color using shortcuts.
-* TTS mixes 1 color for Tint, Tone(Luma) and Shade.
-* Mixer mixes 2 colors linearly within different color spaces: RGB, ARD, HSV, HSL, HCY, YUV, RYB and CMYK.
+* Mixer colors linearly in different color spaces: TTS(tint, tone and shade in RGB), RGB, ARD, HSV, HSL, HCY, YUV, RYB and CMYK.
 * Color History.
 * Color Name Display from a list. And select closest color with a name.
 * Panels HUE and GAM change hue ring spacing according to CMY(default) and RYB rings.
@@ -43,11 +41,8 @@ Pigment.O is a Krita plugin Color Picker and Mixer.
 
 
 ### Preview
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/pigment_o_00.png)
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/pigment_o_01.png)
 ![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/pigment_o_02.png)
 ![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/pigment_o_03.png)
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/pigment_o_04.png)
 ![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/pigment_o_05.png)
 ![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/pigment_o_06.png)
 ![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/pigment_o_07.png)
@@ -57,6 +52,12 @@ Pigment.O is a Krita plugin Color Picker and Mixer.
 ![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/pigment_o_11.png)
 ![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/pigment_o_12.png)
 
+## OS notices
+
+Linux users to install this plugin also need to:
+* install the "python3-pyqt5-svg" module that is not included in linux
+* use Krita with a appimage.
+
 
 ## Support
 This project will remain Open source and available to all users.\
@@ -65,4 +66,3 @@ Support with donations are welcomed to keep the project alive and maintained (an
 <a href="https://www.paypal.com/donate/?hosted_button_id=9FARNUYBC9R3J">
   <img src="https://pics.paypal.com/00/s/NjA2OWU0ZmEtNjQ4MC00MWZhLTk5YzctM2VhZDA1MzgyMDQ0/file.PNG" width="200" alt="Donation Link">
 </a>
-
