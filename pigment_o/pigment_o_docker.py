@@ -14424,13 +14424,13 @@ class PigmentO_Docker(DockWidget):
         # HSV
         if self.chan_hsv == True:
             if self.hue_shine == True:
-                hsv_r = [1,0,0]
-                hsv_y = [1,1,0]
-                hsv_g = [0,1,0]
-                hsv_c = [0,1,1]
-                hsv_b = [0,0,1]
-                hsv_m = [1,0,1]
-                hsv_z = [1,0,0]
+                hsv_r = [0.8,0,0]
+                hsv_y = [0.8,0.8,0]
+                hsv_g = [0,0.8,0]
+                hsv_c = [0,0.8,0.8]
+                hsv_b = [0,0,0.8]
+                hsv_m = [0.8,0,0.8]
+                hsv_z = [0.8,0,0]
             else:
                 src = "RGB"
                 hsv_r = self.convert(self.d_cm, self.d_cd, self.d_cp, src, self.hsv_to_rgb(0, self.hsv_2, self.hsv_3) )
