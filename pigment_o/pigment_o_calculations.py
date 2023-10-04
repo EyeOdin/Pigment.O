@@ -557,7 +557,7 @@ class Convert():
 
     # AAA
     def rgb_to_aaa( self, r, g, b ):
-        aaa = ( self.luma_r*r ) + ( self.luma_g*g ) + ( self.luma_b*b )
+        aaa = ( self.luma_r * r ) + ( self.luma_g * g ) + ( self.luma_b * b )
         return [aaa]
     def aaa_to_rgb( self, a ):
         r = a

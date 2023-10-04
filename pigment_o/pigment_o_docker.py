@@ -270,13 +270,13 @@ class PigmentO_Docker( DockWidget ):
         self.directory_plugin = str( os.path.dirname( os.path.realpath( __file__ ) ) )
 
         # Widget Docker
-        self.layout = uic.loadUi( os.path.join( self.directory_plugin, "pigment_o_docker.ui" ), QWidget() )
+        self.layout = uic.loadUi( os.path.join( self.directory_plugin, "pigment_o_docker.ui" ), QWidget( self ) )
         self.setWidget( self.layout )
 
         # Settings
-        self.dialog = uic.loadUi( os.path.join( self.directory_plugin, "pigment_o_settings.ui" ), QDialog() )
+        self.dialog = uic.loadUi( os.path.join( self.directory_plugin, "pigment_o_settings.ui" ), QDialog( self ) )
         self.dialog.setWindowTitle( "Pigment.O : Settings" )
-        self.dialog.setWindowFlag( Qt.WindowStaysOnTopHint )
+        self.dialog.accept() # Hides the Dialog
 
         # Mixer Layout
         self.mixer_widget = [ {
@@ -1592,8 +1592,9 @@ class PigmentO_Docker( DockWidget ):
 
         # Variables
         self.huecircle_shape = self.Set_Read( "STR", "huecircle_shape", self.huecircle_shape )
-        # Module
+        # # Module
         self.panel_huecircle.Set_Shape( self.huecircle_shape )
+        self.HueCircle_SubPanel( self.huecircle_shape )
 
         #endregion
         #region Panel Gamut
@@ -3035,11 +3036,13 @@ class PigmentO_Docker( DockWidget ):
         # Display
         self.dialog.show()
         # Resize Geometry
-        screen_zero = QtWidgets.QDesktopWidget().screenGeometry( 0 ) # Size of monitor zero 0
-        width = screen_zero.width()
-        height = screen_zero.height()
+        qmw = Krita.instance().activeWindow().qwindow()
+        px = qmw.x()
+        py = qmw.y()
+        w2 = qmw.width() * 0.5
+        h2 = qmw.height() * 0.5
         size = 500
-        self.dialog.setGeometry( int(width * 0.5 - size * 0.5), int( height * 0.5 - size * 0.5), size, size )
+        self.dialog.setGeometry( int( px + w2 - size * 0.5 ), int( py + h2 - size * 0.5 ), int( size ), int( size ) )
     def Menu_Manual( self ):
         url = "https://github.com/EyeOdin/Pigment.O/wiki"
         webbrowser.open_new( url )
@@ -5924,7 +5927,7 @@ class PigmentO_Docker( DockWidget ):
         if self.huecircle_shape == "Diamond":
             self.panel_huesubpanel.Set_ColorSpace_inDocument( self.directory_plugin, "RGB", "HSL", "R" ) # Diamond
         # Modules
-        self.Update_Size()
+        self.Update_Size() # Updates Mask
         # Save
         Krita.instance().writeSetting( "Pigment.O", "huecircle_shape", str( self.huecircle_shape ) )
     def HueCircle_Geo( self, width, height ):
@@ -8476,7 +8479,7 @@ class PigmentS_Docker( DockWidget ):
         self.directory_plugin = str( os.path.dirname( os.path.realpath( __file__ ) ) )
 
         # Widget Docker
-        self.layout = uic.loadUi( os.path.join( self.directory_plugin, "pigment_s_docker.ui" ), QWidget() )
+        self.layout = uic.loadUi( os.path.join( self.directory_plugin, "pigment_s_docker.ui" ), QWidget( self ) )
         self.setWidget( self.layout )
     def Connections( self ):
         # Lists
@@ -9506,41 +9509,13 @@ Krita Bugs:
 - Byte data of a U16 document is not in RGB like on the API notes but it is in BGR.
 
 To Do:
-O Harmony
-O Panels 
-    O Fill
-    O Square ( Triangle/Diamond )
-    O HUE ( None/Square/Triangle/Diamond )
-    O GAM
-    O Hexagon
-    O YUV
-    O DOT
-    O OBJ > Mask
-    X IMG
-O Channels
-O Mixer
-O Pin
-O History
-O Fill
-O Krange load
-O Extension
-O Redo Color Spaces
-    O ARD
-    O LAB
-O New Color Spaces:
-    X LUV
-    O LCH
-    X Hunter LAB
 - Sample (Bit Depth + Color model )
     O U8
     O U16
     - F16
     - F32
-O Selection ( slider \ values )
 - Profile UVD / ARD LUTs
 
-Bug
-- Dialog does not close when application closes. why?
 
 Investigate Krita
 - YUV / YCbCr color conversion formula - YUV formula is RED and Blue inverted ? or is it Krita ?
