@@ -395,7 +395,7 @@ class Convert():
         return mult
 
     def Path_Os( self, os, path ):
-        if os == "linux":
+        if os != "winnt":
             path = path.replace( '\\','//'  )
         return path
 
