@@ -8311,7 +8311,7 @@ class PigmentO_Docker( DockWidget ):
         if check_timer >= 30:
             self.timer_pulse.start( check_timer )
     def resizeEvent( self, event ):
-        self.Resize_Print( event )
+        # self.Resize_Print( event )
         self.Update_Size()
     def enterEvent( self, event ):
         # Variables
