@@ -1548,7 +1548,7 @@ class PigmentO_Docker( DockWidget ):
         extension = Pigmento_Extension( parent = Krita.instance() )
         Krita.instance().addExtension( extension )
         # Connect Extension Signals
-        extension.SIGNAL_COLOR.connect( self.Extension_COR )
+        extension.SIGNAL_PIN.connect( self.Extension_PIN )
         extension.SIGNAL_KEY_1.connect( self.Extension_KEY_1 )
         extension.SIGNAL_KEY_2.connect( self.Extension_KEY_2 )
         extension.SIGNAL_KEY_3.connect( self.Extension_KEY_3 )
@@ -2174,6 +2174,7 @@ class PigmentO_Docker( DockWidget ):
         chan_lab = self.dialog.chan_lab.isChecked()
         chan_lch = self.dialog.chan_lch.isChecked()
         chan_kkk = self.dialog.chan_kkk.isChecked()
+        chan_sele = self.dialog.chan_sele.isChecked()
 
         # Activate Corresponding
         self.Channel_AAA( chan_aaa )
@@ -2182,19 +2183,16 @@ class PigmentO_Docker( DockWidget ):
         self.Channel_CMYK( chan_cmyk )
         self.Channel_RYB( chan_ryb )
         self.Channel_YUV( chan_yuv )
-
         self.Channel_HSV( chan_hsv )
         self.Channel_HSL( chan_hsl )
         self.Channel_HSY( chan_hsy )
         self.Channel_ARD( chan_ard )
-
         self.Channel_XYZ( chan_xyz )
         self.Channel_XYY( chan_xyy )
         self.Channel_LAB( chan_lab )
-
         self.Channel_LCH( chan_lch )
-
         self.Channel_KKK( chan_kkk )
+        self.Channel_SELE( chan_sele )
     def Channel_AAA( self, boolean ):
         self.chan_aaa = boolean
         if ( boolean == True and self.ui_channel == True ):
@@ -3999,6 +3997,9 @@ class PigmentO_Docker( DockWidget ):
 
         # Third Axis Loop
         for h in range( start_from, max_val+1 ):
+            # Process update
+            QApplication.processEvents()
+
             # Base Image to Edit
             qpixmap = QPixmap( size, size )
             qpixmap.fill( QColor( 0, 0, 0, 255 ) )
@@ -4877,8 +4878,10 @@ class PigmentO_Docker( DockWidget ):
         p = list()
         for h in range( 0, height ):
             # Progress bar
-            percent = round( ( h + 1 ) / height, 4 )
-            self.color_header.Set_Progress( percent )
+            h1 = ( h + 1 )
+            if ( h1 % 5 == 0 or h1 == height ):
+                percent = round( h1 / height, 4 )
+                self.color_header.Set_Progress( percent )
             QApplication.processEvents()
             # Rox of Pixels
             for w in range( 0, width ):
@@ -7704,6 +7707,13 @@ class PigmentO_Docker( DockWidget ):
                 index = 0
                 sel_pixels = []
                 for y in range( 0, dh ):
+                    # Progress bar
+                    y1 = ( y + 1 )
+                    if ( y1 % 5 == 0 or y1 == dh ):
+                        percent = round( y1 / dh, 4 )
+                        self.color_header.Set_Progress( percent )
+                    QApplication.processEvents()
+                    # Pixels
                     for x in range( 0, dw ):
                         # Read Bytes
                         num = Numbers_on_Pixel( self, d_cm, d_cd, index, num_array )
@@ -7756,6 +7766,9 @@ class PigmentO_Docker( DockWidget ):
                         sel_pixels.append( int( sel_factor * k ) )
                         # Cycle
                         index += 1
+
+                # UI
+                self.color_header.Set_Progress( 1 )
 
                 # Selection
                 if len( sel_pixels ) > 0:
@@ -7923,18 +7936,8 @@ class PigmentO_Docker( DockWidget ):
     #region Extension ##############################################################
 
     # COR
-    def Extension_COR( self, SIGNAL_COLOR ):
-        if SIGNAL_COLOR == 0:self.Pin_Apply_00( 0 )
-        if SIGNAL_COLOR == 1:self.Pin_Apply_01( 0 )
-        if SIGNAL_COLOR == 2:self.Pin_Apply_02( 0 )
-        if SIGNAL_COLOR == 3:self.Pin_Apply_03( 0 )
-        if SIGNAL_COLOR == 4:self.Pin_Apply_04( 0 )
-        if SIGNAL_COLOR == 5:self.Pin_Apply_05( 0 )
-        if SIGNAL_COLOR == 6:self.Pin_Apply_06( 0 )
-        if SIGNAL_COLOR == 7:self.Pin_Apply_07( 0 )
-        if SIGNAL_COLOR == 8:self.Pin_Apply_08( 0 )
-        if SIGNAL_COLOR == 9:self.Pin_Apply_09( 0 )
-        if SIGNAL_COLOR == 10:self.Pin_Apply_10( 0 )
+    def Extension_PIN( self, SIGNAL_PIN ):
+        self.Pin_Apply( SIGNAL_PIN )
     # KEYs
     def Extension_KEY_1( self, SIGNAL_KEY_1 ):
         self.Extension_KEY_Apply( self.key_1_chan, SIGNAL_KEY_1 * self.key_1_factor )
@@ -8311,7 +8314,7 @@ class PigmentO_Docker( DockWidget ):
         if check_timer >= 30:
             self.timer_pulse.start( check_timer )
     def resizeEvent( self, event ):
-        # self.Resize_Print( event )
+        self.Resize_Print( event )
         self.Update_Size()
     def enterEvent( self, event ):
         # Variables
@@ -8783,7 +8786,9 @@ class PigmentS_Docker( DockWidget ):
 
             # Document
             for y in range( 0, dh ):
-                if ( ( y + 1 ) % 5 ) == 0:self.layout.progress_bar.setValue( y + 1 )
+                y1 = y + 1
+                if ( y1 % 5 ) == 0:
+                    self.layout.progress_bar.setValue( y1 )
                 QApplication.processEvents()
                 for x in range( 0, dw ):
                     # Read Byte

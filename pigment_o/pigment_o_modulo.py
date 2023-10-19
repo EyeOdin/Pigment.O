@@ -2605,21 +2605,21 @@ class Panel_Gamut( QWidget ):
         b = 1 - 0.551915024494
         path.moveTo( A1[0], A1[1] )
         path.cubicTo(
-            QPoint( self.geometry.Lerp_1D( a, A1[0], P12[0] ), self.geometry.Lerp_1D( a, A1[1], P12[1] ) ),
-            QPoint( self.geometry.Lerp_1D( b, P12[0], A2[0] ), self.geometry.Lerp_1D( b, P12[1], A2[1] ) ),
-            QPoint( A2[0], A2[1] ) )
+            QPoint( int( self.geometry.Lerp_1D( a, A1[0], P12[0] ) ), int( self.geometry.Lerp_1D( a, A1[1], P12[1] ) ) ),
+            QPoint( int( self.geometry.Lerp_1D( b, P12[0], A2[0] ) ), int( self.geometry.Lerp_1D( b, P12[1], A2[1] ) ) ),
+            QPoint( int( A2[0] ), int( A2[1] ) ) )
         path.cubicTo(
-            QPoint( self.geometry.Lerp_1D( a, A2[0], P23[0] ), self.geometry.Lerp_1D( a, A2[1], P23[1] ) ),
-            QPoint( self.geometry.Lerp_1D( b, P23[0], A3[0] ), self.geometry.Lerp_1D( b, P23[1], A3[1] ) ),
-            QPoint( A3[0], A3[1] ) )
+            QPoint( int( self.geometry.Lerp_1D( a, A2[0], P23[0] ) ), int( self.geometry.Lerp_1D( a, A2[1], P23[1] ) ) ),
+            QPoint( int( self.geometry.Lerp_1D( b, P23[0], A3[0] ) ), int( self.geometry.Lerp_1D( b, P23[1], A3[1] ) ) ),
+            QPoint( int( A3[0] ), int( A3[1] ) ) )
         path.cubicTo(
-            QPoint( self.geometry.Lerp_1D( a, A3[0], P34[0] ), self.geometry.Lerp_1D( a, A3[1], P34[1] ) ),
-            QPoint( self.geometry.Lerp_1D( b, P34[0], A4[0] ), self.geometry.Lerp_1D( b, P34[1], A4[1] ) ),
-            QPoint( A4[0], A4[1] ) )
+            QPoint( int( self.geometry.Lerp_1D( a, A3[0], P34[0] ) ), int( self.geometry.Lerp_1D( a, A3[1], P34[1] ) ) ),
+            QPoint( int( self.geometry.Lerp_1D( b, P34[0], A4[0] ) ), int( self.geometry.Lerp_1D( b, P34[1], A4[1] ) ) ),
+            QPoint( int( A4[0] ), int( A4[1] ) ) )
         path.cubicTo(
-            QPoint( self.geometry.Lerp_1D( a, A4[0], P41[0] ), self.geometry.Lerp_1D( a, A4[1], P41[1] ) ),
-            QPoint( self.geometry.Lerp_1D( b, P41[0], A1[0] ), self.geometry.Lerp_1D( b, P41[1], A1[1] ) ),
-            QPoint( A1[0], A1[1] ) )
+            QPoint( int( self.geometry.Lerp_1D( a, A4[0], P41[0] ) ), int( self.geometry.Lerp_1D( a, A4[1], P41[1] ) ) ),
+            QPoint( int( self.geometry.Lerp_1D( b, P41[0], A1[0] ) ), int( self.geometry.Lerp_1D( b, P41[1], A1[1] ) ) ),
+            QPoint( int( A1[0] ), int( A1[1] ) ) )
         # Return
         return path, P0, P1, P2, P3, P4
 

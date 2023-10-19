@@ -31,7 +31,7 @@ class Pigmento_Extension( Extension ):
     """
     Extension Shortcuts.
     """
-    SIGNAL_COLOR = QtCore.pyqtSignal( int )
+    SIGNAL_PIN = QtCore.pyqtSignal( int )
     SIGNAL_KEY_1 = QtCore.pyqtSignal( int )
     SIGNAL_KEY_2 = QtCore.pyqtSignal( int )
     SIGNAL_KEY_3 = QtCore.pyqtSignal( int )
@@ -51,49 +51,49 @@ class Pigmento_Extension( Extension ):
     def createActions( self, window ):
         # Main Menu
         action_pigmento = window.createAction( "pigment_o", "Pigment.O", "tools/scripts" )
-        menu_color = QtWidgets.QMenu( "pigment_o", window.qwindow() )
+        menu_pin = QtWidgets.QMenu( "pigment_o", window.qwindow() )
         menu_key   = QtWidgets.QMenu( "pigment_o", window.qwindow() )
         menu_lock  = QtWidgets.QMenu( "pigment_o", window.qwindow() )
 
         # Sub Menu
-        action_color = window.createAction( "color", "Color", "tools/scripts/pigment_o" )
-        action_key   = window.createAction( "key",   "Key",   "tools/scripts/pigment_o" )
-        action_lock  = window.createAction( "lock",  "Lock",  "tools/scripts/pigment_o" )
-        action_pigmento.setMenu( menu_color )
+        action_pin = window.createAction( "pin", "Pin", "tools/scripts/pigment_o" )
+        action_key   = window.createAction( "key", "Key", "tools/scripts/pigment_o" )
+        action_lock  = window.createAction( "lock", "Lock", "tools/scripts/pigment_o" )
+        action_pigmento.setMenu( menu_pin )
         action_pigmento.setMenu( menu_key )
         action_pigmento.setMenu( menu_lock )
 
-        menu_color = QtWidgets.QMenu( "color", window.qwindow() )
-        menu_key   = QtWidgets.QMenu( "key", window.qwindow() )
-        menu_lock  = QtWidgets.QMenu( "lock", window.qwindow() )
-        action_color.setMenu( menu_color )
+        menu_pin = QtWidgets.QMenu( "pin", window.qwindow() )
+        menu_key = QtWidgets.QMenu( "key", window.qwindow() )
+        menu_lock = QtWidgets.QMenu( "lock", window.qwindow() )
+        action_pin.setMenu( menu_pin )
         action_key.setMenu( menu_key )
         action_lock.setMenu( menu_lock )
 
-        # Color Actions
-        action_color_00 = window.createAction( "pigment_o_color_00", "Color 0",  "tools/scripts/pigment_o/color" )
-        action_color_01 = window.createAction( "pigment_o_color_01", "Color 1",  "tools/scripts/pigment_o/color" )
-        action_color_02 = window.createAction( "pigment_o_color_02", "Color 2",  "tools/scripts/pigment_o/color" )
-        action_color_03 = window.createAction( "pigment_o_color_03", "Color 3",  "tools/scripts/pigment_o/color" )
-        action_color_04 = window.createAction( "pigment_o_color_04", "Color 4",  "tools/scripts/pigment_o/color" )
-        action_color_05 = window.createAction( "pigment_o_color_05", "Color 5",  "tools/scripts/pigment_o/color" )
-        action_color_06 = window.createAction( "pigment_o_color_06", "Color 6",  "tools/scripts/pigment_o/color" )
-        action_color_07 = window.createAction( "pigment_o_color_07", "Color 7",  "tools/scripts/pigment_o/color" )
-        action_color_08 = window.createAction( "pigment_o_color_08", "Color 8",  "tools/scripts/pigment_o/color" )
-        action_color_09 = window.createAction( "pigment_o_color_09", "Color 9",  "tools/scripts/pigment_o/color" )
-        action_color_10 = window.createAction( "pigment_o_color_10", "Color 10", "tools/scripts/pigment_o/color" )
-        # Color Connections
-        action_color_00.triggered.connect( self.COLOR_00 )
-        action_color_01.triggered.connect( self.COLOR_01 )
-        action_color_02.triggered.connect( self.COLOR_02 )
-        action_color_03.triggered.connect( self.COLOR_03 )
-        action_color_04.triggered.connect( self.COLOR_04 )
-        action_color_05.triggered.connect( self.COLOR_05 )
-        action_color_06.triggered.connect( self.COLOR_06 )
-        action_color_07.triggered.connect( self.COLOR_07 )
-        action_color_08.triggered.connect( self.COLOR_08 )
-        action_color_09.triggered.connect( self.COLOR_09 )
-        action_color_10.triggered.connect( self.COLOR_10 )
+        # Pin Actions
+        action_pin_00 = window.createAction( "pigment_o_pin_00", "Pin 00", "tools/scripts/pigment_o/pin" )
+        action_pin_01 = window.createAction( "pigment_o_pin_01", "Pin 01", "tools/scripts/pigment_o/pin" )
+        action_pin_02 = window.createAction( "pigment_o_pin_02", "Pin 02", "tools/scripts/pigment_o/pin" )
+        action_pin_03 = window.createAction( "pigment_o_pin_03", "Pin 03", "tools/scripts/pigment_o/pin" )
+        action_pin_04 = window.createAction( "pigment_o_pin_04", "Pin 04", "tools/scripts/pigment_o/pin" )
+        action_pin_05 = window.createAction( "pigment_o_pin_05", "Pin 05", "tools/scripts/pigment_o/pin" )
+        action_pin_06 = window.createAction( "pigment_o_pin_06", "Pin 06", "tools/scripts/pigment_o/pin" )
+        action_pin_07 = window.createAction( "pigment_o_pin_07", "Pin 07", "tools/scripts/pigment_o/pin" )
+        action_pin_08 = window.createAction( "pigment_o_pin_08", "Pin 08", "tools/scripts/pigment_o/pin" )
+        action_pin_09 = window.createAction( "pigment_o_pin_09", "Pin 09", "tools/scripts/pigment_o/pin" )
+        action_pin_10 = window.createAction( "pigment_o_pin_10", "Pin 10", "tools/scripts/pigment_o/pin" )
+        # Pin Connections
+        action_pin_00.triggered.connect( self.PIN_00 )
+        action_pin_01.triggered.connect( self.PIN_01 )
+        action_pin_02.triggered.connect( self.PIN_02 )
+        action_pin_03.triggered.connect( self.PIN_03 )
+        action_pin_04.triggered.connect( self.PIN_04 )
+        action_pin_05.triggered.connect( self.PIN_05 )
+        action_pin_06.triggered.connect( self.PIN_06 )
+        action_pin_07.triggered.connect( self.PIN_07 )
+        action_pin_08.triggered.connect( self.PIN_08 )
+        action_pin_09.triggered.connect( self.PIN_09 )
+        action_pin_10.triggered.connect( self.PIN_10 )
 
         # Key Actions
         action_key_1_minus = window.createAction( "pigment_o_key_1_minus", "Key 1 Minus", "tools/scripts/pigment_o/key" )
@@ -115,37 +115,37 @@ class Pigmento_Extension( Extension ):
         action_key_4_plus.triggered.connect( self.KEY_4_Plus )
 
         # Lock Actions
-        action_lock_cmyk = window.createAction( "pigment_o_lock_cmyk", "Lock CMYK",   "tools/scripts/pigment_o/lock" )
-        action_lock_kkk  = window.createAction( "pigment_o_lock_kkk",  "Lock Kelvin", "tools/scripts/pigment_o/lock" )
+        action_lock_cmyk = window.createAction( "pigment_o_lock_cmyk", "Lock CMYK", "tools/scripts/pigment_o/lock" )
+        action_lock_kkk  = window.createAction( "pigment_o_lock_kkk", "Lock Kelvin", "tools/scripts/pigment_o/lock" )
         # Lock Connections
         action_lock_cmyk.triggered.connect( self.LOCK_CMYK )
         action_lock_kkk.triggered.connect( self.LOCK_KKK )
 
     #endregion
-    #region COLOR ##################################################################
+    #region PIN ##################################################################
 
-    def COLOR_00( self ):
-        self.SIGNAL_COLOR.emit( 0 )
-    def COLOR_01( self ):
-        self.SIGNAL_COLOR.emit( 1 )
-    def COLOR_02( self ):
-        self.SIGNAL_COLOR.emit( 2 )
-    def COLOR_03( self ):
-        self.SIGNAL_COLOR.emit( 3 )
-    def COLOR_04( self ):
-        self.SIGNAL_COLOR.emit( 4 )
-    def COLOR_05( self ):
-        self.SIGNAL_COLOR.emit( 5 )
-    def COLOR_06( self ):
-        self.SIGNAL_COLOR.emit( 6 )
-    def COLOR_07( self ):
-        self.SIGNAL_COLOR.emit( 7 )
-    def COLOR_08( self ):
-        self.SIGNAL_COLOR.emit( 8 )
-    def COLOR_09( self ):
-        self.SIGNAL_COLOR.emit( 9 )
-    def COLOR_10( self ):
-        self.SIGNAL_COLOR.emit( 10 )
+    def PIN_00( self ):
+        self.SIGNAL_PIN.emit( 0 )
+    def PIN_01( self ):
+        self.SIGNAL_PIN.emit( 1 )
+    def PIN_02( self ):
+        self.SIGNAL_PIN.emit( 2 )
+    def PIN_03( self ):
+        self.SIGNAL_PIN.emit( 3 )
+    def PIN_04( self ):
+        self.SIGNAL_PIN.emit( 4 )
+    def PIN_05( self ):
+        self.SIGNAL_PIN.emit( 5 )
+    def PIN_06( self ):
+        self.SIGNAL_PIN.emit( 6 )
+    def PIN_07( self ):
+        self.SIGNAL_PIN.emit( 7 )
+    def PIN_08( self ):
+        self.SIGNAL_PIN.emit( 8 )
+    def PIN_09( self ):
+        self.SIGNAL_PIN.emit( 9 )
+    def PIN_10( self ):
+        self.SIGNAL_PIN.emit( 10 )
 
     #endregion
     #region KEY ####################################################################
