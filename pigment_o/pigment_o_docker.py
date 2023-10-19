@@ -7948,149 +7948,149 @@ class PigmentO_Docker( DockWidget ):
         # AAA
         if key == "A 1":
             value = self.geometry.Limit_Float( self.cor["aaa_1"] + delta / krange["aaa_1"] )
-            self.Pigmento_READ( "A", value, 0, 0, 0, self.cor )
+            self.Pigmento_APPLY( "A", value, 0, 0, 0, self.cor )
         # RGB
         if key == "RGB 1":
             value = self.geometry.Limit_Float( self.cor["rgb_1"] + delta / krange["rgb_1"] )
-            self.Pigmento_READ( "RGB", value, self.cor["rgb_2"], self.cor["rgb_3"], 0, self.cor )
+            self.Pigmento_APPLY( "RGB", value, self.cor["rgb_2"], self.cor["rgb_3"], 0, self.cor )
         if key == "RGB 2":
             value = self.geometry.Limit_Float( self.cor["rgb_2"] + delta / krange["rgb_2"] )
-            self.Pigmento_READ( "RGB", self.cor["rgb_1"], value, self.cor["rgb_3"], 0, self.cor )
+            self.Pigmento_APPLY( "RGB", self.cor["rgb_1"], value, self.cor["rgb_3"], 0, self.cor )
         if key == "RGB 3":
             value = self.geometry.Limit_Float( self.cor["rgb_3"] + delta / krange["rgb_3"] )
-            self.Pigmento_READ( "RGB", self.cor["rgb_1"], self.cor["rgb_2"], value, 0, self.cor )
+            self.Pigmento_APPLY( "RGB", self.cor["rgb_1"], self.cor["rgb_2"], value, 0, self.cor )
         # CMY
         if key == "CMY 1":
             value = self.geometry.Limit_Float( self.cor["cmy_1"] + delta / krange["cmy_1"] )
-            self.Pigmento_READ( "CMY", value, self.cor["cmy_2"], self.cor["cmy_3"], 0, self.cor )
+            self.Pigmento_APPLY( "CMY", value, self.cor["cmy_2"], self.cor["cmy_3"], 0, self.cor )
         if key == "CMY 2":
             value = self.geometry.Limit_Float( self.cor["cmy_2"] + delta / krange["cmy_2"] )
-            self.Pigmento_READ( "CMY", self.cor["cmy_1"], value, self.cor["cmy_3"], 0, self.cor )
+            self.Pigmento_APPLY( "CMY", self.cor["cmy_1"], value, self.cor["cmy_3"], 0, self.cor )
         if key == "CMY 3":
             value = self.geometry.Limit_Float( self.cor["cmy_3"] + delta / krange["cmy_3"] )
-            self.Pigmento_READ( "CMY", self.cor["cmy_1"], self.cor["cmy_2"], value, 0, self.cor )
+            self.Pigmento_APPLY( "CMY", self.cor["cmy_1"], self.cor["cmy_2"], value, 0, self.cor )
         # CMYK
         if key == "CMYK 1":
             value = self.geometry.Limit_Float( self.cor["cmyk_1"] + delta / krange["cmyk_1"] )
-            self.Pigmento_READ( "CMYK", value, self.cor["cmyk_2"], self.cor["cmyk_3"], self.cor["cmyk_4"], self.cor )
+            self.Pigmento_APPLY( "CMYK", value, self.cor["cmyk_2"], self.cor["cmyk_3"], self.cor["cmyk_4"], self.cor )
         if key == "CMYK 2":
             value = self.geometry.Limit_Float( self.cor["cmyk_2"] + delta / krange["cmyk_2"] )
-            self.Pigmento_READ( "CMYK", self.cor["cmyk_1"], value, self.cor["cmyk_3"], self.cor["cmyk_4"], self.cor )
+            self.Pigmento_APPLY( "CMYK", self.cor["cmyk_1"], value, self.cor["cmyk_3"], self.cor["cmyk_4"], self.cor )
         if key == "CMYK 3":
             value = self.geometry.Limit_Float( self.cor["cmyk_3"] + delta / krange["cmyk_3"] )
-            self.Pigmento_READ( "CMYK", self.cor["cmyk_1"], self.cor["cmyk_2"], value, self.cor["cmyk_4"], self.cor )
+            self.Pigmento_APPLY( "CMYK", self.cor["cmyk_1"], self.cor["cmyk_2"], value, self.cor["cmyk_4"], self.cor )
         if key == "CMYK 4":
             value = self.geometry.Limit_Float( self.cor["cmyk_4"] + delta / krange["cmyk_4"] )
-            self.Pigmento_READ( "CMYK", self.cor["cmyk_1"], self.cor["cmyk_2"], self.cor["cmyk_3"], value, self.cor )
+            self.Pigmento_APPLY( "CMYK", self.cor["cmyk_1"], self.cor["cmyk_2"], self.cor["cmyk_3"], value, self.cor )
         # RYB
         if key == "RYB 1":
             value = self.geometry.Limit_Float( self.cor["ryb_1"] + delta / krange["ryb_1"] )
-            self.Pigmento_READ( "RYB", value, self.cor["ryb_2"], self.cor["ryb_3"], 0, self.cor )
+            self.Pigmento_APPLY( "RYB", value, self.cor["ryb_2"], self.cor["ryb_3"], 0, self.cor )
         if key == "RYB 2":
             value = self.geometry.Limit_Float( self.cor["ryb_2"] + delta / krange["ryb_2"] )
-            self.Pigmento_READ( "RYB", self.cor["ryb_1"], value, self.cor["ryb_3"], 0, self.cor )
+            self.Pigmento_APPLY( "RYB", self.cor["ryb_1"], value, self.cor["ryb_3"], 0, self.cor )
         if key == "RYB 3":
             value = self.geometry.Limit_Float( self.cor["ryb_3"] + delta / krange["ryb_3"] )
-            self.Pigmento_READ( "RYB", self.cor["ryb_1"], self.cor["ryb_2"], value, 0, self.cor )
+            self.Pigmento_APPLY( "RYB", self.cor["ryb_1"], self.cor["ryb_2"], value, 0, self.cor )
         # YUV
         if key == "YUV 1":
             value = self.geometry.Limit_Float( self.cor["yuv_1"] + delta / krange["yuv_1"] )
-            self.Pigmento_READ( "YUV", value, self.cor["yuv_2"], self.cor["yuv_3"], 0, self.cor )
+            self.Pigmento_APPLY( "YUV", value, self.cor["yuv_2"], self.cor["yuv_3"], 0, self.cor )
         if key == "YUV 2":
             value = self.geometry.Limit_Float( self.cor["yuv_2"] + delta / krange["yuv_2"] )
-            self.Pigmento_READ( "YUV", self.cor["yuv_1"], value, self.cor["yuv_3"], 0, self.cor )
+            self.Pigmento_APPLY( "YUV", self.cor["yuv_1"], value, self.cor["yuv_3"], 0, self.cor )
         if key == "YUV 3":
             value = self.geometry.Limit_Float( self.cor["yuv_3"] + delta / krange["yuv_3"] )
-            self.Pigmento_READ( "YUV", self.cor["yuv_1"], self.cor["yuv_2"], value, 0, self.cor )
+            self.Pigmento_APPLY( "YUV", self.cor["yuv_1"], self.cor["yuv_2"], value, 0, self.cor )
 
         # HSV
         if key == "HSV 1":
             value = self.geometry.Limit_Looper( self.cor["hsv_1"] + delta / krange["hsv_1"], 1 )
-            self.Pigmento_READ( "HSV", value, self.cor["hsv_2"], self.cor["hsv_3"], 0, self.cor )
+            self.Pigmento_APPLY( "HSV", value, self.cor["hsv_2"], self.cor["hsv_3"], 0, self.cor )
         if key == "HSV 2":
             value = self.geometry.Limit_Float( self.cor["hsv_2"] + delta / krange["hsv_2"] )
-            self.Pigmento_READ( "HSV", self.cor["hsv_1"], value, self.cor["hsv_3"], 0, self.cor )
+            self.Pigmento_APPLY( "HSV", self.cor["hsv_1"], value, self.cor["hsv_3"], 0, self.cor )
         if key == "HSV 3":
             value = self.geometry.Limit_Float( self.cor["hsv_3"] + delta / krange["hsv_3"] )
-            self.Pigmento_READ( "HSV", self.cor["hsv_1"], self.cor["hsv_2"], value, 0, self.cor )
+            self.Pigmento_APPLY( "HSV", self.cor["hsv_1"], self.cor["hsv_2"], value, 0, self.cor )
         # HSL
         if key == "HSL 1":
             value = self.geometry.Limit_Looper( self.cor["hsl_1"] + delta / krange["hsl_1"], 1 )
-            self.Pigmento_READ( "HSL", value, self.cor["hsl_2"], self.cor["hsl_3"], 0, self.cor )
+            self.Pigmento_APPLY( "HSL", value, self.cor["hsl_2"], self.cor["hsl_3"], 0, self.cor )
         if key == "HSL 2":
             value = self.geometry.Limit_Float( self.cor["hsl_2"] + delta / krange["hsl_2"] )
-            self.Pigmento_READ( "HSL", self.cor["hsl_1"], value, self.cor["hsl_3"], 0, self.cor )
+            self.Pigmento_APPLY( "HSL", self.cor["hsl_1"], value, self.cor["hsl_3"], 0, self.cor )
         if key == "HSL 3":
             value = self.geometry.Limit_Float( self.cor["hsl_3"] + delta / krange["hsl_3"] )
-            self.Pigmento_READ( "HSL", self.cor["hsl_1"], self.cor["hsl_2"], value, 0, self.cor )
+            self.Pigmento_APPLY( "HSL", self.cor["hsl_1"], self.cor["hsl_2"], value, 0, self.cor )
         # HSY
         if key == "HSY 1":
             value = self.geometry.Limit_Looper( self.cor["hsy_1"] + delta / krange["hsy_1"], 1 )
-            self.Pigmento_READ( "HSY", value, self.cor["hsy_2"], self.cor["hsy_3"], 0, self.cor )
+            self.Pigmento_APPLY( "HSY", value, self.cor["hsy_2"], self.cor["hsy_3"], 0, self.cor )
         if key == "HSY 2":
             value = self.geometry.Limit_Float( self.cor["hsy_2"] + delta / krange["hsy_2"] )
-            self.Pigmento_READ( "HSY", self.cor["hsy_1"], value, self.cor["hsy_3"], 0, self.cor )
+            self.Pigmento_APPLY( "HSY", self.cor["hsy_1"], value, self.cor["hsy_3"], 0, self.cor )
         if key == "HSY 3":
             value = self.geometry.Limit_Float( self.cor["hsy_3"] + delta / krange["hsy_3"] )
-            self.Pigmento_READ( "HSY", self.cor["hsy_1"], self.cor["hsy_2"], value, 0, self.cor )
+            self.Pigmento_APPLY( "HSY", self.cor["hsy_1"], self.cor["hsy_2"], value, 0, self.cor )
         # ARD
         if key == "ARD 1":
             value = self.geometry.Limit_Looper( self.cor["ard_1"] + delta / krange["ard_1"], 1 )
-            self.Pigmento_READ( "ARD", value, self.cor["ard_2"], self.cor["ard_3"], 0, self.cor )
+            self.Pigmento_APPLY( "ARD", value, self.cor["ard_2"], self.cor["ard_3"], 0, self.cor )
         if key == "ARD 2":
             value = self.geometry.Limit_Float( self.cor["ard_2"] + delta / krange["ard_2"] )
-            self.Pigmento_READ( "ARD", self.cor["ard_1"], value, self.cor["ard_3"], 0, self.cor )
+            self.Pigmento_APPLY( "ARD", self.cor["ard_1"], value, self.cor["ard_3"], 0, self.cor )
         if key == "ARD 3":
             value = self.geometry.Limit_Float( self.cor["ard_3"] + delta / krange["ard_3"] )
-            self.Pigmento_READ( "ARD", self.cor["ard_1"], self.cor["ard_2"], value, 0, self.cor )
+            self.Pigmento_APPLY( "ARD", self.cor["ard_1"], self.cor["ard_2"], value, 0, self.cor )
 
         # XYZ
         if key == "XYZ 1":
             value = self.geometry.Limit_Float( self.cor["xyz_1"] + delta / krange["xyz_1"] )
-            self.Pigmento_READ( "XYZ", value, self.cor["xyz_2"], self.cor["xyz_3"], 0, self.cor )
+            self.Pigmento_APPLY( "XYZ", value, self.cor["xyz_2"], self.cor["xyz_3"], 0, self.cor )
         if key == "XYZ 2":
             value = self.geometry.Limit_Float( self.cor["xyz_2"] + delta / krange["xyz_2"] )
-            self.Pigmento_READ( "XYZ", self.cor["xyz_1"], value, self.cor["xyz_3"], 0, self.cor )
+            self.Pigmento_APPLY( "XYZ", self.cor["xyz_1"], value, self.cor["xyz_3"], 0, self.cor )
         if key == "XYZ 3":
             value = self.geometry.Limit_Float( self.cor["xyz_3"] + delta / krange["xyz_3"] )
-            self.Pigmento_READ( "XYZ", self.cor["xyz_1"], self.cor["xyz_2"], value, 0, self.cor )
+            self.Pigmento_APPLY( "XYZ", self.cor["xyz_1"], self.cor["xyz_2"], value, 0, self.cor )
         # XYY
         if key == "XYY 1":
             value = self.geometry.Limit_Float( self.cor["xyy_1"] + delta / krange["xyy_1"] )
-            self.Pigmento_READ( "XYY", value, self.cor["xyy_2"], self.cor["xyy_3"], 0, self.cor )
+            self.Pigmento_APPLY( "XYY", value, self.cor["xyy_2"], self.cor["xyy_3"], 0, self.cor )
         if key == "XYY 2":
             value = self.geometry.Limit_Float( self.cor["xyy_2"] + delta / krange["xyy_2"] )
-            self.Pigmento_READ( "XYY", self.cor["xyy_1"], value, self.cor["xyy_3"], 0, self.cor )
+            self.Pigmento_APPLY( "XYY", self.cor["xyy_1"], value, self.cor["xyy_3"], 0, self.cor )
         if key == "XYY 3":
             value = self.geometry.Limit_Float( self.cor["xyy_3"] + delta / krange["xyy_3"] )
-            self.Pigmento_READ( "XYY", self.cor["xyy_1"], self.cor["xyy_2"], value, 0, self.cor )
+            self.Pigmento_APPLY( "XYY", self.cor["xyy_1"], self.cor["xyy_2"], value, 0, self.cor )
         # LAB
         if key == "LAB 1":
             value = self.geometry.Limit_Float( self.cor["lab_1"] + delta / krange["lab_1"] )
-            self.Pigmento_READ( "LAB", value, self.cor["lab_2"], self.cor["lab_3"], 0, self.cor )
+            self.Pigmento_APPLY( "LAB", value, self.cor["lab_2"], self.cor["lab_3"], 0, self.cor )
         if key == "LAB 2":
             value = self.geometry.Limit_Float( self.cor["lab_2"] + delta / krange["lab_2"] )
-            self.Pigmento_READ( "LAB", self.cor["lab_1"], value, self.cor["lab_3"], 0, self.cor )
+            self.Pigmento_APPLY( "LAB", self.cor["lab_1"], value, self.cor["lab_3"], 0, self.cor )
         if key == "LAB 3":
             value = self.geometry.Limit_Float( self.cor["lab_3"] + delta / krange["lab_3"] )
-            self.Pigmento_READ( "LAB", self.cor["lab_1"], self.cor["lab_2"], value, 0, self.cor )
+            self.Pigmento_APPLY( "LAB", self.cor["lab_1"], self.cor["lab_2"], value, 0, self.cor )
 
         # LCH
         if key == "LCH 1":
             value = self.geometry.Limit_Float( self.cor["lch_1"] + delta / krange["lch_1"] )
-            self.Pigmento_READ( "LCH", value, self.cor["lch_2"], self.cor["lch_3"], 0, self.cor )
+            self.Pigmento_APPLY( "LCH", value, self.cor["lch_2"], self.cor["lch_3"], 0, self.cor )
         if key == "LCH 2":
             value = self.geometry.Limit_Float( self.cor["lch_2"] + delta / krange["lch_2"] )
-            self.Pigmento_READ( "LCH", self.cor["lch_1"], value, self.cor["lch_3"], 0, self.cor )
+            self.Pigmento_APPLY( "LCH", self.cor["lch_1"], value, self.cor["lch_3"], 0, self.cor )
         if key == "LCH 3":
             value = self.geometry.Limit_Float( self.cor["lch_3"] + delta / krange["lch_3"] )
-            self.Pigmento_READ( "LCH", self.cor["lch_1"], self.cor["lch_2"], value, 0, self.cor )
+            self.Pigmento_APPLY( "LCH", self.cor["lch_1"], self.cor["lch_2"], value, 0, self.cor )
 
         # KKK
         if key == "K 1":
             scale = int( self.geometry.Limit_Range( self.cor["kkk_scale"] + delta * 10, kkk_min_scale, kkk_max_scale ) )
             percent = self.convert.kkk_scale_to_percent( scale )
-            self.Pigmento_READ( "KKK", percent, scale, 0, 0, self.cor )
+            self.Pigmento_APPLY( "KKK", percent, scale, 0, 0, self.cor )
     # LOCKs
     def Extension_LOCK( self, SIGNAL_LOCK ):
         if SIGNAL_LOCK == "CMYK":
@@ -8311,7 +8311,7 @@ class PigmentO_Docker( DockWidget ):
         if check_timer >= 30:
             self.timer_pulse.start( check_timer )
     def resizeEvent( self, event ):
-        # self.Resize_Print( event )
+        self.Resize_Print( event )
         self.Update_Size()
     def enterEvent( self, event ):
         # Variables
