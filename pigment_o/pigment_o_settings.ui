@@ -1,0 +1,4691 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>pigmento_settings</class>
+ <widget class="QWidget" name="pigmento_settings">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>500</width>
+    <height>500</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="font">
+   <font>
+    <family>Liberation Mono</family>
+   </font>
+  </property>
+  <property name="focusPolicy">
+   <enum>Qt::NoFocus</enum>
+  </property>
+  <layout class="QVBoxLayout" name="pigmento_settings_layout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <layout class="QHBoxLayout" name="options_switch">
+     <property name="spacing">
+      <number>1</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QPushButton" name="harmony">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>40</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>40</height>
+        </size>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
+       <property name="text">
+        <string>HARMONY</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="channel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>40</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>40</height>
+        </size>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
+       <property name="text">
+        <string>CHANNEL</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mixer">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>40</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>40</height>
+        </size>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
+       <property name="text">
+        <string>MIXER</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pin">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>40</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>40</height>
+        </size>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
+       <property name="text">
+        <string>PIN</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="history">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>40</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>40</height>
+        </size>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
+       <property name="text">
+        <string>HISTORY</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QWidget" name="settings" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <layout class="QVBoxLayout" name="settings_layout">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="leftMargin">
+       <number>10</number>
+      </property>
+      <property name="topMargin">
+       <number>10</number>
+      </property>
+      <property name="rightMargin">
+       <number>10</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QTabWidget" name="tab_widget">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <property name="documentMode">
+         <bool>true</bool>
+        </property>
+        <property name="movable">
+         <bool>true</bool>
+        </property>
+        <widget class="QWidget" name="tab_option">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <attribute name="title">
+          <string>OPTION</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="tab_option_layout">
+          <property name="spacing">
+           <number>0</number>
+          </property>
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QScrollArea" name="scrollarea_option">
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Plain</enum>
+            </property>
+            <property name="lineWidth">
+             <number>0</number>
+            </property>
+            <property name="widgetResizable">
+             <bool>true</bool>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <widget class="QWidget" name="scroll_area_contents_option">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>480</width>
+               <height>407</height>
+              </rect>
+             </property>
+             <layout class="QVBoxLayout" name="scroll_area_contents_option_layout">
+              <property name="spacing">
+               <number>5</number>
+              </property>
+              <property name="leftMargin">
+               <number>10</number>
+              </property>
+              <property name="topMargin">
+               <number>20</number>
+              </property>
+              <property name="rightMargin">
+               <number>10</number>
+              </property>
+              <property name="bottomMargin">
+               <number>10</number>
+              </property>
+              <item>
+               <widget class="QGroupBox" name="group_panels">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="focusPolicy">
+                 <enum>Qt::NoFocus</enum>
+                </property>
+                <property name="title">
+                 <string>Panels</string>
+                </property>
+                <layout class="QGridLayout" name="group_panels_layout">
+                 <property name="leftMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="spacing">
+                  <number>5</number>
+                 </property>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="wheel_label">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>100</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>100</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>Wheel</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QComboBox" name="wheel_mode">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string>DIGITAL</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>ANALOG</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                 <item row="1" column="2">
+                  <widget class="QComboBox" name="wheel_space">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string>HSV</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>HSL</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>HSY</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>ARD</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                 <item row="0" column="1" colspan="2">
+                  <widget class="QComboBox" name="panel_index">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>100</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>100</height>
+                    </size>
+                   </property>
+                   <property name="focusPolicy">
+                    <enum>Qt::WheelFocus</enum>
+                   </property>
+                   <property name="iconSize">
+                    <size>
+                     <width>80</width>
+                     <height>80</height>
+                    </size>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string>Fill</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Square</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Hue</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Gamut</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Hexagon</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Luma</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Dot</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Mask</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="panel_index_label">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>100</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>100</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="focusPolicy">
+                    <enum>Qt::NoFocus</enum>
+                   </property>
+                   <property name="text">
+                    <string>Mode</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="analyse_label">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>100</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>100</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>Analyse</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1" colspan="2">
+                  <widget class="QCheckBox" name="analyse_display">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="focusPolicy">
+                    <enum>Qt::NoFocus</enum>
+                   </property>
+                   <property name="text">
+                    <string>Display</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QGroupBox" name="group_mixers">
+                <property name="title">
+                 <string>Mixers</string>
+                </property>
+                <layout class="QGridLayout" name="group_mixers_layout">
+                 <property name="leftMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="spacing">
+                  <number>5</number>
+                 </property>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="mixer_label">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>100</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>100</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>Mode</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QComboBox" name="mixer_space">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="currentIndex">
+                    <number>5</number>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string>A</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>RGB</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>CMYK</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>RYB</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>YUV</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>HSV</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>HSL</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>HSY</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>ARD</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>XYZ</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>XYY</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>LAB</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>LCH</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                 <item row="0" column="2">
+                  <widget class="QSpinBox" name="mixer_count">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="focusPolicy">
+                    <enum>Qt::WheelFocus</enum>
+                   </property>
+                   <property name="frame">
+                    <bool>false</bool>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
+                   </property>
+                   <property name="minimum">
+                    <number>1</number>
+                   </property>
+                   <property name="maximum">
+                    <number>999</number>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <spacer name="vertical_spacer_option">
+                <property name="focusPolicy">
+                 <enum>Qt::NoFocus</enum>
+                </property>
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeType">
+                 <enum>QSizePolicy::Expanding</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>0</width>
+                  <height>0</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tab_color">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <attribute name="title">
+          <string>COLOR</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="tab_color_layout">
+          <property name="spacing">
+           <number>0</number>
+          </property>
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QScrollArea" name="scroll_area_space">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Plain</enum>
+            </property>
+            <property name="lineWidth">
+             <number>0</number>
+            </property>
+            <property name="widgetResizable">
+             <bool>true</bool>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <widget class="QWidget" name="scroll_area_contents_color">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>463</width>
+               <height>615</height>
+              </rect>
+             </property>
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <layout class="QVBoxLayout" name="scroll_area_contents_color_layout">
+              <property name="spacing">
+               <number>5</number>
+              </property>
+              <property name="leftMargin">
+               <number>10</number>
+              </property>
+              <property name="topMargin">
+               <number>20</number>
+              </property>
+              <property name="rightMargin">
+               <number>10</number>
+              </property>
+              <property name="bottomMargin">
+               <number>10</number>
+              </property>
+              <item>
+               <widget class="QGroupBox" name="group_space">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="focusPolicy">
+                 <enum>Qt::NoFocus</enum>
+                </property>
+                <property name="title">
+                 <string>Space</string>
+                </property>
+                <layout class="QGridLayout" name="group_space_layout">
+                 <property name="leftMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="spacing">
+                  <number>15</number>
+                 </property>
+                 <item row="2" column="0">
+                  <layout class="QGridLayout" name="group_noncolor">
+                   <property name="bottomMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="spacing">
+                    <number>5</number>
+                   </property>
+                   <item row="0" column="0">
+                    <widget class="QPushButton" name="chan_kkk">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="text">
+                      <string>Kelvin</string>
+                     </property>
+                     <property name="checkable">
+                      <bool>true</bool>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="0">
+                    <widget class="QWidget" name="group_hex" native="true">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <layout class="QHBoxLayout" name="group_hex_layout">
+                      <property name="spacing">
+                       <number>5</number>
+                      </property>
+                      <property name="leftMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="topMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="rightMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="bottomMargin">
+                       <number>0</number>
+                      </property>
+                      <item>
+                       <widget class="QPushButton" name="chan_hex">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="maximumSize">
+                         <size>
+                          <width>16777215</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                        <property name="focusPolicy">
+                         <enum>Qt::NoFocus</enum>
+                        </property>
+                        <property name="text">
+                         <string>HEX</string>
+                        </property>
+                        <property name="checkable">
+                         <bool>true</bool>
+                        </property>
+                        <property name="flat">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QCheckBox" name="hex_sum">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="minimumSize">
+                         <size>
+                          <width>0</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                        <property name="maximumSize">
+                         <size>
+                          <width>100</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                        <property name="focusPolicy">
+                         <enum>Qt::NoFocus</enum>
+                        </property>
+                        <property name="text">
+                         <string>ΣSUM</string>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </widget>
+                   </item>
+                   <item row="0" column="1">
+                    <widget class="QWidget" name="group_sele" native="true">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <layout class="QHBoxLayout" name="group_sele_layout">
+                      <property name="spacing">
+                       <number>5</number>
+                      </property>
+                      <property name="leftMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="topMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="rightMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="bottomMargin">
+                       <number>0</number>
+                      </property>
+                      <item>
+                       <widget class="QPushButton" name="chan_sele">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="maximumSize">
+                         <size>
+                          <width>16777215</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                        <property name="focusPolicy">
+                         <enum>Qt::NoFocus</enum>
+                        </property>
+                        <property name="text">
+                         <string>Selection</string>
+                        </property>
+                        <property name="checkable">
+                         <bool>true</bool>
+                        </property>
+                        <property name="flat">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QComboBox" name="sele_mode">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="maximumSize">
+                         <size>
+                          <width>100</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                        <property name="focusPolicy">
+                         <enum>Qt::NoFocus</enum>
+                        </property>
+                        <property name="currentIndex">
+                         <number>6</number>
+                        </property>
+                        <item>
+                         <property name="text">
+                          <string>A</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>RGB</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>CMY</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>CMYK</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>RYB</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>YUV</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>HSV</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>HSL</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>HSY</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>ARD</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>XYZ</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>XYY</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>LAB</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>LCH</string>
+                         </property>
+                        </item>
+                       </widget>
+                      </item>
+                     </layout>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="1" column="0">
+                  <layout class="QGridLayout" name="group_xyz">
+                   <property name="topMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="spacing">
+                    <number>5</number>
+                   </property>
+                   <item row="0" column="1">
+                    <widget class="QSpinBox" name="range_xyz">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>80</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::WheelFocus</enum>
+                     </property>
+                     <property name="frame">
+                      <bool>false</bool>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                     <property name="buttonSymbols">
+                      <enum>QAbstractSpinBox::UpDownArrows</enum>
+                     </property>
+                     <property name="minimum">
+                      <number>1</number>
+                     </property>
+                     <property name="maximum">
+                      <number>100000</number>
+                     </property>
+                     <property name="value">
+                      <number>255</number>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="2">
+                    <widget class="QPushButton" name="reset_lab">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>20</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="text">
+                      <string>R</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="3">
+                    <widget class="QPushButton" name="chan_lch">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="text">
+                      <string>LCH</string>
+                     </property>
+                     <property name="checkable">
+                      <bool>true</bool>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="2">
+                    <widget class="QPushButton" name="reset_xyy">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>20</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="text">
+                      <string>R</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="1">
+                    <widget class="QSpinBox" name="range_xyy">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>80</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::WheelFocus</enum>
+                     </property>
+                     <property name="frame">
+                      <bool>false</bool>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                     <property name="buttonSymbols">
+                      <enum>QAbstractSpinBox::UpDownArrows</enum>
+                     </property>
+                     <property name="minimum">
+                      <number>1</number>
+                     </property>
+                     <property name="maximum">
+                      <number>100000</number>
+                     </property>
+                     <property name="value">
+                      <number>255</number>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="0">
+                    <widget class="QPushButton" name="chan_xyz">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="text">
+                      <string>XYZ</string>
+                     </property>
+                     <property name="checkable">
+                      <bool>true</bool>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="1">
+                    <widget class="QSpinBox" name="range_lab">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>80</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::WheelFocus</enum>
+                     </property>
+                     <property name="frame">
+                      <bool>false</bool>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                     <property name="buttonSymbols">
+                      <enum>QAbstractSpinBox::UpDownArrows</enum>
+                     </property>
+                     <property name="minimum">
+                      <number>1</number>
+                     </property>
+                     <property name="maximum">
+                      <number>100000</number>
+                     </property>
+                     <property name="value">
+                      <number>255</number>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="2">
+                    <widget class="QPushButton" name="reset_xyz">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>20</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="text">
+                      <string>R</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="0">
+                    <widget class="QPushButton" name="chan_lab">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="text">
+                      <string>LAB</string>
+                     </property>
+                     <property name="checkable">
+                      <bool>true</bool>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="0">
+                    <widget class="QPushButton" name="chan_xyy">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="text">
+                      <string>XYY</string>
+                     </property>
+                     <property name="checkable">
+                      <bool>true</bool>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="5">
+                    <widget class="QPushButton" name="reset_lch">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>20</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="text">
+                      <string>R</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="4">
+                    <widget class="QSpinBox" name="range_lch">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>80</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::WheelFocus</enum>
+                     </property>
+                     <property name="frame">
+                      <bool>false</bool>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                     <property name="buttonSymbols">
+                      <enum>QAbstractSpinBox::UpDownArrows</enum>
+                     </property>
+                     <property name="minimum">
+                      <number>1</number>
+                     </property>
+                     <property name="maximum">
+                      <number>100000</number>
+                     </property>
+                     <property name="value">
+                      <number>255</number>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="0" column="0">
+                  <layout class="QGridLayout" name="group_rgb">
+                   <property name="topMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="spacing">
+                    <number>5</number>
+                   </property>
+                   <item row="4" column="2">
+                    <widget class="QPushButton" name="reset_ryb">
+                     <property name="enabled">
+                      <bool>true</bool>
+                     </property>
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>20</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="text">
+                      <string>R</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="2">
+                    <widget class="QPushButton" name="reset_rgb">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>20</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="text">
+                      <string>R</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="0">
+                    <widget class="QPushButton" name="chan_cmyk">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="text">
+                      <string>CMYK</string>
+                     </property>
+                     <property name="checkable">
+                      <bool>true</bool>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="3">
+                    <widget class="QPushButton" name="chan_hue">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="text">
+                      <string>HUE</string>
+                     </property>
+                     <property name="iconSize">
+                      <size>
+                       <width>5</width>
+                       <height>5</height>
+                      </size>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="1">
+                    <widget class="QSpinBox" name="range_cmyk">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>80</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::WheelFocus</enum>
+                     </property>
+                     <property name="frame">
+                      <bool>false</bool>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                     <property name="buttonSymbols">
+                      <enum>QAbstractSpinBox::UpDownArrows</enum>
+                     </property>
+                     <property name="minimum">
+                      <number>1</number>
+                     </property>
+                     <property name="maximum">
+                      <number>100000</number>
+                     </property>
+                     <property name="value">
+                      <number>255</number>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="0">
+                    <widget class="QPushButton" name="chan_cmy">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="text">
+                      <string>CMY</string>
+                     </property>
+                     <property name="checkable">
+                      <bool>true</bool>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="4">
+                    <widget class="QSpinBox" name="range_hue">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>80</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::WheelFocus</enum>
+                     </property>
+                     <property name="frame">
+                      <bool>false</bool>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                     <property name="buttonSymbols">
+                      <enum>QAbstractSpinBox::UpDownArrows</enum>
+                     </property>
+                     <property name="minimum">
+                      <number>1</number>
+                     </property>
+                     <property name="maximum">
+                      <number>100000</number>
+                     </property>
+                     <property name="value">
+                      <number>360</number>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="1">
+                    <widget class="QSpinBox" name="range_rgb">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>80</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::WheelFocus</enum>
+                     </property>
+                     <property name="frame">
+                      <bool>false</bool>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                     <property name="buttonSymbols">
+                      <enum>QAbstractSpinBox::UpDownArrows</enum>
+                     </property>
+                     <property name="minimum">
+                      <number>1</number>
+                     </property>
+                     <property name="maximum">
+                      <number>100000</number>
+                     </property>
+                     <property name="value">
+                      <number>255</number>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="5" column="1">
+                    <widget class="QSpinBox" name="range_yuv">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>80</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::WheelFocus</enum>
+                     </property>
+                     <property name="frame">
+                      <bool>false</bool>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                     <property name="buttonSymbols">
+                      <enum>QAbstractSpinBox::UpDownArrows</enum>
+                     </property>
+                     <property name="minimum">
+                      <number>1</number>
+                     </property>
+                     <property name="maximum">
+                      <number>100000</number>
+                     </property>
+                     <property name="value">
+                      <number>255</number>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="0">
+                    <widget class="QPushButton" name="chan_aaa">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="text">
+                      <string>A</string>
+                     </property>
+                     <property name="checkable">
+                      <bool>true</bool>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="2">
+                    <widget class="QPushButton" name="reset_cmy">
+                     <property name="enabled">
+                      <bool>true</bool>
+                     </property>
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>20</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="text">
+                      <string>R</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="1">
+                    <widget class="QSpinBox" name="range_ryb">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>80</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::WheelFocus</enum>
+                     </property>
+                     <property name="frame">
+                      <bool>false</bool>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                     <property name="buttonSymbols">
+                      <enum>QAbstractSpinBox::UpDownArrows</enum>
+                     </property>
+                     <property name="minimum">
+                      <number>1</number>
+                     </property>
+                     <property name="maximum">
+                      <number>100000</number>
+                     </property>
+                     <property name="value">
+                      <number>255</number>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="5" column="2">
+                    <widget class="QPushButton" name="reset_yuv">
+                     <property name="enabled">
+                      <bool>true</bool>
+                     </property>
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>20</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="text">
+                      <string>R</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="2">
+                    <widget class="QPushButton" name="reset_cmyk">
+                     <property name="enabled">
+                      <bool>true</bool>
+                     </property>
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>20</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="text">
+                      <string>R</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="1">
+                    <widget class="QSpinBox" name="range_cmy">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>80</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::WheelFocus</enum>
+                     </property>
+                     <property name="frame">
+                      <bool>false</bool>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                     <property name="buttonSymbols">
+                      <enum>QAbstractSpinBox::UpDownArrows</enum>
+                     </property>
+                     <property name="minimum">
+                      <number>1</number>
+                     </property>
+                     <property name="maximum">
+                      <number>100000</number>
+                     </property>
+                     <property name="value">
+                      <number>255</number>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="5" column="0">
+                    <widget class="QPushButton" name="chan_yuv">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="text">
+                      <string>YUV</string>
+                     </property>
+                     <property name="checkable">
+                      <bool>true</bool>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="0">
+                    <widget class="QPushButton" name="chan_ryb">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="text">
+                      <string>RYB</string>
+                     </property>
+                     <property name="checkable">
+                      <bool>true</bool>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="0">
+                    <widget class="QPushButton" name="chan_rgb">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="text">
+                      <string>RGB</string>
+                     </property>
+                     <property name="checkable">
+                      <bool>true</bool>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="1">
+                    <widget class="QSpinBox" name="range_aaa">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>80</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::WheelFocus</enum>
+                     </property>
+                     <property name="frame">
+                      <bool>false</bool>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                     <property name="buttonSymbols">
+                      <enum>QAbstractSpinBox::UpDownArrows</enum>
+                     </property>
+                     <property name="minimum">
+                      <number>1</number>
+                     </property>
+                     <property name="maximum">
+                      <number>100000</number>
+                     </property>
+                     <property name="value">
+                      <number>255</number>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="2">
+                    <widget class="QPushButton" name="reset_aaa">
+                     <property name="enabled">
+                      <bool>true</bool>
+                     </property>
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>20</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="text">
+                      <string>R</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="5">
+                    <widget class="QPushButton" name="reset_hue">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>20</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="text">
+                      <string>R</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="3">
+                    <widget class="QPushButton" name="chan_hsv">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="text">
+                      <string>HSV</string>
+                     </property>
+                     <property name="checkable">
+                      <bool>true</bool>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="4">
+                    <widget class="QSpinBox" name="range_hsv">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>80</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::WheelFocus</enum>
+                     </property>
+                     <property name="frame">
+                      <bool>false</bool>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                     <property name="buttonSymbols">
+                      <enum>QAbstractSpinBox::UpDownArrows</enum>
+                     </property>
+                     <property name="minimum">
+                      <number>1</number>
+                     </property>
+                     <property name="maximum">
+                      <number>100000</number>
+                     </property>
+                     <property name="value">
+                      <number>255</number>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="5">
+                    <widget class="QPushButton" name="reset_hsv">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>20</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="text">
+                      <string>R</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="3">
+                    <widget class="QPushButton" name="chan_hsl">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="text">
+                      <string>HSL</string>
+                     </property>
+                     <property name="checkable">
+                      <bool>true</bool>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="4">
+                    <widget class="QSpinBox" name="range_hsl">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>80</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::WheelFocus</enum>
+                     </property>
+                     <property name="frame">
+                      <bool>false</bool>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                     <property name="buttonSymbols">
+                      <enum>QAbstractSpinBox::UpDownArrows</enum>
+                     </property>
+                     <property name="minimum">
+                      <number>1</number>
+                     </property>
+                     <property name="maximum">
+                      <number>100000</number>
+                     </property>
+                     <property name="value">
+                      <number>255</number>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="5">
+                    <widget class="QPushButton" name="reset_hsl">
+                     <property name="enabled">
+                      <bool>true</bool>
+                     </property>
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>20</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="text">
+                      <string>R</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="3">
+                    <widget class="QPushButton" name="chan_hsy">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="text">
+                      <string>HSY</string>
+                     </property>
+                     <property name="checkable">
+                      <bool>true</bool>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="4">
+                    <widget class="QSpinBox" name="range_hsy">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>80</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::WheelFocus</enum>
+                     </property>
+                     <property name="frame">
+                      <bool>false</bool>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                     <property name="buttonSymbols">
+                      <enum>QAbstractSpinBox::UpDownArrows</enum>
+                     </property>
+                     <property name="minimum">
+                      <number>1</number>
+                     </property>
+                     <property name="maximum">
+                      <number>100000</number>
+                     </property>
+                     <property name="value">
+                      <number>255</number>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="5">
+                    <widget class="QPushButton" name="reset_hsy">
+                     <property name="enabled">
+                      <bool>true</bool>
+                     </property>
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>20</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="text">
+                      <string>R</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="3">
+                    <widget class="QPushButton" name="chan_ard">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="text">
+                      <string>ARD</string>
+                     </property>
+                     <property name="checkable">
+                      <bool>true</bool>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="4">
+                    <widget class="QSpinBox" name="range_ard">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>80</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="frame">
+                      <bool>false</bool>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                     <property name="minimum">
+                      <number>1</number>
+                     </property>
+                     <property name="maximum">
+                      <number>100000</number>
+                     </property>
+                     <property name="value">
+                      <number>255</number>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="5">
+                    <widget class="QPushButton" name="reset_ard">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>20</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="text">
+                      <string>R</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QGroupBox" name="group_format">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="focusPolicy">
+                 <enum>Qt::NoFocus</enum>
+                </property>
+                <property name="title">
+                 <string>Format</string>
+                </property>
+                <layout class="QGridLayout" name="group_options_layout">
+                 <property name="leftMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="spacing">
+                  <number>5</number>
+                 </property>
+                 <item row="0" column="0">
+                  <widget class="QCheckBox" name="hue_shine">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="focusPolicy">
+                    <enum>Qt::NoFocus</enum>
+                   </property>
+                   <property name="text">
+                    <string>Render HUE Shine</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QCheckBox" name="disp_values">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="focusPolicy">
+                    <enum>Qt::NoFocus</enum>
+                   </property>
+                   <property name="text">
+                    <string>Display Values</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QCheckBox" name="hex_copy_paste">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="focusPolicy">
+                    <enum>Qt::NoFocus</enum>
+                   </property>
+                   <property name="text">
+                    <string>HEX Copy Paste</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QGroupBox" name="group_reference">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="title">
+                 <string>Reference</string>
+                </property>
+                <layout class="QFormLayout" name="group_reference_layout">
+                 <property name="horizontalSpacing">
+                  <number>5</number>
+                 </property>
+                 <property name="verticalSpacing">
+                  <number>5</number>
+                 </property>
+                 <property name="leftMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>10</number>
+                 </property>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="name_label">
+                   <property name="minimumSize">
+                    <size>
+                     <width>100</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>100</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>Name</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="kelvin_label">
+                   <property name="minimumSize">
+                    <size>
+                     <width>100</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>100</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>Kelvin</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <layout class="QHBoxLayout" name="name_frame_layout">
+                   <property name="spacing">
+                    <number>5</number>
+                   </property>
+                   <item>
+                    <widget class="QPushButton" name="name_display">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>0</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="flat">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="names_closest">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="text">
+                      <string>Closest</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="1" column="1">
+                  <layout class="QHBoxLayout" name="kelvin_frame_layout">
+                   <property name="spacing">
+                    <number>5</number>
+                   </property>
+                   <item>
+                    <widget class="QLabel" name="kelvin_class">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>0</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>80</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="kelvin_discription">
+                     <property name="minimumSize">
+                      <size>
+                       <width>0</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QGroupBox" name="group_shortcuts">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="focusPolicy">
+                 <enum>Qt::NoFocus</enum>
+                </property>
+                <property name="title">
+                 <string>Shortcut</string>
+                </property>
+                <layout class="QGridLayout" name="group_shortcuts_layout">
+                 <property name="leftMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="spacing">
+                  <number>5</number>
+                 </property>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="keys_label">
+                   <property name="minimumSize">
+                    <size>
+                     <width>100</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>100</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="focusPolicy">
+                    <enum>Qt::NoFocus</enum>
+                   </property>
+                   <property name="text">
+                    <string>Keys</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="factor_label">
+                   <property name="minimumSize">
+                    <size>
+                     <width>100</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>100</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="focusPolicy">
+                    <enum>Qt::NoFocus</enum>
+                   </property>
+                   <property name="text">
+                    <string>Factor</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="5">
+                  <layout class="QHBoxLayout" name="key_layout">
+                   <property name="spacing">
+                    <number>5</number>
+                   </property>
+                   <item>
+                    <widget class="QComboBox" name="key_1_chan">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>0</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="currentIndex">
+                      <number>0</number>
+                     </property>
+                     <property name="frame">
+                      <bool>false</bool>
+                     </property>
+                     <item>
+                      <property name="text">
+                       <string>[KEY 1]</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>A 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>RGB 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>RGB 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>RGB 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>CMY 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>CMY 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>CMY 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>CMYK 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>CMYK 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>CMYK 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>CMYK 4</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>RYB 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>RYB 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>RYB 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>YUV 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>YUV 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>YUV 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>HSV 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>HSV 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>HSV 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>HSL 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>HSL 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>HSL 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>HSY 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>HSY 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>HSY 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>ARD 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>ARD 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>ARD 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>XYZ 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>XYZ 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>XYZ 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>LAB 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>LAB 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>LAB 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>LCH 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>LCH 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>LCH 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>K 1</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QComboBox" name="key_2_chan">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>0</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="currentIndex">
+                      <number>0</number>
+                     </property>
+                     <property name="frame">
+                      <bool>false</bool>
+                     </property>
+                     <item>
+                      <property name="text">
+                       <string>[KEY 2]</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>A 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>RGB 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>RGB 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>RGB 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>CMY 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>CMY 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>CMY 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>CMYK 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>CMYK 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>CMYK 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>CMYK 4</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>RYB 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>RYB 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>RYB 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>YUV 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>YUV 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>YUV 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>HSV 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>HSV 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>HSV 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>HSL 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>HSL 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>HSL 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>HSY 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>HSY 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>HSY 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>ARD 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>ARD 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>ARD 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>XYZ 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>XYZ 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>XYZ 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>LAB 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>LAB 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>LAB 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>LCH 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>LCH 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>LCH 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>K 1</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QComboBox" name="key_3_chan">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>0</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="currentIndex">
+                      <number>0</number>
+                     </property>
+                     <property name="frame">
+                      <bool>false</bool>
+                     </property>
+                     <item>
+                      <property name="text">
+                       <string>[KEY 3]</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>A 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>RGB 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>RGB 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>RGB 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>CMY 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>CMY 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>CMY 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>CMYK 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>CMYK 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>CMYK 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>CMYK 4</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>RYB 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>RYB 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>RYB 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>YUV 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>YUV 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>YUV 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>HSV 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>HSV 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>HSV 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>HSL 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>HSL 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>HSL 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>HSY 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>HSY 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>HSY 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>ARD 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>ARD 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>ARD 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>XYZ 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>XYZ 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>XYZ 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>LAB 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>LAB 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>LAB 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>LCH 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>LCH 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>LCH 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>K 1</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QComboBox" name="key_4_chan">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>0</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="currentIndex">
+                      <number>0</number>
+                     </property>
+                     <property name="frame">
+                      <bool>false</bool>
+                     </property>
+                     <item>
+                      <property name="text">
+                       <string>[KEY 4]</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>A 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>RGB 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>RGB 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>RGB 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>CMY 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>CMY 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>CMY 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>CMYK 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>CMYK 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>CMYK 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>CMYK 4</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>RYB 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>RYB 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>RYB 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>YUV 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>YUV 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>YUV 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>HSV 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>HSV 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>HSV 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>HSL 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>HSL 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>HSL 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>HSY 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>HSY 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>HSY 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>ARD 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>ARD 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>ARD 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>XYZ 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>XYZ 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>XYZ 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>LAB 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>LAB 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>LAB 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>LCH 1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>LCH 2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>LCH 3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>K 1</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="1" column="5">
+                  <layout class="QHBoxLayout" name="factor_layout">
+                   <property name="spacing">
+                    <number>5</number>
+                   </property>
+                   <item>
+                    <widget class="QSpinBox" name="key_1_factor">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::ClickFocus</enum>
+                     </property>
+                     <property name="frame">
+                      <bool>false</bool>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                     <property name="minimum">
+                      <number>1</number>
+                     </property>
+                     <property name="maximum">
+                      <number>1000</number>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QSpinBox" name="key_3_factor">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::ClickFocus</enum>
+                     </property>
+                     <property name="frame">
+                      <bool>false</bool>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                     <property name="minimum">
+                      <number>1</number>
+                     </property>
+                     <property name="maximum">
+                      <number>1000</number>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QSpinBox" name="key_2_factor">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::ClickFocus</enum>
+                     </property>
+                     <property name="frame">
+                      <bool>false</bool>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                     <property name="minimum">
+                      <number>1</number>
+                     </property>
+                     <property name="maximum">
+                      <number>1000</number>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QSpinBox" name="key_4_factor">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::ClickFocus</enum>
+                     </property>
+                     <property name="frame">
+                      <bool>false</bool>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                     <property name="minimum">
+                      <number>1</number>
+                     </property>
+                     <property name="maximum">
+                      <number>1000</number>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <spacer name="vertical_spacer_color">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>0</width>
+                  <height>0</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tab_system">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <attribute name="title">
+          <string>SYSTEM</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="tab_system_layout">
+          <property name="spacing">
+           <number>0</number>
+          </property>
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QScrollArea" name="scroll_area_system">
+            <property name="focusPolicy">
+             <enum>Qt::NoFocus</enum>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Plain</enum>
+            </property>
+            <property name="lineWidth">
+             <number>0</number>
+            </property>
+            <property name="widgetResizable">
+             <bool>true</bool>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <widget class="QWidget" name="scroll_area_contents_system">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>480</width>
+               <height>407</height>
+              </rect>
+             </property>
+             <layout class="QVBoxLayout" name="scroll_area_contents_system_layout">
+              <property name="spacing">
+               <number>5</number>
+              </property>
+              <property name="leftMargin">
+               <number>10</number>
+              </property>
+              <property name="topMargin">
+               <number>20</number>
+              </property>
+              <property name="rightMargin">
+               <number>10</number>
+              </property>
+              <property name="bottomMargin">
+               <number>10</number>
+              </property>
+              <item>
+               <widget class="QGroupBox" name="group_color_space">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="focusPolicy">
+                 <enum>Qt::NoFocus</enum>
+                </property>
+                <property name="title">
+                 <string>Color Space</string>
+                </property>
+                <layout class="QGridLayout" name="group_color_space_layout">
+                 <property name="leftMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="spacing">
+                  <number>5</number>
+                 </property>
+                 <item row="0" column="1" colspan="2">
+                  <widget class="QComboBox" name="cs_luminosity">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="focusPolicy">
+                    <enum>Qt::NoFocus</enum>
+                   </property>
+                   <property name="currentIndex">
+                    <number>1</number>
+                   </property>
+                   <property name="frame">
+                    <bool>false</bool>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string>ITU-R BT.601</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>ITU-R BT.709</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>ITU-R BT.2020</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="cs_luminosity_label">
+                   <property name="minimumSize">
+                    <size>
+                     <width>100</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>100</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="focusPolicy">
+                    <enum>Qt::NoFocus</enum>
+                   </property>
+                   <property name="text">
+                    <string>Luminosity</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="2">
+                  <widget class="QComboBox" name="cs_illuminant">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="focusPolicy">
+                    <enum>Qt::NoFocus</enum>
+                   </property>
+                   <property name="currentIndex">
+                    <number>1</number>
+                   </property>
+                   <property name="frame">
+                    <bool>false</bool>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string>D50</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>D65</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QComboBox" name="cs_matrix">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="focusPolicy">
+                    <enum>Qt::NoFocus</enum>
+                   </property>
+                   <property name="frame">
+                    <bool>false</bool>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string>sRGB</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Adobe RGB</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Apple RGB</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Best RGB</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Beta RGB</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Bruce RGB</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>ColorMatch RGB</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Don RGB 4</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>ECI RGB</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Ekta Space PS5</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>PAL/SECAM RGB</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>ProPhoto RGB</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>SMPTE-C RGB</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Wide Gamut RGB</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="cs_matrix_label">
+                   <property name="minimumSize">
+                    <size>
+                     <width>100</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>100</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="focusPolicy">
+                    <enum>Qt::NoFocus</enum>
+                   </property>
+                   <property name="text">
+                    <string>XYZ-RGB</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QGroupBox" name="group_annotations">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="focusPolicy">
+                 <enum>Qt::NoFocus</enum>
+                </property>
+                <property name="title">
+                 <string>Annotations</string>
+                </property>
+                <layout class="QGridLayout" name="group_annotations_layout">
+                 <property name="leftMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="spacing">
+                  <number>5</number>
+                 </property>
+                 <item row="1" column="0">
+                  <widget class="QCheckBox" name="annotation_file_save">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="focusPolicy">
+                    <enum>Qt::NoFocus</enum>
+                   </property>
+                   <property name="text">
+                    <string>Auto Save to File</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QPushButton" name="annotation_file_load">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="focusPolicy">
+                    <enum>Qt::NoFocus</enum>
+                   </property>
+                   <property name="text">
+                    <string>Load from File</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QCheckBox" name="annotation_kra_save">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="focusPolicy">
+                    <enum>Qt::NoFocus</enum>
+                   </property>
+                   <property name="text">
+                    <string>Auto Save to KRA</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QPushButton" name="annotation_kra_load">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="focusPolicy">
+                    <enum>Qt::NoFocus</enum>
+                   </property>
+                   <property name="text">
+                    <string>Load from KRA</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QGroupBox" name="group_performance">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="focusPolicy">
+                 <enum>Qt::NoFocus</enum>
+                </property>
+                <property name="title">
+                 <string>Performance</string>
+                </property>
+                <layout class="QGridLayout" name="group_performance_layout">
+                 <property name="leftMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="spacing">
+                  <number>5</number>
+                 </property>
+                 <item row="0" column="0">
+                  <widget class="QCheckBox" name="performance_release">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="focusPolicy">
+                    <enum>Qt::NoFocus</enum>
+                   </property>
+                   <property name="text">
+                    <string>Release Applies Color</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QCheckBox" name="performance_inaccurate">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="focusPolicy">
+                    <enum>Qt::NoFocus</enum>
+                   </property>
+                   <property name="text">
+                    <string>Display Inaccurate</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <spacer name="vertical_spacer_system">
+                <property name="focusPolicy">
+                 <enum>Qt::NoFocus</enum>
+                </property>
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>0</width>
+                  <height>0</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <spacer name="vertical_spacer">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Preferred</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="group_footer_layout">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <property name="leftMargin">
+      <number>10</number>
+     </property>
+     <property name="bottomMargin">
+      <number>5</number>
+     </property>
+     <item>
+      <spacer name="horizontal_spacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="manual">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>15</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>80</width>
+         <height>15</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <family>Liberation Mono</family>
+         <pointsize>7</pointsize>
+        </font>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
+       <property name="text">
+        <string>manual</string>
+       </property>
+       <property name="flat">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="license">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>30</width>
+         <height>15</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>80</width>
+         <height>15</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <family>Liberation Mono</family>
+         <pointsize>7</pointsize>
+        </font>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
+       <property name="text">
+        <string>license</string>
+       </property>
+       <property name="flat">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
