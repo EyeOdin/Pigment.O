@@ -79,17 +79,40 @@ class PigmentO_Docker( DockWidget ):
         super( PigmentO_Docker, self ).__init__()
 
         # Construct
-        self.Variables()
         self.User_Interface()
+        self.Variables()
         self.Connections()
         self.Modules()
         self.Style()
         self.Timer()
         self.Extension()
         self.Settings()
-        self.Loader()
 
+    def User_Interface( self ):
+        # Window
+        self.setWindowTitle( DOCKER_NAME_1 )
+
+        # Operating System
+        self.OS = str( QSysInfo.kernelType() ) # WINDOWS=winnt & LINUX=linux
+        if self.OS == "winnt": # Unlocks icons in Krita for Menu Mode
+            QApplication.setAttribute( Qt.AA_DontShowIconsInMenus, False )
+
+        # Path Name
+        self.directory_plugin = str( os.path.dirname( os.path.realpath( __file__ ) ) )
+
+        # Widget Docker
+        self.layout = uic.loadUi( os.path.join( self.directory_plugin, "pigment_o_docker.ui" ), QWidget( self ) )
+        self.setWidget( self.layout )
+
+        # Settings
+        self.dialog = uic.loadUi( os.path.join( self.directory_plugin, "pigment_o_settings.ui" ), QDialog( self ) )
+        self.dialog.setWindowTitle( "Pigment.O : Settings" )
+        self.dialog.accept() # Hides the Dialog
     def Variables( self ):
+        # Paths
+        mask_set = os.path.join( self.directory_plugin, "MASK" )
+        self.mask_set = os.path.join( mask_set, "SPHERE" )
+
         # Widget
         self.mode_index = 0
         self.inbound = False
@@ -103,9 +126,9 @@ class PigmentO_Docker( DockWidget ):
         self.fill = False
 
         # Harmony
+        self.harmony_index = 1 # 1-5
         self.harmony_rule = "Analogous" # "Monochromatic" "Complementary" "Analogous" "Triadic" "Tetradic"
         self.harmony_edit = False
-        self.harmony_index = 0
         self.harmony_span = 0.2
 
         # Panels
@@ -129,12 +152,11 @@ class PigmentO_Docker( DockWidget ):
         self.dot_interpolation = "RGB"
         self.dot_dimension = 11
         self.dot_edit = False
-        self.dot_1 = color_false.copy()
-        self.dot_2 = color_false.copy()
-        self.dot_3 = color_false.copy()
-        self.dot_4 = color_false.copy()
+        self.dot_1 = color_true.copy()
+        self.dot_2 = color_true.copy()
+        self.dot_3 = color_true.copy()
+        self.dot_4 = color_true.copy()
         # Mask
-        self.mask_set = None
         self.mask_live = {
             "b1" : False,
             "b2" : False,
@@ -192,8 +214,16 @@ class PigmentO_Docker( DockWidget ):
         # Mixers
         self.mixer_space = "RGB" # mix method
         self.mixer_count = 1
-        self.mixer_widget = None
-        self.mixer_module = None
+        self.mixer_widget = [ {
+            "l" : self.layout.mixer_l_000,
+            "m" : self.layout.mixer_m_000,
+            "r" : self.layout.mixer_r_000,
+            } ]
+        self.mixer_module = [ {
+            "l" : Pin_Color( self.mixer_widget[0]["l"] ),
+            "m" : Channel_Slider( self.mixer_widget[0]["m"] ),
+            "r" : Pin_Color( self.mixer_widget[0]["r"] ),
+            } ]
         self.mixer_colors = [ {
             "l" : color_false.copy(),
             "m" : 0,
@@ -257,33 +287,6 @@ class PigmentO_Docker( DockWidget ):
 
         # Style Sheets
         self.bg_alpha = str( "background-color: rgba( 0, 0, 0, 50 );" )
-    def User_Interface( self ):
-        # Window
-        self.setWindowTitle( DOCKER_NAME_1 )
-
-        # Operating System
-        self.OS = str( QSysInfo.kernelType() ) # WINDOWS=winnt & LINUX=linux
-        if self.OS == "winnt": # Unlocks icons in Krita for Menu Mode
-            QApplication.setAttribute( Qt.AA_DontShowIconsInMenus, False )
-
-        # Path Name
-        self.directory_plugin = str( os.path.dirname( os.path.realpath( __file__ ) ) )
-
-        # Widget Docker
-        self.layout = uic.loadUi( os.path.join( self.directory_plugin, "pigment_o_docker.ui" ), QWidget( self ) )
-        self.setWidget( self.layout )
-
-        # Settings
-        self.dialog = uic.loadUi( os.path.join( self.directory_plugin, "pigment_o_settings.ui" ), QDialog( self ) )
-        self.dialog.setWindowTitle( "Pigment.O : Settings" )
-        self.dialog.accept() # Hides the Dialog
-
-        # Mixer Layout
-        self.mixer_widget = [ {
-            "l" : self.layout.mixer_l_000,
-            "m" : self.layout.mixer_m_000,
-            "r" : self.layout.mixer_r_000,
-            } ]
     def Connections( self ):
         #region Panel Dot
 
@@ -703,13 +706,6 @@ class PigmentO_Docker( DockWidget ):
         self.convert.Set_Luminosity( "ITU-R BT.709" )
         self.convert.Set_Gamma( gamma_y, gamma_l )
         self.convert.Set_Matrix( "sRGB", "D65" )
-
-        #endregion
-        #region Path
-
-        # Panel
-        mask_set = os.path.join( self.directory_plugin, "MASK" )
-        self.mask_set = os.path.join( mask_set, "SPHERE" )
 
         #endregion
         #region Header
@@ -1403,12 +1399,6 @@ class PigmentO_Docker( DockWidget ):
         #endregion
         #region Mixer
 
-        self.mixer_module = [ {
-            "l" : Pin_Color( self.mixer_widget[0]["l"] ),
-            "m" : Channel_Slider( self.mixer_widget[0]["m"] ),
-            "r" : Pin_Color( self.mixer_widget[0]["r"] ),
-            } ]
-
         # Left
         self.mixer_module[0]["l"].Set_Index( 0 )
         self.mixer_module[0]["l"].SIGNAL_APPLY.connect( self.Mixer_Apply_L )
@@ -1578,34 +1568,21 @@ class PigmentO_Docker( DockWidget ):
         self.Dict_Copy( har_05, self.Set_Read( "EVAL", "har_05", har_05 ) )
 
         # Variables
+        self.harmony_index = self.Set_Read( "EVAL", "harmony_index", self.harmony_index )
         self.harmony_rule = self.Set_Read( "STR", "harmony_rule", self.harmony_rule )
         self.harmony_edit = self.Set_Read( "EVAL", "harmony_edit", self.harmony_edit )
-        self.harmony_index = self.Set_Read( "EVAL", "harmony_index", self.harmony_index )
         self.harmony_span = self.Set_Read( "EVAL", "harmony_span", self.harmony_span )
-
-        # Modules
-        self.harmony_swatch.Update_Harmony( self.harmony_rule, self.harmony_edit, self.harmony_index )
-        self.harmony_spread.Update_Span( self.harmony_span )
 
         #endregion
         #region Panel HUE
 
-        # Variables
         self.huecircle_shape = self.Set_Read( "STR", "huecircle_shape", self.huecircle_shape )
-        # # Module
-        self.panel_huecircle.Set_Shape( self.huecircle_shape )
-        self.HueCircle_SubPanel( self.huecircle_shape )
 
         #endregion
         #region Panel Gamut
 
-        # Variables
         self.gamut_mask = self.Set_Read( "STR", "gamut_mask", self.gamut_mask )
         self.gamut_profile = self.Set_Read( "EVAL", "gamut_profile", self.gamut_profile )
-
-        # Module
-        self.panel_gamut.Update_Mask( self.gamut_mask )
-        self.panel_gamut.Update_Profile( self.gamut_profile )
 
         #endregion
         #region Panel DOT
@@ -1615,29 +1592,17 @@ class PigmentO_Docker( DockWidget ):
         self.dot_dimension = self.Set_Read( "EVAL", "dot_dimension", self.dot_dimension )
         self.dot_edit = self.Set_Read( "EVAL", "dot_edit", self.dot_edit )
 
-        # Modules
-        self.panel_dot.Set_Interpolation( self.dot_interpolation )
-        self.panel_dot.Set_Dimension( self.dot_dimension )
-        self.panel_dot.Set_Edit( self.dot_edit )
-        self.Dot_Widget( self.dot_edit )
-
         # Colors
         self.dot_1 = self.Set_Read( "EVAL", "dot_1", self.Color_Convert( "HEX", "#edb525", 0, 0, 0, self.dot_1 ) )
         self.dot_2 = self.Set_Read( "EVAL", "dot_2", self.Color_Convert( "HEX", "#b72e35", 0, 0, 0, self.dot_2 ) )
         self.dot_3 = self.Set_Read( "EVAL", "dot_3", self.Color_Convert( "HEX", "#edf0ec", 0, 0, 0, self.dot_3 ) )
         self.dot_4 = self.Set_Read( "EVAL", "dot_4", self.Color_Convert( "HEX", "#292421", 0, 0, 0, self.dot_4 ) )
 
-        # Update
-        self.Update_Panel_Dot()
-        self.Update_Edit_Dot()
-
         #endregion
         #region Panel Mask
 
         self.mask_set = self.Set_Read( "STR", "mask_set", self.mask_set )
         self.mask_edit = self.Set_Read( "EVAL", "mask_edit", self.mask_edit )
-        self.panel_mask.Set_Edit( self.mask_edit )
-        self.Mask_Widget( self.mask_edit )
 
         #endregion
         #region Mixer
@@ -1721,7 +1686,38 @@ class PigmentO_Docker( DockWidget ):
         self.dialog.history.setChecked( self.Set_Read( "EVAL", "ui_history", False ) )
 
         #endregion
+        #region Loader
+
+        try:
+            self.Loader()
+        except Exception as e:
+            QMessageBox.information( QWidget(), i18n( "Warnning" ), i18n( f"Pigment.O | Load Error | Reset in Progress\nReason : {e}" ) )
+            self.Variables()
+            self.Loader()
+
+        #endregion
+
     def Loader( self ):
+        # Harmony
+        self.harmony_swatch.Update_Harmony( self.harmony_rule, self.harmony_edit, self.harmony_index )
+        self.harmony_spread.Update_Span( self.harmony_span )
+        # Hue
+        self.panel_huecircle.Set_Shape( self.huecircle_shape )
+        self.HueCircle_SubPanel( self.huecircle_shape )
+        # Gamut
+        self.panel_gamut.Update_Mask( self.gamut_mask )
+        self.panel_gamut.Update_Profile( self.gamut_profile )
+        # Dot
+        self.panel_dot.Set_Interpolation( self.dot_interpolation )
+        self.panel_dot.Set_Dimension( self.dot_dimension )
+        self.panel_dot.Set_Edit( self.dot_edit )
+        self.Dot_Widget( self.dot_edit )
+        self.Update_Panel_Dot()
+        self.Update_Edit_Dot()
+        # Mask
+        self.panel_mask.Set_Edit( self.mask_edit )
+        self.Mask_Widget( self.mask_edit )
+
         # Dictionaries
         self.Range_Load( krange )
         self.Sliders_Stops_Load( stops )
@@ -1772,20 +1768,22 @@ class PigmentO_Docker( DockWidget ):
         # Sync
         self.Pigmento_RELEASE()
         self.Harmony_Update()
-
     def Set_Read( self, mode, entry, default ):
         setting = Krita.instance().readSetting( "Pigment.O", entry, "" )
         if setting == "":
             read = default
-            Krita.instance().writeSetting( "Pigment.O", entry, str( default ) )
         else:
-            read = setting
-            if mode == "EVAL":
-                read = eval( read )
-            elif mode == "STR":
-                read = str( read )
-            elif mode == "INT":
-                read = int( read )
+            try:
+                read = setting
+                if mode == "EVAL":
+                    read = eval( read )
+                elif mode == "STR":
+                    read = str( read )
+                elif mode == "INT":
+                    read = int( read )
+            except:
+                read = default
+        Krita.instance().writeSetting( "Pigment.O", entry, str( default ) )
         return read
 
     #endregion
@@ -1836,18 +1834,12 @@ class PigmentO_Docker( DockWidget ):
             a = 10
             b = 20
             c = 10
-            # Modules
-            self.Harmony_Index( self.harmony_index )
-            self.harmony_swatch.Update_Index( self.harmony_index )
         else:
             # Variables
             text = "HARMONY"
             a = 30
             b = 0
             c = 0
-            # Modules
-            self.Harmony_Index( 0 )
-            self.harmony_swatch.Update_Index( 0 )
         # UI
         self.dialog.harmony.setText( text )
         self.layout.color_header.setMinimumHeight( a )
@@ -1859,6 +1851,7 @@ class PigmentO_Docker( DockWidget ):
         # Update
         if self.ui_harmony != boolean:
             self.ui_harmony = boolean
+            self.Harmony_Index( self.harmony_index )
         # Save
         Krita.instance().writeSetting( "Pigment.O", "ui_harmony", str( self.ui_harmony ) )
     def Menu_Channel( self, boolean ):
@@ -2630,146 +2623,146 @@ class PigmentO_Docker( DockWidget ):
         self.dialog.range_lch.setValue( dict["lch_1"] )
 
     # Space Range Value
-    def Range_AAA( self, range ):
-        range = int( self.geometry.Limit_Unit( range ) )
-        krange["aaa_1"] = range
-        self.layout.aaa_1_value.setMaximum( range )
+    def Range_AAA( self, chan_range ):
+        chan_range = int( self.geometry.Limit_Unit( chan_range ) )
+        krange["aaa_1"] = chan_range
+        self.layout.aaa_1_value.setMaximum( chan_range )
         self.Pigmento_RELEASE()
         Krita.instance().writeSetting( "Pigment.O", "krange", str( krange ) )
-    def Range_RGB( self, range ):
-        range = int( self.geometry.Limit_Unit( range ) )
-        krange["rgb_1"] = range
-        krange["rgb_2"] = range
-        krange["rgb_3"] = range
-        self.layout.rgb_1_value.setMaximum( range )
-        self.layout.rgb_2_value.setMaximum( range )
-        self.layout.rgb_3_value.setMaximum( range )
+    def Range_RGB( self, chan_range ):
+        chan_range = int( self.geometry.Limit_Unit( chan_range ) )
+        krange["rgb_1"] = chan_range
+        krange["rgb_2"] = chan_range
+        krange["rgb_3"] = chan_range
+        self.layout.rgb_1_value.setMaximum( chan_range )
+        self.layout.rgb_2_value.setMaximum( chan_range )
+        self.layout.rgb_3_value.setMaximum( chan_range )
         self.Pigmento_RELEASE()
         Krita.instance().writeSetting( "Pigment.O", "krange", str( krange ) )
-    def Range_CMY( self, range ):
-        range = int( self.geometry.Limit_Unit( range ) )
-        krange["cmy_1"] = range
-        krange["cmy_2"] = range
-        krange["cmy_3"] = range
-        self.layout.cmy_1_value.setMaximum( range )
-        self.layout.cmy_2_value.setMaximum( range )
-        self.layout.cmy_3_value.setMaximum( range )
+    def Range_CMY( self, chan_range ):
+        chan_range = int( self.geometry.Limit_Unit( chan_range ) )
+        krange["cmy_1"] = chan_range
+        krange["cmy_2"] = chan_range
+        krange["cmy_3"] = chan_range
+        self.layout.cmy_1_value.setMaximum( chan_range )
+        self.layout.cmy_2_value.setMaximum( chan_range )
+        self.layout.cmy_3_value.setMaximum( chan_range )
         self.Pigmento_RELEASE()
         Krita.instance().writeSetting( "Pigment.O", "krange", str( krange ) )
-    def Range_CMYK( self, range ):
-        range = int( self.geometry.Limit_Unit( range ) )
-        krange["cmyk_1"] = range
-        krange["cmyk_2"] = range
-        krange["cmyk_3"] = range
-        krange["cmyk_4"] = range
-        self.layout.cmyk_1_value.setMaximum( range )
-        self.layout.cmyk_2_value.setMaximum( range )
-        self.layout.cmyk_3_value.setMaximum( range )
-        self.layout.cmyk_4_value.setMaximum( range )
+    def Range_CMYK( self, chan_range ):
+        chan_range = int( self.geometry.Limit_Unit( chan_range ) )
+        krange["cmyk_1"] = chan_range
+        krange["cmyk_2"] = chan_range
+        krange["cmyk_3"] = chan_range
+        krange["cmyk_4"] = chan_range
+        self.layout.cmyk_1_value.setMaximum( chan_range )
+        self.layout.cmyk_2_value.setMaximum( chan_range )
+        self.layout.cmyk_3_value.setMaximum( chan_range )
+        self.layout.cmyk_4_value.setMaximum( chan_range )
         self.Pigmento_RELEASE()
         Krita.instance().writeSetting( "Pigment.O", "krange", str( krange ) )
-    def Range_RYB( self, range ):
-        range = int( self.geometry.Limit_Unit( range ) )
-        krange["ryb_1"] = range
-        krange["ryb_2"] = range
-        krange["ryb_3"] = range
-        self.layout.ryb_1_value.setMaximum( range )
-        self.layout.ryb_2_value.setMaximum( range )
-        self.layout.ryb_3_value.setMaximum( range )
+    def Range_RYB( self, chan_range ):
+        chan_range = int( self.geometry.Limit_Unit( chan_range ) )
+        krange["ryb_1"] = chan_range
+        krange["ryb_2"] = chan_range
+        krange["ryb_3"] = chan_range
+        self.layout.ryb_1_value.setMaximum( chan_range )
+        self.layout.ryb_2_value.setMaximum( chan_range )
+        self.layout.ryb_3_value.setMaximum( chan_range )
         self.Pigmento_RELEASE()
         Krita.instance().writeSetting( "Pigment.O", "krange", str( krange ) )
-    def Range_YUV( self, range ):
-        range = int( self.geometry.Limit_Unit( range ) )
-        krange["yuv_1"] = range
-        krange["yuv_2"] = range
-        krange["yuv_3"] = range
-        self.layout.yuv_1_value.setMaximum( range )
-        self.layout.yuv_2_value.setMaximum( range )
-        self.layout.yuv_3_value.setMaximum( range )
+    def Range_YUV( self, chan_range ):
+        chan_range = int( self.geometry.Limit_Unit( chan_range ) )
+        krange["yuv_1"] = chan_range
+        krange["yuv_2"] = chan_range
+        krange["yuv_3"] = chan_range
+        self.layout.yuv_1_value.setMaximum( chan_range )
+        self.layout.yuv_2_value.setMaximum( chan_range )
+        self.layout.yuv_3_value.setMaximum( chan_range )
         self.Pigmento_RELEASE()
         Krita.instance().writeSetting( "Pigment.O", "krange", str( krange ) )
-    def Range_HUE( self, range ):
-        range = int( self.geometry.Limit_Unit( range ) )
-        krange["hsv_1"] = range
-        krange["hsl_1"] = range
-        krange["hsy_1"] = range
-        krange["ard_1"] = range
-        self.layout.hsv_1_value.setMaximum( range )
-        self.layout.hsl_1_value.setMaximum( range )
-        self.layout.hsy_1_value.setMaximum( range )
-        self.layout.ard_1_value.setMaximum( range )
+    def Range_HUE( self, chan_range ):
+        chan_range = int( self.geometry.Limit_Unit( chan_range ) )
+        krange["hsv_1"] = chan_range
+        krange["hsl_1"] = chan_range
+        krange["hsy_1"] = chan_range
+        krange["ard_1"] = chan_range
+        self.layout.hsv_1_value.setMaximum( chan_range )
+        self.layout.hsl_1_value.setMaximum( chan_range )
+        self.layout.hsy_1_value.setMaximum( chan_range )
+        self.layout.ard_1_value.setMaximum( chan_range )
         self.Pigmento_RELEASE()
         Krita.instance().writeSetting( "Pigment.O", "krange", str( krange ) )
-    def Range_HSV( self, range ):
-        range = int( self.geometry.Limit_Unit( range ) )
-        krange["hsv_2"] = range
-        krange["hsv_3"] = range
-        self.layout.hsv_2_value.setMaximum( range )
-        self.layout.hsv_3_value.setMaximum( range )
+    def Range_HSV( self, chan_range ):
+        chan_range = int( self.geometry.Limit_Unit( chan_range ) )
+        krange["hsv_2"] = chan_range
+        krange["hsv_3"] = chan_range
+        self.layout.hsv_2_value.setMaximum( chan_range )
+        self.layout.hsv_3_value.setMaximum( chan_range )
         self.Pigmento_RELEASE()
         Krita.instance().writeSetting( "Pigment.O", "krange", str( krange ) )
-    def Range_HSL( self, range ):
-        range = int( self.geometry.Limit_Unit( range ) )
-        krange["hsl_2"] = range
-        krange["hsl_3"] = range
-        self.layout.hsl_2_value.setMaximum( range )
-        self.layout.hsl_3_value.setMaximum( range )
+    def Range_HSL( self, chan_range ):
+        chan_range = int( self.geometry.Limit_Unit( chan_range ) )
+        krange["hsl_2"] = chan_range
+        krange["hsl_3"] = chan_range
+        self.layout.hsl_2_value.setMaximum( chan_range )
+        self.layout.hsl_3_value.setMaximum( chan_range )
         self.Pigmento_RELEASE()
         Krita.instance().writeSetting( "Pigment.O", "krange", str( krange ) )
-    def Range_HSY( self, range ):
-        range = int( self.geometry.Limit_Unit( range ) )
-        krange["hsy_2"] = range
-        krange["hsy_3"] = range
-        self.layout.hsy_2_value.setMaximum( range )
-        self.layout.hsy_3_value.setMaximum( range )
+    def Range_HSY( self, chan_range ):
+        chan_range = int( self.geometry.Limit_Unit( chan_range ) )
+        krange["hsy_2"] = chan_range
+        krange["hsy_3"] = chan_range
+        self.layout.hsy_2_value.setMaximum( chan_range )
+        self.layout.hsy_3_value.setMaximum( chan_range )
         self.Pigmento_RELEASE()
         Krita.instance().writeSetting( "Pigment.O", "krange", str( krange ) )
-    def Range_ARD( self, range ):
-        range = int( self.geometry.Limit_Unit( range ) )
-        krange["ard_2"] = range
-        krange["ard_3"] = range
-        self.layout.ard_2_value.setMaximum( range )
-        self.layout.ard_3_value.setMaximum( range )
+    def Range_ARD( self, chan_range ):
+        chan_range = int( self.geometry.Limit_Unit( chan_range ) )
+        krange["ard_2"] = chan_range
+        krange["ard_3"] = chan_range
+        self.layout.ard_2_value.setMaximum( chan_range )
+        self.layout.ard_3_value.setMaximum( chan_range )
         self.Pigmento_RELEASE()
         Krita.instance().writeSetting( "Pigment.O", "krange", str( krange ) )
-    def Range_XYZ( self, range ):
-        range = int( self.geometry.Limit_Unit( range ) )
-        krange["xyz_1"] = range
-        krange["xyz_2"] = range
-        krange["xyz_3"] = range
-        self.layout.xyz_1_value.setMaximum( range )
-        self.layout.xyz_2_value.setMaximum( range )
-        self.layout.xyz_3_value.setMaximum( range )
+    def Range_XYZ( self, chan_range ):
+        chan_range = int( self.geometry.Limit_Unit( chan_range ) )
+        krange["xyz_1"] = chan_range
+        krange["xyz_2"] = chan_range
+        krange["xyz_3"] = chan_range
+        self.layout.xyz_1_value.setMaximum( chan_range )
+        self.layout.xyz_2_value.setMaximum( chan_range )
+        self.layout.xyz_3_value.setMaximum( chan_range )
         self.Pigmento_RELEASE()
         Krita.instance().writeSetting( "Pigment.O", "krange", str( krange ) )
-    def Range_XYY( self, range ):
-        range = int( self.geometry.Limit_Unit( range ) )
-        krange["xyy_1"] = range
-        krange["xyy_2"] = range
-        krange["xyy_3"] = range
-        self.layout.xyy_1_value.setMaximum( range )
-        self.layout.xyy_2_value.setMaximum( range )
-        self.layout.xyy_3_value.setMaximum( range )
+    def Range_XYY( self, chan_range ):
+        chan_range = int( self.geometry.Limit_Unit( chan_range ) )
+        krange["xyy_1"] = chan_range
+        krange["xyy_2"] = chan_range
+        krange["xyy_3"] = chan_range
+        self.layout.xyy_1_value.setMaximum( chan_range )
+        self.layout.xyy_2_value.setMaximum( chan_range )
+        self.layout.xyy_3_value.setMaximum( chan_range )
         self.Pigmento_RELEASE()
         Krita.instance().writeSetting( "Pigment.O", "krange", str( krange ) )
-    def Range_LAB( self, range ):
-        range = int( self.geometry.Limit_Unit( range ) )
-        krange["lab_1"] = range
-        krange["lab_2"] = range
-        krange["lab_3"] = range
-        self.layout.lab_1_value.setMaximum( range )
-        self.layout.lab_2_value.setMaximum( range )
-        self.layout.lab_3_value.setMaximum( range )
+    def Range_LAB( self, chan_range ):
+        chan_range = int( self.geometry.Limit_Unit( chan_range ) )
+        krange["lab_1"] = chan_range
+        krange["lab_2"] = chan_range
+        krange["lab_3"] = chan_range
+        self.layout.lab_1_value.setMaximum( chan_range )
+        self.layout.lab_2_value.setMaximum( chan_range )
+        self.layout.lab_3_value.setMaximum( chan_range )
         self.Pigmento_RELEASE()
         Krita.instance().writeSetting( "Pigment.O", "krange", str( krange ) )
-    def Range_LCH( self, range ):
-        range = int( self.geometry.Limit_Unit( range ) )
-        krange["lch_1"] = range
-        krange["lch_2"] = range
-        krange["lch_3"] = range
-        self.layout.lch_1_value.setMaximum( range )
-        self.layout.lch_2_value.setMaximum( range )
-        self.layout.lch_3_value.setMaximum( range )
+    def Range_LCH( self, chan_range ):
+        chan_range = int( self.geometry.Limit_Unit( chan_range ) )
+        krange["lch_1"] = chan_range
+        krange["lch_2"] = chan_range
+        krange["lch_3"] = chan_range
+        self.layout.lch_1_value.setMaximum( chan_range )
+        self.layout.lch_2_value.setMaximum( chan_range )
+        self.layout.lch_3_value.setMaximum( chan_range )
         self.Pigmento_RELEASE()
         Krita.instance().writeSetting( "Pigment.O", "krange", str( krange ) )
     # Space Range Reset
@@ -3566,10 +3559,7 @@ class PigmentO_Docker( DockWidget ):
         # Current Document
         doc = self.Current_Document()
         if self.doc["d_cm"] != doc["d_cm"]:
-            # QtCore.qDebug( f'self.doc["d_cm"] = { self.doc["d_cm"] }' )
-            # QtCore.qDebug( f'doc["d_cm"] = { doc["d_cm"] }' )
             self.Panel_inSpace( doc["d_cm"] )
-            # self.doc["d_cm"] = doc["d_cm"]
         d_cm = doc["d_cm"]
         d_cd = doc["d_cd"]
         d_cp = doc["d_cp"]
@@ -3596,19 +3586,19 @@ class PigmentO_Docker( DockWidget ):
                     self.depth_previous = self.cor["uvd_3"]
 
                     # Harmony
-                    if self.harmony_index == 1:
-                        a = har_01
-                    elif self.harmony_index == 2:
-                        a = har_02
-                    elif self.harmony_index == 3:
-                        a = har_03
-                    elif self.harmony_index == 4:
-                        a = har_04
-                    elif self.harmony_index == 5:
-                        a = har_05
-                    else:
-                        a = kac
+                    a = kac
                     b = kbc
+                    if self.ui_harmony == True:
+                        if self.harmony_index == 1:
+                            a = har_01
+                        if self.harmony_index == 2:
+                            a = har_02
+                        if self.harmony_index == 3:
+                            a = har_03
+                        if self.harmony_index == 4:
+                            a = har_04
+                        if self.harmony_index == 5:
+                            a = har_05
 
                     # Read if Colors Differs
                     if doc["vi"] == None: # Pixel Read
@@ -5048,7 +5038,18 @@ class PigmentO_Docker( DockWidget ):
         self.harmony_spread.Update_Span( self.harmony_span )
     def Update_Header( self, active, previous ):
         # Left
-        if self.harmony_index == 0:
+        if self.ui_harmony == True:
+            if self.harmony_index == 1:
+                self.color_header.Set_Color_A1( har_01["hex6_d"] )
+            if self.harmony_index == 2:
+                self.color_header.Set_Color_A1( har_02["hex6_d"] )
+            if self.harmony_index == 3:
+                self.color_header.Set_Color_A1( har_03["hex6_d"] )
+            if self.harmony_index == 4:
+                self.color_header.Set_Color_A1( har_04["hex6_d"] )
+            if self.harmony_index == 5:
+                self.color_header.Set_Color_A1( har_05["hex6_d"] )
+        else:
             if self.mode_ab == True:
                 if active == True:
                     self.color_header.Set_Color_A1( kac["hex6_d"] )
@@ -5059,37 +5060,28 @@ class PigmentO_Docker( DockWidget ):
                     self.color_header.Set_Color_B1( kbc["hex6_d"] )
                 if previous == True:
                     self.color_header.Set_Color_A1( kac["hex6_d"] )
-        if self.harmony_index == 1:
-            self.color_header.Set_Color_A1( har_01["hex6_d"] )
-        if self.harmony_index == 2:
-            self.color_header.Set_Color_A1( har_02["hex6_d"] )
-        if self.harmony_index == 3:
-            self.color_header.Set_Color_A1( har_03["hex6_d"] )
-        if self.harmony_index == 4:
-            self.color_header.Set_Color_A1( har_04["hex6_d"] )
-        if self.harmony_index == 5:
-            self.color_header.Set_Color_A1( har_05["hex6_d"] )
 
         # Right
         if ( active == True and previous == True ):
-            if self.harmony_index == 0:
+            if self.ui_harmony == True:
+                if self.harmony_index == 1:
+                    self.color_header.Set_Color_A1( har_01["hex6_d"] )
+                    self.color_header.Set_Color_A2( har_01["hex6_d"] )
+                if self.harmony_index == 2:
+                    self.color_header.Set_Color_A1( har_02["hex6_d"] )
+                    self.color_header.Set_Color_A2( har_02["hex6_d"] )
+                if self.harmony_index == 3:
+                    self.color_header.Set_Color_A1( har_03["hex6_d"] )
+                    self.color_header.Set_Color_A2( har_03["hex6_d"] )
+                if self.harmony_index == 4:
+                    self.color_header.Set_Color_A1( har_04["hex6_d"] )
+                    self.color_header.Set_Color_A2( har_04["hex6_d"] )
+                if self.harmony_index == 5:
+                    self.color_header.Set_Color_A1( har_05["hex6_d"] )
+                    self.color_header.Set_Color_A2( har_05["hex6_d"] )
+            else:
                 self.color_header.Set_Color_A2( kac["hex6_d"] )
                 self.color_header.Set_Color_B2( kbc["hex6_d"] )
-            if self.harmony_index == 1:
-                self.color_header.Set_Color_A1( har_01["hex6_d"] )
-                self.color_header.Set_Color_A2( har_01["hex6_d"] )
-            if self.harmony_index == 2:
-                self.color_header.Set_Color_A1( har_02["hex6_d"] )
-                self.color_header.Set_Color_A2( har_02["hex6_d"] )
-            if self.harmony_index == 3:
-                self.color_header.Set_Color_A1( har_03["hex6_d"] )
-                self.color_header.Set_Color_A2( har_03["hex6_d"] )
-            if self.harmony_index == 4:
-                self.color_header.Set_Color_A1( har_04["hex6_d"] )
-                self.color_header.Set_Color_A2( har_04["hex6_d"] )
-            if self.harmony_index == 5:
-                self.color_header.Set_Color_A1( har_05["hex6_d"] )
-                self.color_header.Set_Color_A2( har_05["hex6_d"] )
             self.zoom = False
             # Label
             self.Label_String( "" )
@@ -5621,10 +5613,12 @@ class PigmentO_Docker( DockWidget ):
     #region Gradients ##############################################################
 
     def Gradient_Style( self, mode, short, stops, left, right ):
-        # mode = color space
-        # short = straight ahead or shortest distance
-        # stops = amount of divisions
-        # left and right = colors in 0-1 format
+        """
+        mode = color space
+        short = straight ahead or shortest distance
+        stops = amount of divisions
+        left and right = colors in 0-1 format
+        """
 
         # Variables
         hue = [ "HSV", "HSL", "HSY", "ARD" ]
@@ -5761,6 +5755,11 @@ class PigmentO_Docker( DockWidget ):
     #region Harmony ################################################################
 
     # Context Menu
+    def Harmony_Index( self, harmony_index ):
+        self.harmony_index = harmony_index
+        self.Cor_Number()
+        self.Pigmento_RELEASE()
+        Krita.instance().writeSetting( "Pigment.O", "harmony_index", str( self.harmony_index ) )
     def Harmony_Rule( self, harmony_rule ):
         self.harmony_rule = harmony_rule
         self.harmony_spread.Set_Rule( self.harmony_rule )
@@ -5770,11 +5769,6 @@ class PigmentO_Docker( DockWidget ):
         self.harmony_edit = harmony_edit
         self.Pigmento_RELEASE()
         Krita.instance().writeSetting( "Pigment.O", "harmony_edit", str( self.harmony_edit ) )
-    def Harmony_Index( self, harmony_index ):
-        self.harmony_index = harmony_index
-        self.Cor_Number( self.harmony_index )
-        self.Pigmento_RELEASE()
-        Krita.instance().writeSetting( "Pigment.O", "har_index", str( self.harmony_index ) )
     def Harmony_Spread( self, harmony_span ):
         self.harmony_span = harmony_span
         self.Pigmento_RELEASE()
@@ -5782,22 +5776,23 @@ class PigmentO_Docker( DockWidget ):
         Krita.instance().writeSetting( "Pigment.O", "harmony_span", str( self.harmony_span ) )
 
     # Interaction
-    def Cor_Number( self, number ):
-        if self.harmony_index == 0:
+    def Cor_Number( self ):
+        if self.ui_harmony == True:
+            if self.harmony_index == 1:
+                self.cor = har_01
+            if self.harmony_index == 2:
+                self.cor = har_02
+            if self.harmony_index == 3:
+                self.cor = har_03
+            if self.harmony_index == 4:
+                self.cor = har_04
+            if self.harmony_index == 5:
+                self.cor = har_05
+        else:
             if self.mode_ab == True:
                 self.cor = kac
             if self.mode_ab == False:
                 self.cor = kbc
-        if self.harmony_index == 1:
-            self.cor = har_01
-        if self.harmony_index == 2:
-            self.cor = har_02
-        if self.harmony_index == 3:
-            self.cor = har_03
-        if self.harmony_index == 4:
-            self.cor = har_04
-        if self.harmony_index == 5:
-            self.cor = har_05
 
     # Send
     def Harmony_Update( self ):
@@ -8314,7 +8309,7 @@ class PigmentO_Docker( DockWidget ):
         if check_timer >= 30:
             self.timer_pulse.start( check_timer )
     def resizeEvent( self, event ):
-        self.Resize_Print( event )
+        # self.Resize_Print( event )
         self.Update_Size()
     def enterEvent( self, event ):
         # Variables

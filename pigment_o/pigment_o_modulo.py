@@ -470,18 +470,16 @@ class Harmony_Swatch( QWidget ):
             # Stops
             points.append( px )
         points.append( self.widget_width )
-        if self.harmony_index > len( points ):
-            self.harmony_index = 1
 
         # Index Cursor
         if self.harmony_index != 0:
-            px = points[self.harmony_index-1]
-            pw = points[self.harmony_index]
+            px = points[ self.harmony_index - 1 ]
+            pw = points[ self.harmony_index ]
             width = pw - px
             painter.setBrush( QBrush( self.color_2 ) )
-            painter.drawRect( px, py, width, height+1 )
+            painter.drawRect( px, py, width, height + 1 )
             painter.setBrush( QBrush( self.color_1 ) )
-            painter.drawRect( px+1, py+1, width-2, height-1 )
+            painter.drawRect( px + 1, py + 1, width - 2, height - 1 )
 class Harmony_Spread( QWidget ):
     SIGNAL_SPAN = QtCore.pyqtSignal( float )
     SIGNAL_RELEASE = QtCore.pyqtSignal( int )
@@ -2064,24 +2062,25 @@ class Panel_Gamut( QWidget ):
             # Update
             self.SIGNAL_TAN.emit( self.tan_axis )
     def Cursor_Snap( self, ex, ey ):
-        # Gamut Profile
-        lista = self.Gamut_List( self.gamut_mask )
-        points = self.Gamut_Points( ex, ey, lista )
+        if self.region == True:
+            # Gamut Profile
+            lista = self.Gamut_List( self.gamut_mask )
+            points = self.Gamut_Points( ex, ey, lista )
 
-        # Pins
-        points = self.Pin_Points( ex, ey, points )
+            # Pins
+            points = self.Pin_Points( ex, ey, points )
 
-        # Position
-        if len( points ) > 0:
-            points.sort( key = lambda row: row[0] )
-            check_gamut = points[0][3] # gamut_index
-            check_pin = points[0][4] # pin_index
-            if check_gamut != None:
-                self.gamut_index = check_gamut
-                self.Cursor_Position( points[0][1], points[0][2], False )
-            elif check_pin != None:
-                self.pin_index = check_pin
-                self.SIGNAL_PIN_INDEX.emit( check_pin )
+            # Position
+            if len( points ) > 0:
+                points.sort( key = lambda row: row[0] )
+                check_gamut = points[0][3] # gamut_index
+                check_pin = points[0][4] # pin_index
+                if check_gamut != None:
+                    self.gamut_index = check_gamut
+                    self.Cursor_Position( points[0][1], points[0][2], False )
+                elif check_pin != None:
+                    self.pin_index = check_pin
+                    self.SIGNAL_PIN_INDEX.emit( check_pin )
     def Cursor_Rotation( self, ex, ey ):
         lista = self.Gamut_List( self.gamut_mask )
         ang_new = self.geometry.Trig_2D_Points_Lines_Angle( 0, self.h2, self.w2, self.h2, ex, ey )
@@ -2394,7 +2393,7 @@ class Panel_Gamut( QWidget ):
             painter.drawEllipse( int( gdx + gds * self.gamut_1squ[4][0] - dot ), int( gdy + gds * self.gamut_1squ[4][1] - dot ), int( dot * 2 ), int( dot * 2 ) )
         if self.gamut_mask == "Circle":
             # Profile Points
-            path, P0, P1, P2, P3, P4 = self.Render_Circle( gdx, gdy, gds, self.gamut_1cir )
+            path, P0, P1, P2, P3, P4 = self.Render_Circle( gdx, gdy, gds, self.gamut_1cir, circle_2 )
 
             # Polygon
             painter.setPen( QtCore.Qt.NoPen )
@@ -2409,8 +2408,8 @@ class Panel_Gamut( QWidget ):
             painter.drawEllipse( int( P4[0] - dot ), int( P4[1] - dot ), int( dot * 2 ), int( dot * 2 ) )
         if self.gamut_mask == "2 Circle":
             # Profile Points
-            path_0, P0_0, P1_0, P2_0, P3_0, P4_0 = self.Render_Circle( gdx, gdy, gds, self.gamut_2cir[0:5] )
-            path_1, P0_1, P1_1, P2_1, P3_1, P4_1 = self.Render_Circle( gdx, gdy, gds, self.gamut_2cir[5:10] )
+            path_0, P0_0, P1_0, P2_0, P3_0, P4_0 = self.Render_Circle( gdx, gdy, gds, self.gamut_2cir[0:5], circle_2 )
+            path_1, P0_1, P1_1, P2_1, P3_1, P4_1 = self.Render_Circle( gdx, gdy, gds, self.gamut_2cir[5:10], circle_2 )
 
             # Polygon
             painter.setPen( QtCore.Qt.NoPen )
@@ -2564,7 +2563,7 @@ class Panel_Gamut( QWidget ):
             Cursor_Zoom( self, painter, size, margin_size )
         else:
             Cursor_Normal( self, painter, size )
-    def Render_Circle( self, px, py, side, points ):
+    def Render_Circle( self, px, py, side, points, circle ):
         # Points from User
         P0 = [ px + points[0][0] * side, py + points[0][1] * side ]
         P1 = [ px + points[1][0] * side, py + points[1][1] * side ]
@@ -2620,6 +2619,7 @@ class Panel_Gamut( QWidget ):
             QPoint( int( self.geometry.Lerp_1D( a, A4[0], P41[0] ) ), int( self.geometry.Lerp_1D( a, A4[1], P41[1] ) ) ),
             QPoint( int( self.geometry.Lerp_1D( b, P41[0], A1[0] ) ), int( self.geometry.Lerp_1D( b, P41[1], A1[1] ) ) ),
             QPoint( int( A1[0] ), int( A1[1] ) ) )
+        path = path.intersected( circle )
         # Return
         return path, P0, P1, P2, P3, P4
 
