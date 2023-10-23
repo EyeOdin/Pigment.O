@@ -1691,7 +1691,7 @@ class PigmentO_Docker( DockWidget ):
         try:
             self.Loader()
         except Exception as e:
-            QMessageBox.information( QWidget(), i18n( "Warnning" ), i18n( f"Pigment.O | Load Error | Reset in Progress\nReason : {e}" ) )
+            QMessageBox.information( QWidget(), i18n( "Warnning" ), i18n( f"Pigment.O ERROR | Reset in Progress\nReason : {e}" ) )
             self.Variables()
             self.Loader()
 
@@ -1774,16 +1774,15 @@ class PigmentO_Docker( DockWidget ):
             read = default
         else:
             try:
-                read = setting
                 if mode == "EVAL":
-                    read = eval( read )
+                    read = eval( setting )
                 elif mode == "STR":
-                    read = str( read )
+                    read = str( setting )
                 elif mode == "INT":
-                    read = int( read )
+                    read = int( setting )
             except:
                 read = default
-        Krita.instance().writeSetting( "Pigment.O", entry, str( default ) )
+        Krita.instance().writeSetting( "Pigment.O", entry, str( read ) )
         return read
 
     #endregion
@@ -3569,253 +3568,9 @@ class PigmentO_Docker( DockWidget ):
         if ( ( self.canvas() is not None ) and ( self.canvas().view() is not None ) ):
             # Read Color
             try:
-                if ( self.mode_index == 0 and ( self.widget_press == False or self.doc != doc ) ):
-                    # Check Eraser Mode ON or OFF
-                    eraser = Krita.instance().action( "erase_action" )
-                    # Current Krita Active Colors
-                    color_fg = Krita.instance().activeWindow().activeView().foregroundColor()
-                    color_bg = Krita.instance().activeWindow().activeView().backgroundColor()
-                    order_fg = color_fg.componentsOrdered()
-                    order_bg = color_bg.componentsOrdered()
-
-                    # Variables
-                    len_fg = len( order_fg )
-                    len_bg = len( order_bg )
-
-                    # Depth
-                    self.depth_previous = self.cor["uvd_3"]
-
-                    # Harmony
-                    a = kac
-                    b = kbc
-                    if self.ui_harmony == True:
-                        if self.harmony_index == 1:
-                            a = har_01
-                        if self.harmony_index == 2:
-                            a = har_02
-                        if self.harmony_index == 3:
-                            a = har_03
-                        if self.harmony_index == 4:
-                            a = har_04
-                        if self.harmony_index == 5:
-                            a = har_05
-
-                    # Read if Colors Differs
-                    if doc["vi"] == None: # Pixel Read
-                        if ( d_cm == "A" or len_fg == 2 ):
-                            # Foreground and Background Colors ( Krita is in AAA )
-                            kac_1 = order_fg[0]
-                            kbc_1 = order_bg[0]
-
-                            # Range
-                            if ( d_cd == "U8" or d_cd == "U16" ):
-                                c_fg_1 = ( kac_1 < ( ( int( a["aaa_d1"] * d ) ) / d ) ) or ( kac_1 >= ( ( int( a["aaa_d1"] * d ) + 1 ) / d ) )
-                                c_bg_1 = ( kbc_1 < ( ( int( b["aaa_d1"] * d ) ) / d ) ) or ( kbc_1 >= ( ( int( b["aaa_d1"] * d ) + 1 ) / d ) )
-                            if ( d_cd == "F16" or d_cd == "F32" ):
-                                c_fg_1 = kac_1 != a["aaa_d1"]
-                                c_bg_1 = kbc_1 != b["aaa_d1"]
-
-                            # Operation
-                            if c_fg_1 == True:
-                                if not eraser.isChecked():
-                                    self.Pigmento_READ( "A", kac_1, 0, 0, 0, a )
-                            if c_bg_1 == True:
-                                if not eraser.isChecked():
-                                    self.Pigmento_READ( "A", kbc_1, 0, 0, 0, b )
-                        elif ( d_cm == "RGB" or d_cm == None ):
-                            # Foreground and Background Colors ( Krita is in RGB )
-                            kac_1 = order_fg[0] # Red
-                            kac_2 = order_fg[1] # Green
-                            kac_3 = order_fg[2] # Blue
-                            kbc_1 = order_bg[0]
-                            kbc_2 = order_bg[1]
-                            kbc_3 = order_bg[2]
-
-                            # Range
-                            if ( d_cd == "U8" or d_cd == "U16" ):
-                                c_fg_1 = ( kac_1 < ( ( int( a["rgb_d1"] * d ) ) / d ) ) or ( kac_1 >= ( ( int( a["rgb_d1"] * d ) + 1 ) / d ) )
-                                c_fg_2 = ( kac_2 < ( ( int( a["rgb_d2"] * d ) ) / d ) ) or ( kac_2 >= ( ( int( a["rgb_d2"] * d ) + 1 ) / d ) )
-                                c_fg_3 = ( kac_3 < ( ( int( a["rgb_d3"] * d ) ) / d ) ) or ( kac_3 >= ( ( int( a["rgb_d3"] * d ) + 1 ) / d ) )
-                                c_bg_1 = ( kbc_1 < ( ( int( b["rgb_d1"] * d ) ) / d ) ) or ( kbc_1 >= ( ( int( b["rgb_d1"] * d ) + 1 ) / d ) )
-                                c_bg_2 = ( kbc_2 < ( ( int( b["rgb_d2"] * d ) ) / d ) ) or ( kbc_2 >= ( ( int( b["rgb_d2"] * d ) + 1 ) / d ) )
-                                c_bg_3 = ( kbc_3 < ( ( int( b["rgb_d3"] * d ) ) / d ) ) or ( kbc_3 >= ( ( int( b["rgb_d3"] * d ) + 1 ) / d ) )
-                            if ( d_cd == "F16" or d_cd == "F32" ):
-                                c_fg_1 = kac_1 != a["rgb_d1"]
-                                c_fg_2 = kac_2 != a["rgb_d2"]
-                                c_fg_3 = kac_3 != a["rgb_d3"]
-                                c_bg_1 = kbc_1 != b["rgb_d1"]
-                                c_bg_2 = kbc_2 != b["rgb_d2"]
-                                c_bg_3 = kbc_3 != b["rgb_d3"]
-
-                            # Operation
-                            if ( c_fg_1 == True or c_fg_2 == True or c_fg_3 == True ):
-                                if not eraser.isChecked():
-                                    self.Pigmento_READ( "RGB", kac_1, kac_2, kac_3, 0, a )
-                            if ( c_bg_1 == True or c_bg_2 == True or c_bg_3 == True ):
-                                if not eraser.isChecked():
-                                    self.Pigmento_READ( "RGB", kbc_1, kbc_2, kbc_3, 0, b )
-                        elif d_cm == "CMYK":
-                            # Foreground and Background Colors ( Krita is in CMYK )
-                            kac_1 = order_fg[0]
-                            kac_2 = order_fg[1]
-                            kac_3 = order_fg[2]
-                            kac_4 = order_fg[3]
-                            kbc_1 = order_bg[0]
-                            kbc_2 = order_bg[1]
-                            kbc_3 = order_bg[2]
-                            kbc_4 = order_bg[3]
-
-                            # Range
-                            if ( d_cd == "U8" or d_cd == "U16" ):
-                                c_fg_1 = ( kac_1 < ( ( int( a["cmyk_d1"] * d ) ) / d ) ) or ( kac_1 >= ( ( math.ceil( a["cmyk_d1"] * d ) + 1 ) / d ) )
-                                c_fg_2 = ( kac_2 < ( ( int( a["cmyk_d2"] * d ) ) / d ) ) or ( kac_2 >= ( ( math.ceil( a["cmyk_d2"] * d ) + 1 ) / d ) )
-                                c_fg_3 = ( kac_3 < ( ( int( a["cmyk_d3"] * d ) ) / d ) ) or ( kac_3 >= ( ( math.ceil( a["cmyk_d3"] * d ) + 1 ) / d ) )
-                                c_fg_4 = ( kac_4 < ( ( int( a["cmyk_d4"] * d ) ) / d ) ) or ( kac_4 >= ( ( math.ceil( a["cmyk_d4"] * d ) + 1 ) / d ) )
-                                c_bg_1 = ( kbc_1 < ( ( int( b["cmyk_d1"] * d ) ) / d ) ) or ( kbc_1 >= ( ( math.ceil( b["cmyk_d1"] * d ) + 1 ) / d ) )
-                                c_bg_2 = ( kbc_2 < ( ( int( b["cmyk_d2"] * d ) ) / d ) ) or ( kbc_2 >= ( ( math.ceil( b["cmyk_d2"] * d ) + 1 ) / d ) )
-                                c_bg_3 = ( kbc_3 < ( ( int( b["cmyk_d3"] * d ) ) / d ) ) or ( kbc_3 >= ( ( math.ceil( b["cmyk_d3"] * d ) + 1 ) / d ) )
-                                c_bg_4 = ( kbc_4 < ( ( int( b["cmyk_d4"] * d ) ) / d ) ) or ( kbc_4 >= ( ( math.ceil( b["cmyk_d4"] * d ) + 1 ) / d ) )
-                            if ( d_cd == "F16" or d_cd == "F32" ):
-                                c_fg_1 = kac_1 != a["cmyk_d1"]
-                                c_fg_2 = kac_2 != a["cmyk_d2"]
-                                c_fg_3 = kac_3 != a["cmyk_d3"]
-                                c_fg_4 = kac_4 != a["cmyk_d4"]
-                                c_bg_1 = kbc_1 != b["cmyk_d1"]
-                                c_bg_2 = kbc_2 != b["cmyk_d2"]
-                                c_bg_3 = kbc_3 != b["cmyk_d3"]
-                                c_bg_4 = kbc_4 != b["cmyk_d4"]
-
-                            # Operation
-                            if ( c_fg_1 == True or c_fg_2 == True or c_fg_3 == True or c_fg_4 == True ):
-                                if not eraser.isChecked():
-                                    self.Pigmento_READ( "CMYK", kac_1, kac_2, kac_3, kac_4, a )
-                            if ( c_bg_1 == True or c_bg_2 == True or c_bg_3 == True or c_bg_4 == True ):
-                                if not eraser.isChecked():
-                                    self.Pigmento_READ( "CMYK", kbc_1, kbc_2, kbc_3, kbc_4, b )
-                        elif d_cm == "YUV":
-                            # Foreground and Background Colors ( Krita is in YUV )
-                            kac_1 = order_fg[0]
-                            kac_2 = order_fg[1]
-                            kac_3 = order_fg[2]
-                            kbc_1 = order_bg[0]
-                            kbc_2 = order_bg[1]
-                            kbc_3 = order_bg[2]
-
-                            # Range
-                            if ( d_cd == "U8" or d_cd == "U16" ):
-                                c_fg_1 = ( kac_1 < ( ( int( a["yuv_d1"] * d ) ) / d ) ) or ( kac_1 >= ( ( int( a["yuv_d1"] * d ) + 1 ) / d ) )
-                                c_fg_2 = ( kac_2 < ( ( int( a["yuv_d2"] * d ) ) / d ) ) or ( kac_2 >= ( ( int( a["yuv_d2"] * d ) + 1 ) / d ) )
-                                c_fg_3 = ( kac_3 < ( ( int( a["yuv_d3"] * d ) ) / d ) ) or ( kac_3 >= ( ( int( a["yuv_d3"] * d ) + 1 ) / d ) )
-                                c_bg_1 = ( kbc_1 < ( ( int( b["yuv_d1"] * d ) ) / d ) ) or ( kbc_1 >= ( ( int( b["yuv_d1"] * d ) + 1 ) / d ) )
-                                c_bg_2 = ( kbc_2 < ( ( int( b["yuv_d2"] * d ) ) / d ) ) or ( kbc_2 >= ( ( int( b["yuv_d2"] * d ) + 1 ) / d ) )
-                                c_bg_3 = ( kbc_3 < ( ( int( b["yuv_d3"] * d ) ) / d ) ) or ( kbc_3 >= ( ( int( b["yuv_d3"] * d ) + 1 ) / d ) )
-                            if ( d_cd == "F16" or d_cd == "F32" ):
-                                c_fg_1 = kac_1 != a["yuv_d1"]
-                                c_fg_2 = kac_2 != a["yuv_d2"]
-                                c_fg_3 = kac_3 != a["yuv_d3"]
-                                c_bg_1 = kbc_1 != b["yuv_d1"]
-                                c_bg_2 = kbc_2 != b["yuv_d2"]
-                                c_bg_3 = kbc_3 != b["yuv_d3"]
-
-                            # Operation
-                            if ( c_fg_1 == True or c_fg_2 == True or c_fg_3 == True ):
-                                if not eraser.isChecked():
-                                    self.Pigmento_READ( "YUV", kac_1, kac_2, kac_3, 0, a )
-                            if ( c_bg_1 == True or c_bg_2 == True or c_bg_3 == True ):
-                                if not eraser.isChecked():
-                                    self.Pigmento_READ( "YUV", kbc_1, kbc_2, kbc_3, 0, b )
-                        elif d_cm == "XYZ":
-                            # Foreground and Background Colors ( Krita is in XYZ )
-                            kac_1 = order_fg[0]
-                            kac_2 = order_fg[1]
-                            kac_3 = order_fg[2]
-                            kbc_1 = order_bg[0]
-                            kbc_2 = order_bg[1]
-                            kbc_3 = order_bg[2]
-
-                            # Range
-                            if ( d_cd == "U8" or d_cd == "U16" ):
-                                c_fg_1 = ( kac_1 < ( ( int( a["xyz_d1"] * d ) ) / d ) ) or ( kac_1 >= ( ( int( a["xyz_d1"] * d ) + 1 ) / d ) )
-                                c_fg_2 = ( kac_2 < ( ( int( a["xyz_d2"] * d ) ) / d ) ) or ( kac_2 >= ( ( int( a["xyz_d2"] * d ) + 1 ) / d ) )
-                                c_fg_3 = ( kac_3 < ( ( int( a["xyz_d3"] * d ) ) / d ) ) or ( kac_3 >= ( ( int( a["xyz_d3"] * d ) + 1 ) / d ) )
-                                c_bg_1 = ( kbc_1 < ( ( int( b["xyz_d1"] * d ) ) / d ) ) or ( kbc_1 >= ( ( int( b["xyz_d1"] * d ) + 1 ) / d ) )
-                                c_bg_2 = ( kbc_2 < ( ( int( b["xyz_d2"] * d ) ) / d ) ) or ( kbc_2 >= ( ( int( b["xyz_d2"] * d ) + 1 ) / d ) )
-                                c_bg_3 = ( kbc_3 < ( ( int( b["xyz_d3"] * d ) ) / d ) ) or ( kbc_3 >= ( ( int( b["xyz_d3"] * d ) + 1 ) / d ) )
-                            if ( d_cd == "F16" or d_cd == "F32" ):
-                                c_fg_1 = kac_1 != a["xyz_d1"]
-                                c_fg_2 = kac_2 != a["xyz_d2"]
-                                c_fg_3 = kac_3 != a["xyz_d3"]
-                                c_bg_1 = kbc_1 != b["xyz_d1"]
-                                c_bg_2 = kbc_2 != b["xyz_d2"]
-                                c_bg_3 = kbc_3 != b["xyz_d3"]
-
-                            # Operation
-                            if ( c_fg_1 == True or c_fg_2 == True or c_fg_3 == True ):
-                                if not eraser.isChecked():
-                                    self.Pigmento_READ( "XYZ", kac_1, kac_2, kac_3, 0, a )
-                            if ( c_bg_1 == True or c_bg_2 == True or c_bg_3 == True ):
-                                if not eraser.isChecked():
-                                    self.Pigmento_READ( "XYZ", kbc_1, kbc_2, kbc_3, 0, b )
-                        elif d_cm == "LAB":
-                            # Foreground and Background Colors ( Krita is in LAB )
-                            kac_1 = order_fg[0]
-                            kac_2 = order_fg[1]
-                            kac_3 = order_fg[2]
-                            kbc_1 = order_bg[0]
-                            kbc_2 = order_bg[1]
-                            kbc_3 = order_bg[2]
-
-                            # Range
-                            if ( d_cd == "U8" or d_cd == "U16" ):
-                                c_fg_1 = ( kac_1 < ( ( int( a["lab_d1"] * d ) ) / d ) ) or ( kac_1 >= ( ( int( a["lab_d1"] * d ) + 1 ) / d ) )
-                                c_fg_2 = ( kac_2 < ( ( int( a["lab_d2"] * d ) ) / d ) ) or ( kac_2 >= ( ( int( a["lab_d2"] * d ) + 1 ) / d ) )
-                                c_fg_3 = ( kac_3 < ( ( int( a["lab_d3"] * d ) ) / d ) ) or ( kac_3 >= ( ( int( a["lab_d3"] * d ) + 1 ) / d ) )
-                                c_bg_1 = ( kbc_1 < ( ( int( b["lab_d1"] * d ) ) / d ) ) or ( kbc_1 >= ( ( int( b["lab_d1"] * d ) + 1 ) / d ) )
-                                c_bg_2 = ( kbc_2 < ( ( int( b["lab_d2"] * d ) ) / d ) ) or ( kbc_2 >= ( ( int( b["lab_d2"] * d ) + 1 ) / d ) )
-                                c_bg_3 = ( kbc_3 < ( ( int( b["lab_d3"] * d ) ) / d ) ) or ( kbc_3 >= ( ( int( b["lab_d3"] * d ) + 1 ) / d ) )
-                            if ( d_cd == "F16" or d_cd == "F32" ):
-                                c_fg_1 = kac_1 != a["lab_d1"]
-                                c_fg_2 = kac_2 != a["lab_d2"]
-                                c_fg_3 = kac_3 != a["lab_d3"]
-                                c_bg_1 = kbc_1 != b["lab_d1"]
-                                c_bg_2 = kbc_2 != b["lab_d2"]
-                                c_bg_3 = kbc_3 != b["lab_d3"]
-
-                            # Operation
-                            if ( c_fg_1 == True or c_fg_2 == True or c_fg_3 == True ):
-                                if not eraser.isChecked():
-                                    self.Pigmento_READ( "LAB", kac_1, kac_2, kac_3, 0, a )
-                            if ( c_bg_1 == True or c_bg_2 == True or c_bg_3 == True ):
-                                if not eraser.isChecked():
-                                    self.Pigmento_READ( "LAB", kbc_1, kbc_2, kbc_3, 0, b )
-                    else: # Vector Read
-                        # Variables
-                        v = 255
-
-                        # Foreground Color
-                        fgc_canvas = doc["fgc"].colorForCanvas( doc["vc"] )
-                        kac_1 = fgc_canvas.red() / v
-                        kac_2 = fgc_canvas.green() / v
-                        kac_3 = fgc_canvas.blue() / v
-                        # Background Color
-                        bgc_canvas = doc["bgc"].colorForCanvas( doc["vc"] )
-                        kbc_1 = bgc_canvas.red() / v
-                        kbc_2 = bgc_canvas.green() / v
-                        kbc_3 = bgc_canvas.blue() / v
-
-                        # Range
-                        c_fg_1 = ( kac_1 < ( ( int( a["rgb_d1"] * v ) ) / v ) ) or ( kac_1 >= ( ( int( a["rgb_d1"] * v ) + 1 ) / v ) )
-                        c_fg_2 = ( kac_2 < ( ( int( a["rgb_d2"] * v ) ) / v ) ) or ( kac_2 >= ( ( int( a["rgb_d2"] * v ) + 1 ) / v ) )
-                        c_fg_3 = ( kac_3 < ( ( int( a["rgb_d3"] * v ) ) / v ) ) or ( kac_3 >= ( ( int( a["rgb_d3"] * v ) + 1 ) / v ) )
-                        c_bg_1 = ( kbc_1 < ( ( int( b["rgb_d1"] * v ) ) / v ) ) or ( kbc_1 >= ( ( int( b["rgb_d1"] * v ) + 1 ) / v ) )
-                        c_bg_2 = ( kbc_2 < ( ( int( b["rgb_d2"] * v ) ) / v ) ) or ( kbc_2 >= ( ( int( b["rgb_d2"] * v ) + 1 ) / v ) )
-                        c_bg_3 = ( kbc_3 < ( ( int( b["rgb_d3"] * v ) ) / v ) ) or ( kbc_3 >= ( ( int( b["rgb_d3"] * v ) + 1 ) / v ) )
-
-                        # Operation
-                        if ( c_fg_1 == True or c_fg_2 == True or c_fg_3 == True ):
-                            self.Pigmento_READ( "RGB", kac_1, kac_2, kac_3, 0, a )
-                        if ( c_bg_1 == True or c_bg_2 == True or c_bg_3 == True ):
-                            self.Pigmento_READ( "RGB", kbc_1, kbc_2, kbc_3, 0, b )
+                check = self.mode_index == 0 and ( self.widget_press == False or self.doc != doc )
+                if check == True:
+                    self.Read_Color( doc, d_cm, d_cd, d_cp, d )
                 elif self.mode_index == 2:
                     self.Read_Only()
             except:
@@ -3873,6 +3628,253 @@ class PigmentO_Docker( DockWidget ):
                 else:
                     self.Fill_None()
 
+    def Read_Color( self, doc, d_cm, d_cd, d_cp, d ):
+        # Check Eraser Mode ON or OFF
+        eraser = Krita.instance().action( "erase_action" )
+        # Current Krita Active Colors
+        color_fg = Krita.instance().activeWindow().activeView().foregroundColor()
+        color_bg = Krita.instance().activeWindow().activeView().backgroundColor()
+        order_fg = color_fg.componentsOrdered()
+        order_bg = color_bg.componentsOrdered()
+
+        # Variables
+        len_fg = len( order_fg )
+        len_bg = len( order_bg )
+
+        # Depth
+        self.depth_previous = self.cor["uvd_3"]
+
+        # Harmony
+        a = kac
+        b = kbc
+        if self.ui_harmony == True:
+            if self.harmony_index == 1:
+                a = har_01
+            if self.harmony_index == 2:
+                a = har_02
+            if self.harmony_index == 3:
+                a = har_03
+            if self.harmony_index == 4:
+                a = har_04
+            if self.harmony_index == 5:
+                a = har_05
+
+        # Read if Colors Differs
+        if doc["vi"] == None: # Pixel Read
+            if ( d_cm == "A" or len_fg == 2 ):
+                # Foreground and Background Colors ( Krita is in AAA )
+                kac_1 = order_fg[0]
+                kbc_1 = order_bg[0]
+
+                # Range
+                if ( d_cd == "U8" or d_cd == "U16" ):
+                    c_fg_1 = ( kac_1 < ( ( int( a["aaa_d1"] * d ) ) / d ) ) or ( kac_1 >= ( ( int( a["aaa_d1"] * d ) + 1 ) / d ) )
+                    c_bg_1 = ( kbc_1 < ( ( int( b["aaa_d1"] * d ) ) / d ) ) or ( kbc_1 >= ( ( int( b["aaa_d1"] * d ) + 1 ) / d ) )
+                if ( d_cd == "F16" or d_cd == "F32" ):
+                    c_fg_1 = kac_1 != a["aaa_d1"]
+                    c_bg_1 = kbc_1 != b["aaa_d1"]
+
+                # Operation
+                if c_fg_1 == True:
+                    if not eraser.isChecked():
+                        self.Pigmento_READ( "A", kac_1, 0, 0, 0, a )
+                if c_bg_1 == True:
+                    if not eraser.isChecked():
+                        self.Pigmento_READ( "A", kbc_1, 0, 0, 0, b )
+            elif ( d_cm == "RGB" or d_cm == None ):
+                # Foreground and Background Colors ( Krita is in RGB )
+                kac_1 = order_fg[0] # Red
+                kac_2 = order_fg[1] # Green
+                kac_3 = order_fg[2] # Blue
+                kbc_1 = order_bg[0]
+                kbc_2 = order_bg[1]
+                kbc_3 = order_bg[2]
+
+                # Range
+                if ( d_cd == "U8" or d_cd == "U16" ):
+                    c_fg_1 = ( kac_1 < ( ( int( a["rgb_d1"] * d ) ) / d ) ) or ( kac_1 >= ( ( int( a["rgb_d1"] * d ) + 1 ) / d ) )
+                    c_fg_2 = ( kac_2 < ( ( int( a["rgb_d2"] * d ) ) / d ) ) or ( kac_2 >= ( ( int( a["rgb_d2"] * d ) + 1 ) / d ) )
+                    c_fg_3 = ( kac_3 < ( ( int( a["rgb_d3"] * d ) ) / d ) ) or ( kac_3 >= ( ( int( a["rgb_d3"] * d ) + 1 ) / d ) )
+                    c_bg_1 = ( kbc_1 < ( ( int( b["rgb_d1"] * d ) ) / d ) ) or ( kbc_1 >= ( ( int( b["rgb_d1"] * d ) + 1 ) / d ) )
+                    c_bg_2 = ( kbc_2 < ( ( int( b["rgb_d2"] * d ) ) / d ) ) or ( kbc_2 >= ( ( int( b["rgb_d2"] * d ) + 1 ) / d ) )
+                    c_bg_3 = ( kbc_3 < ( ( int( b["rgb_d3"] * d ) ) / d ) ) or ( kbc_3 >= ( ( int( b["rgb_d3"] * d ) + 1 ) / d ) )
+                if ( d_cd == "F16" or d_cd == "F32" ):
+                    c_fg_1 = kac_1 != a["rgb_d1"]
+                    c_fg_2 = kac_2 != a["rgb_d2"]
+                    c_fg_3 = kac_3 != a["rgb_d3"]
+                    c_bg_1 = kbc_1 != b["rgb_d1"]
+                    c_bg_2 = kbc_2 != b["rgb_d2"]
+                    c_bg_3 = kbc_3 != b["rgb_d3"]
+
+                # Operation
+                if ( c_fg_1 == True or c_fg_2 == True or c_fg_3 == True ):
+                    if not eraser.isChecked():
+                        self.Pigmento_READ( "RGB", kac_1, kac_2, kac_3, 0, a )
+                if ( c_bg_1 == True or c_bg_2 == True or c_bg_3 == True ):
+                    if not eraser.isChecked():
+                        self.Pigmento_READ( "RGB", kbc_1, kbc_2, kbc_3, 0, b )
+            elif d_cm == "CMYK":
+                # Foreground and Background Colors ( Krita is in CMYK )
+                kac_1 = order_fg[0]
+                kac_2 = order_fg[1]
+                kac_3 = order_fg[2]
+                kac_4 = order_fg[3]
+                kbc_1 = order_bg[0]
+                kbc_2 = order_bg[1]
+                kbc_3 = order_bg[2]
+                kbc_4 = order_bg[3]
+
+                # Range
+                if ( d_cd == "U8" or d_cd == "U16" ):
+                    c_fg_1 = ( kac_1 < ( ( int( a["cmyk_d1"] * d ) ) / d ) ) or ( kac_1 >= ( ( math.ceil( a["cmyk_d1"] * d ) + 1 ) / d ) )
+                    c_fg_2 = ( kac_2 < ( ( int( a["cmyk_d2"] * d ) ) / d ) ) or ( kac_2 >= ( ( math.ceil( a["cmyk_d2"] * d ) + 1 ) / d ) )
+                    c_fg_3 = ( kac_3 < ( ( int( a["cmyk_d3"] * d ) ) / d ) ) or ( kac_3 >= ( ( math.ceil( a["cmyk_d3"] * d ) + 1 ) / d ) )
+                    c_fg_4 = ( kac_4 < ( ( int( a["cmyk_d4"] * d ) ) / d ) ) or ( kac_4 >= ( ( math.ceil( a["cmyk_d4"] * d ) + 1 ) / d ) )
+                    c_bg_1 = ( kbc_1 < ( ( int( b["cmyk_d1"] * d ) ) / d ) ) or ( kbc_1 >= ( ( math.ceil( b["cmyk_d1"] * d ) + 1 ) / d ) )
+                    c_bg_2 = ( kbc_2 < ( ( int( b["cmyk_d2"] * d ) ) / d ) ) or ( kbc_2 >= ( ( math.ceil( b["cmyk_d2"] * d ) + 1 ) / d ) )
+                    c_bg_3 = ( kbc_3 < ( ( int( b["cmyk_d3"] * d ) ) / d ) ) or ( kbc_3 >= ( ( math.ceil( b["cmyk_d3"] * d ) + 1 ) / d ) )
+                    c_bg_4 = ( kbc_4 < ( ( int( b["cmyk_d4"] * d ) ) / d ) ) or ( kbc_4 >= ( ( math.ceil( b["cmyk_d4"] * d ) + 1 ) / d ) )
+                if ( d_cd == "F16" or d_cd == "F32" ):
+                    c_fg_1 = kac_1 != a["cmyk_d1"]
+                    c_fg_2 = kac_2 != a["cmyk_d2"]
+                    c_fg_3 = kac_3 != a["cmyk_d3"]
+                    c_fg_4 = kac_4 != a["cmyk_d4"]
+                    c_bg_1 = kbc_1 != b["cmyk_d1"]
+                    c_bg_2 = kbc_2 != b["cmyk_d2"]
+                    c_bg_3 = kbc_3 != b["cmyk_d3"]
+                    c_bg_4 = kbc_4 != b["cmyk_d4"]
+
+                # Operation
+                if ( c_fg_1 == True or c_fg_2 == True or c_fg_3 == True or c_fg_4 == True ):
+                    if not eraser.isChecked():
+                        self.Pigmento_READ( "CMYK", kac_1, kac_2, kac_3, kac_4, a )
+                if ( c_bg_1 == True or c_bg_2 == True or c_bg_3 == True or c_bg_4 == True ):
+                    if not eraser.isChecked():
+                        self.Pigmento_READ( "CMYK", kbc_1, kbc_2, kbc_3, kbc_4, b )
+            elif d_cm == "YUV":
+                # Foreground and Background Colors ( Krita is in YUV )
+                kac_1 = order_fg[0]
+                kac_2 = order_fg[1]
+                kac_3 = order_fg[2]
+                kbc_1 = order_bg[0]
+                kbc_2 = order_bg[1]
+                kbc_3 = order_bg[2]
+
+                # Range
+                if ( d_cd == "U8" or d_cd == "U16" ):
+                    c_fg_1 = ( kac_1 < ( ( int( a["yuv_d1"] * d ) ) / d ) ) or ( kac_1 >= ( ( int( a["yuv_d1"] * d ) + 1 ) / d ) )
+                    c_fg_2 = ( kac_2 < ( ( int( a["yuv_d2"] * d ) ) / d ) ) or ( kac_2 >= ( ( int( a["yuv_d2"] * d ) + 1 ) / d ) )
+                    c_fg_3 = ( kac_3 < ( ( int( a["yuv_d3"] * d ) ) / d ) ) or ( kac_3 >= ( ( int( a["yuv_d3"] * d ) + 1 ) / d ) )
+                    c_bg_1 = ( kbc_1 < ( ( int( b["yuv_d1"] * d ) ) / d ) ) or ( kbc_1 >= ( ( int( b["yuv_d1"] * d ) + 1 ) / d ) )
+                    c_bg_2 = ( kbc_2 < ( ( int( b["yuv_d2"] * d ) ) / d ) ) or ( kbc_2 >= ( ( int( b["yuv_d2"] * d ) + 1 ) / d ) )
+                    c_bg_3 = ( kbc_3 < ( ( int( b["yuv_d3"] * d ) ) / d ) ) or ( kbc_3 >= ( ( int( b["yuv_d3"] * d ) + 1 ) / d ) )
+                if ( d_cd == "F16" or d_cd == "F32" ):
+                    c_fg_1 = kac_1 != a["yuv_d1"]
+                    c_fg_2 = kac_2 != a["yuv_d2"]
+                    c_fg_3 = kac_3 != a["yuv_d3"]
+                    c_bg_1 = kbc_1 != b["yuv_d1"]
+                    c_bg_2 = kbc_2 != b["yuv_d2"]
+                    c_bg_3 = kbc_3 != b["yuv_d3"]
+
+                # Operation
+                if ( c_fg_1 == True or c_fg_2 == True or c_fg_3 == True ):
+                    if not eraser.isChecked():
+                        self.Pigmento_READ( "YUV", kac_1, kac_2, kac_3, 0, a )
+                if ( c_bg_1 == True or c_bg_2 == True or c_bg_3 == True ):
+                    if not eraser.isChecked():
+                        self.Pigmento_READ( "YUV", kbc_1, kbc_2, kbc_3, 0, b )
+            elif d_cm == "XYZ":
+                # Foreground and Background Colors ( Krita is in XYZ )
+                kac_1 = order_fg[0]
+                kac_2 = order_fg[1]
+                kac_3 = order_fg[2]
+                kbc_1 = order_bg[0]
+                kbc_2 = order_bg[1]
+                kbc_3 = order_bg[2]
+
+                # Range
+                if ( d_cd == "U8" or d_cd == "U16" ):
+                    c_fg_1 = ( kac_1 < ( ( int( a["xyz_d1"] * d ) ) / d ) ) or ( kac_1 >= ( ( int( a["xyz_d1"] * d ) + 1 ) / d ) )
+                    c_fg_2 = ( kac_2 < ( ( int( a["xyz_d2"] * d ) ) / d ) ) or ( kac_2 >= ( ( int( a["xyz_d2"] * d ) + 1 ) / d ) )
+                    c_fg_3 = ( kac_3 < ( ( int( a["xyz_d3"] * d ) ) / d ) ) or ( kac_3 >= ( ( int( a["xyz_d3"] * d ) + 1 ) / d ) )
+                    c_bg_1 = ( kbc_1 < ( ( int( b["xyz_d1"] * d ) ) / d ) ) or ( kbc_1 >= ( ( int( b["xyz_d1"] * d ) + 1 ) / d ) )
+                    c_bg_2 = ( kbc_2 < ( ( int( b["xyz_d2"] * d ) ) / d ) ) or ( kbc_2 >= ( ( int( b["xyz_d2"] * d ) + 1 ) / d ) )
+                    c_bg_3 = ( kbc_3 < ( ( int( b["xyz_d3"] * d ) ) / d ) ) or ( kbc_3 >= ( ( int( b["xyz_d3"] * d ) + 1 ) / d ) )
+                if ( d_cd == "F16" or d_cd == "F32" ):
+                    c_fg_1 = kac_1 != a["xyz_d1"]
+                    c_fg_2 = kac_2 != a["xyz_d2"]
+                    c_fg_3 = kac_3 != a["xyz_d3"]
+                    c_bg_1 = kbc_1 != b["xyz_d1"]
+                    c_bg_2 = kbc_2 != b["xyz_d2"]
+                    c_bg_3 = kbc_3 != b["xyz_d3"]
+
+                # Operation
+                if ( c_fg_1 == True or c_fg_2 == True or c_fg_3 == True ):
+                    if not eraser.isChecked():
+                        self.Pigmento_READ( "XYZ", kac_1, kac_2, kac_3, 0, a )
+                if ( c_bg_1 == True or c_bg_2 == True or c_bg_3 == True ):
+                    if not eraser.isChecked():
+                        self.Pigmento_READ( "XYZ", kbc_1, kbc_2, kbc_3, 0, b )
+            elif d_cm == "LAB":
+                # Foreground and Background Colors ( Krita is in LAB )
+                kac_1 = order_fg[0]
+                kac_2 = order_fg[1]
+                kac_3 = order_fg[2]
+                kbc_1 = order_bg[0]
+                kbc_2 = order_bg[1]
+                kbc_3 = order_bg[2]
+
+                # Range
+                if ( d_cd == "U8" or d_cd == "U16" ):
+                    c_fg_1 = ( kac_1 < ( ( int( a["lab_d1"] * d ) ) / d ) ) or ( kac_1 >= ( ( int( a["lab_d1"] * d ) + 1 ) / d ) )
+                    c_fg_2 = ( kac_2 < ( ( int( a["lab_d2"] * d ) ) / d ) ) or ( kac_2 >= ( ( int( a["lab_d2"] * d ) + 1 ) / d ) )
+                    c_fg_3 = ( kac_3 < ( ( int( a["lab_d3"] * d ) ) / d ) ) or ( kac_3 >= ( ( int( a["lab_d3"] * d ) + 1 ) / d ) )
+                    c_bg_1 = ( kbc_1 < ( ( int( b["lab_d1"] * d ) ) / d ) ) or ( kbc_1 >= ( ( int( b["lab_d1"] * d ) + 1 ) / d ) )
+                    c_bg_2 = ( kbc_2 < ( ( int( b["lab_d2"] * d ) ) / d ) ) or ( kbc_2 >= ( ( int( b["lab_d2"] * d ) + 1 ) / d ) )
+                    c_bg_3 = ( kbc_3 < ( ( int( b["lab_d3"] * d ) ) / d ) ) or ( kbc_3 >= ( ( int( b["lab_d3"] * d ) + 1 ) / d ) )
+                if ( d_cd == "F16" or d_cd == "F32" ):
+                    c_fg_1 = kac_1 != a["lab_d1"]
+                    c_fg_2 = kac_2 != a["lab_d2"]
+                    c_fg_3 = kac_3 != a["lab_d3"]
+                    c_bg_1 = kbc_1 != b["lab_d1"]
+                    c_bg_2 = kbc_2 != b["lab_d2"]
+                    c_bg_3 = kbc_3 != b["lab_d3"]
+
+                # Operation
+                if ( c_fg_1 == True or c_fg_2 == True or c_fg_3 == True ):
+                    if not eraser.isChecked():
+                        self.Pigmento_READ( "LAB", kac_1, kac_2, kac_3, 0, a )
+                if ( c_bg_1 == True or c_bg_2 == True or c_bg_3 == True ):
+                    if not eraser.isChecked():
+                        self.Pigmento_READ( "LAB", kbc_1, kbc_2, kbc_3, 0, b )
+        else: # Vector Read
+            # Variables
+            v = 255
+
+            # Foreground Color
+            fgc_canvas = doc["fgc"].colorForCanvas( doc["vc"] )
+            kac_1 = fgc_canvas.red() / v
+            kac_2 = fgc_canvas.green() / v
+            kac_3 = fgc_canvas.blue() / v
+            # Background Color
+            bgc_canvas = doc["bgc"].colorForCanvas( doc["vc"] )
+            kbc_1 = bgc_canvas.red() / v
+            kbc_2 = bgc_canvas.green() / v
+            kbc_3 = bgc_canvas.blue() / v
+
+            # Range
+            c_fg_1 = ( kac_1 < ( ( int( a["rgb_d1"] * v ) ) / v ) ) or ( kac_1 >= ( ( int( a["rgb_d1"] * v ) + 1 ) / v ) )
+            c_fg_2 = ( kac_2 < ( ( int( a["rgb_d2"] * v ) ) / v ) ) or ( kac_2 >= ( ( int( a["rgb_d2"] * v ) + 1 ) / v ) )
+            c_fg_3 = ( kac_3 < ( ( int( a["rgb_d3"] * v ) ) / v ) ) or ( kac_3 >= ( ( int( a["rgb_d3"] * v ) + 1 ) / v ) )
+            c_bg_1 = ( kbc_1 < ( ( int( b["rgb_d1"] * v ) ) / v ) ) or ( kbc_1 >= ( ( int( b["rgb_d1"] * v ) + 1 ) / v ) )
+            c_bg_2 = ( kbc_2 < ( ( int( b["rgb_d2"] * v ) ) / v ) ) or ( kbc_2 >= ( ( int( b["rgb_d2"] * v ) + 1 ) / v ) )
+            c_bg_3 = ( kbc_3 < ( ( int( b["rgb_d3"] * v ) ) / v ) ) or ( kbc_3 >= ( ( int( b["rgb_d3"] * v ) + 1 ) / v ) )
+
+            # Operation
+            if ( c_fg_1 == True or c_fg_2 == True or c_fg_3 == True ):
+                self.Pigmento_READ( "RGB", kac_1, kac_2, kac_3, 0, a )
+            if ( c_bg_1 == True or c_bg_2 == True or c_bg_3 == True ):
+                self.Pigmento_READ( "RGB", kbc_1, kbc_2, kbc_3, 0, b )
     def Read_Only( self ):
         # Variables
         c1 = 255
@@ -3920,6 +3922,15 @@ class PigmentO_Docker( DockWidget ):
     def Pigmento_RELEASE( self ):
         self.widget_press = False
         self.Sync_Elements( True, True, True )
+
+    def Pigmento_UPDATE( self ):
+        if ( ( self.canvas() is not None ) and ( self.canvas().view() is not None ) ):
+            doc = self.Current_Document()
+            d_cm = doc["d_cm"]
+            d_cd = doc["d_cd"]
+            d_cp = doc["d_cp"]
+            d = doc["depth"]
+            self.Read_Color( doc, d_cm, d_cd, d_cp, d )
 
     #endregion
     #region Pigmento & Scripts #####################################################
@@ -8319,6 +8330,9 @@ class PigmentO_Docker( DockWidget ):
             self.HEX_Paste()
         if ( self.hex_copy_paste == False and self.mode_index == 0 ):
             self.Pigmento_RELEASE()
+        # Update
+        if self.mode_index == 1:
+            self.Pigmento_UPDATE()
     def leaveEvent( self, event ):
         # Variables
         self.inbound = False
