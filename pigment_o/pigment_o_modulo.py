@@ -56,8 +56,8 @@ def Read_Zip( self, location, tan_range, space, shape ):
                 qpixmap = QPixmap().fromImage( image )
                 qpixmap_list.append( qpixmap )
         return qpixmap_list
-    except Exception as e:
-        try:QtCore.qDebug( f"Pigment.O ERROR | { e }" )
+    except:
+        try:QtCore.qDebug( f"Pigment.O | ERROR Zip failed" )
         except:pass
 
 # Colors
@@ -1129,9 +1129,8 @@ class Panel_Square( QWidget ):
                 else:
                     render = qpixmap
                 painter.drawPixmap( 0, 0, render )
-            except Exception as e:
-                try:QtCore.qDebug( f"Pigment.O ERROR | { e }" )
-                except:pass
+            except:
+                pass
 
         # YUV Line
         if self.wheel_space == "YUV":
@@ -2344,9 +2343,8 @@ class Panel_Gamut( QWidget ):
                 # Painter
                 painter.setPen( QtCore.Qt.NoPen )
                 painter.setBrush( qbrush )
-            except Exception as e:
-                try:QtCore.qDebug( f"Pigment.O ERROR | { e }" )
-                except:pass
+            except:
+                pass
         # Polygon
         dot = 5
         line_size = 2
@@ -3019,9 +3017,8 @@ class Panel_Hexagon( QWidget ):
                 square.lineTo( int( self.widget_width ), int( self.widget_height ) )
                 square.lineTo( int( 0 ), int( self.widget_height ) )
                 painter.setClipPath( square )
-            except Exception as e:
-                try:QtCore.qDebug( f"Pigment.O ERROR | { e }" )
-                except:pass
+            except:
+                pass
 
         # Analyse Colors
         if self.analyse != None:
@@ -3546,6 +3543,7 @@ class Panel_Mask( QWidget ):
     SIGNAL_MASKSET = QtCore.pyqtSignal( str )
     SIGNAL_EDIT = QtCore.pyqtSignal( bool )
     SIGNAL_RESET = QtCore.pyqtSignal( bool )
+    SIGNAL_LIVE_OFF = QtCore.pyqtSignal( int )
 
     # Init
     def __init__( self, parent ):
@@ -3642,9 +3640,9 @@ class Panel_Mask( QWidget ):
         self.event_x = -10
         self.event_y = -10
         self.update()
-    def Set_Directory( self, directory_plugin ):
+    def Set_Directory( self, directory ):
         # Variables
-        self.directory = os.path.normpath( directory_plugin )
+        self.directory = directory
         # Update
         self.Update_Path( os.path.join( self.directory, "SPHERE" ) )
         self.update()
@@ -3655,7 +3653,7 @@ class Panel_Mask( QWidget ):
     def Update_Path( self, mask_set ):
         self.mask_path = []
         for i in range( 0, len( self.files ) ):
-            path = os.path.normpath( str( mask_set ) + "\\" + self.files[i] + self.file_format )
+            path = os.path.join( str( mask_set ), self.files[i] + self.file_format )
             qpixmap = QPixmap( path )
             if qpixmap.isNull() == False:
                 self.mask_path.append( path )
@@ -3677,18 +3675,22 @@ class Panel_Mask( QWidget ):
         # Pre Compose pixmaps to display
         qpixmaps = []
         for i in range( 0, len( mask_path ) ):
-            pixmap_1 = QPixmap.fromImage( QImage( mask_path[i] ) )
-            image = QImage( pixmap_1.width(), pixmap_1.height(), QImage.Format_ARGB32_Premultiplied )
-            color = QColor( self.mask_color[self.files[i]] )
-            color.setAlphaF( self.mask_alpha[self.files[i]] )
-            image.fill( color )
-            pixmap_2 = QPixmap.fromImage( image )
+            # Color
+            color = QColor( self.mask_color[ self.files[i] ] )
+            color.setAlphaF( self.mask_alpha[ self.files[i] ] )
+            # Images
+            img_path = QImage( mask_path[i] )
+            img_color = QImage( img_path.width(), img_path.height(), QImage.Format_RGBA8888 )
+            img_color.fill( color )
+            # Painter
             painter = QPainter()
-            painter.begin( pixmap_1 )
+            painter.begin( img_path )
             painter.setCompositionMode( QPainter.CompositionMode_SourceIn )
-            painter.drawImage( 0, 0, pixmap_2.toImage() )
+            painter.drawImage( 0, 0, img_color )
             painter.end()
-            qpixmaps.append( pixmap_1 )
+            del painter
+            # List
+            qpixmaps.append( QPixmap.fromImage( img_path ) )
         # Return
         return qpixmaps
 
@@ -3704,6 +3706,7 @@ class Panel_Mask( QWidget ):
 
         # LMB Neutral
         if ( event.modifiers() == QtCore.Qt.NoModifier and event.buttons() == QtCore.Qt.LeftButton ):
+            self.SIGNAL_LIVE_OFF.emit( 0 )
             self.Cursor_Color( ex, ey, self.qimage )
         # LMB Modifiers
         if ( event.modifiers() == QtCore.Qt.ShiftModifier and event.buttons() == QtCore.Qt.LeftButton ):
@@ -3815,7 +3818,7 @@ class Panel_Mask( QWidget ):
     # Context
     def Context_Menu( self, event ):
         # Variables
-        sub_folder = [name for name in os.listdir( self.directory ) if os.path.isdir( os.path.join( self.directory, name ) )]
+        sub_folder = os.listdir( self.directory )
 
         # Menu
         if self.press == False:
@@ -3875,13 +3878,11 @@ class Panel_Mask( QWidget ):
                 qpixmap = self.mask_qpixmaps[i]
                 if qpixmap.isNull() == False:
                     render = qpixmap.scaled( self.widget_width, self.widget_height, Qt.KeepAspectRatio, Qt.FastTransformation )
-                else:
-                    render = QPixmap( 1,1 ).scaled( self.widget_width, self.widget_height, Qt.KeepAspectRatio, Qt.FastTransformation )
-                w = render.width()
-                h = render.height()
-                px = int( self.w2 - ( w * 0.5 ) )
-                py = int( self.h2 - ( h * 0.5 ) )
-                painter.drawPixmap( px, py, render )
+                    w = render.width()
+                    h = render.height()
+                    px = int( self.w2 - w * 0.5 )
+                    py = int( self.h2 - h * 0.5 )
+                    painter.drawPixmap( px, py, render )
 
         # Cursor
         size = 10
@@ -4236,12 +4237,10 @@ class Channel_Selection( QWidget ):
 
         # Variables
         self.sele_origin = self.sele
-        QtCore.qDebug( "self.sele_origin = " + str( self.sele_origin ) )
 
         # LMB Neutral
         if ( event.buttons() == QtCore.Qt.LeftButton and event.modifiers() == QtCore.Qt.NoModifier ):
             self.marker = self.Marker_Index( ex, "ALL" )
-            QtCore.qDebug( "self.marker = " + str( self.marker ) )
             self.Cursor_Position( ex )
         # LMB Modifier
         if ( event.buttons() == QtCore.Qt.LeftButton and event.modifiers() == QtCore.Qt.ShiftModifier ):

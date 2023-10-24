@@ -859,6 +859,7 @@ class PigmentO_Docker( DockWidget ):
         self.panel_mask.SIGNAL_MASKSET.connect( self.Mask_Set )
         self.panel_mask.SIGNAL_EDIT.connect( self.Mask_Edit )
         self.panel_mask.SIGNAL_RESET.connect( self.Mask_Read )
+        self.panel_mask.SIGNAL_LIVE_OFF.connect( self.Mask_Live_Close )
 
         #endregion
         #region Mask Pins
@@ -1496,14 +1497,15 @@ class PigmentO_Docker( DockWidget ):
         qpixmap_fill = QPixmap( 100, 100 )
         qpixmap_fill.fill( QColor( "#000000" ) )
 
-        icon_path = "\\ICON\\"
-        path_square =  self.convert.Path_Os( self.OS, self.directory_plugin + icon_path + "SQUARE.png" )
-        path_hue =     self.convert.Path_Os( self.OS, self.directory_plugin + icon_path + "HUE.png" )
-        path_gamut =   self.convert.Path_Os( self.OS, self.directory_plugin + icon_path + "GAMUT.png" )
-        path_hexagon = self.convert.Path_Os( self.OS, self.directory_plugin + icon_path + "HEXAGON.png" )
-        path_luma =    self.convert.Path_Os( self.OS, self.directory_plugin + icon_path + "LUMA.png" )
-        path_dot =     self.convert.Path_Os( self.OS, self.directory_plugin + icon_path + "DOT.png" )
-        path_mask =    self.convert.Path_Os( self.OS, self.directory_plugin + icon_path + "MASK.png" )
+        # Icons
+        icon_path = os.path.join( self.directory_plugin, "ICON" )
+        path_square =  os.path.join( icon_path, "SQUARE.png" )
+        path_hue =     os.path.join( icon_path, "HUE.png" )
+        path_gamut =   os.path.join( icon_path, "GAMUT.png" )
+        path_hexagon = os.path.join( icon_path, "HEXAGON.png" )
+        path_luma =    os.path.join( icon_path, "LUMA.png" )
+        path_dot =     os.path.join( icon_path, "DOT.png" )
+        path_mask =    os.path.join( icon_path, "MASK.png" )
 
         self.dialog.panel_index.blockSignals( True )
         self.dialog.panel_index.setItemIcon( 0, QIcon( qpixmap_fill ) )
@@ -1691,7 +1693,7 @@ class PigmentO_Docker( DockWidget ):
         try:
             self.Loader()
         except Exception as e:
-            QMessageBox.information( QWidget(), i18n( "Warnning" ), i18n( f"Pigment.O ERROR | Reset in Progress\nReason : {e}" ) )
+            QMessageBox.information( QWidget(), i18n( "Warnning" ), i18n( f"Pigment.O | ERROR Load failed\nReason : {e}" ) )
             self.Variables()
             self.Loader()
 
@@ -3896,15 +3898,19 @@ class PigmentO_Docker( DockWidget ):
         bg_3 = int( order_bg[2] * c3 )
 
         # Print Debug
-        QtCore.qDebug( "---------------------" )
-        QtCore.qDebug( "fg_1 = " + str( fg_1 ) )
-        QtCore.qDebug( "fg_2 = " + str( fg_2 ) )
-        QtCore.qDebug( "fg_3 = " + str( fg_3 ) )
-        QtCore.qDebug( "" )
-        QtCore.qDebug( "bg_1 = " + str( bg_1 ) )
-        QtCore.qDebug( "bg_2 = " + str( bg_2 ) )
-        QtCore.qDebug( "bg_3 = " + str( bg_3 ) )
-        QtCore.qDebug( "" )
+        try:
+            QtCore.qDebug( "KRITA COLOR----------" )
+            QtCore.qDebug( "fg_1 = " + str( fg_1 ) )
+            QtCore.qDebug( "fg_2 = " + str( fg_2 ) )
+            QtCore.qDebug( "fg_3 = " + str( fg_3 ) )
+            QtCore.qDebug( "" )
+            QtCore.qDebug( "bg_1 = " + str( bg_1 ) )
+            QtCore.qDebug( "bg_2 = " + str( bg_2 ) )
+            QtCore.qDebug( "bg_3 = " + str( bg_3 ) )
+            QtCore.qDebug( "" )
+        except:
+            pass
+
 
     #endregion
     #region Pigmento Paths #########################################################
@@ -4468,7 +4474,7 @@ class PigmentO_Docker( DockWidget ):
 
             # Wheel
             if self.wheel_mode == "DIGITAL":index = "hue_d"
-            if self.wheel_mode == "ANALOG":index = "hue_a"
+            if self.wheel_mode == "ANALOG" :index = "hue_a"
             # Director Angle
             if self.harmony_index == 1:angulus = hue_1[ index ]
             if self.harmony_index == 2:angulus = hue_2[ index ]
@@ -4711,8 +4717,8 @@ class PigmentO_Docker( DockWidget ):
                             self.Color_Convert( "HEX", key_i, 0, 0, 0, self.cor )
                             self.Sync_Elements( True, True, True )
                             break
-        except Exception as e:
-            try:QtCore.qDebug( "Pigment.O ERROR | " + str( e ) )
+        except:
+            try:QtCore.qDebug( "Pigment.O | ERROR Input failed" )
             except:pass
 
     def Color_Managed( self, d_cm, d_cd, d_cp, vc, side, color ):
@@ -4863,51 +4869,58 @@ class PigmentO_Docker( DockWidget ):
         else:
             self.analyse_collection = None
     def Color_Analyse( self, path ):
-        # Variables
-        size = 100
+        read = QImageReader( path )
+        if read.canRead() == True:
+            try:
+                # Variables
+                size = 100
 
-        # Construct
-        qimage = QImage( path )
-        width = qimage.width()
-        height = qimage.height()
-        if ( width >= size and height >= size ):
-            qimage = qimage.scaled( size, size, Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation )
-            width = qimage.width()
-            height = qimage.height()
+                # Construct
+                qimage = QImage( path )
+                width = qimage.width()
+                height = qimage.height()
+                if ( width >= size and height >= size ):
+                    qimage = qimage.scaled( size, size, Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation )
+                    width = qimage.width()
+                    height = qimage.height()
 
-        # Pixel Check
-        p = list()
-        for h in range( 0, height ):
-            # Progress bar
-            h1 = ( h + 1 )
-            if ( h1 % 5 == 0 or h1 == height ):
-                percent = round( h1 / height, 4 )
-                self.color_header.Set_Progress( percent )
-            QApplication.processEvents()
-            # Rox of Pixels
-            for w in range( 0, width ):
-                # RGB
-                pixel = qimage.pixelColor( w,h )
-                r = pixel.redF()
-                g = pixel.greenF()
-                b = pixel.blueF()
-                rgb = [ r, g, b ]
-                if rgb not in p:
-                    p.append( rgb )
-        # Color
-        len_p = len( p )
-        analyse_collection = list()
-        for i in range( 0, len_p ):
-            c = color_neutral.copy()
-            color = self.Color_Convert( "RGB", p[i][0], p[i][1], p[i][2], 0, c )
-            analyse_collection.append( color )
-        self.analyse_collection = analyse_collection
+                # Pixel Check
+                p = list()
+                for h in range( 0, height ):
+                    # Progress bar
+                    h1 = ( h + 1 )
+                    if ( h1 % 5 == 0 or h1 == height ):
+                        percent = round( h1 / height, 4 )
+                        self.color_header.Set_Progress( percent )
+                    QApplication.processEvents()
+                    # Rox of Pixels
+                    for w in range( 0, width ):
+                        # RGB
+                        pixel = qimage.pixelColor( w,h )
+                        r = pixel.redF()
+                        g = pixel.greenF()
+                        b = pixel.blueF()
+                        rgb = [ r, g, b ]
+                        if rgb not in p:
+                            p.append( rgb )
+                # Color
+                len_p = len( p )
+                analyse_collection = list()
+                for i in range( 0, len_p ):
+                    c = color_neutral.copy()
+                    color = self.Color_Convert( "RGB", p[i][0], p[i][1], p[i][2], 0, c )
+                    analyse_collection.append( color )
+                self.analyse_collection = analyse_collection
 
-        # UI
-        self.color_header.Set_Progress( 1 )
-        self.Pigmento_RELEASE()
-        # System
-        QtCore.qDebug( "Pigment.O | Analyse Complete" )
+                # UI
+                self.color_header.Set_Progress( 1 )
+                self.Pigmento_RELEASE()
+                # System
+                try:QtCore.qDebug( "Pigment.O | ANALYSE Complete" )
+                except:pass
+            except Exception as e:
+                try:QtCore.qDebug( "Pigment.O | ERROR Analyse failed" )
+                except:pass
 
     #endregion
     #region Syncronization  ########################################################
@@ -6419,6 +6432,9 @@ class PigmentO_Docker( DockWidget ):
                 self.Mask_Pin_Alpha( self.mask_alpha )
     def Mask_Read( self, SIGNAL_RESET ):
         if self.panel_index == "Mask":
+            # Live
+            self.Mask_Live_Close()
+
             # Open File
             path = os.path.join( self.mask_set, "color.eo" )
             with open( path, "r" ) as color:
@@ -6461,10 +6477,10 @@ class PigmentO_Docker( DockWidget ):
             for i in range( len( read ) ):
                 index = read[i]
                 if index.startswith( "mask_color=" ) == True:
-                    line = "mask_color=" + str( self.mask_color ) + "\n"
+                    line = f"mask_color={ self.mask_color }\n"
                     index = line
                 if index.startswith( "mask_alpha=" ) == True:
-                    line = "mask_alpha=" + str( self.mask_alpha ) + "\n"
+                    line = f"mask_alpha={ self.mask_alpha }\n"
                     index = line
                 edit += index
 
@@ -6566,6 +6582,19 @@ class PigmentO_Docker( DockWidget ):
             self.layout.fg_3_live.setChecked( False )
 
     # Live
+    def Mask_Live_Close( self ):
+        self.layout.fg_3_live.setChecked( False )
+        self.layout.fg_2_live.setChecked( False )
+        self.layout.fg_1_live.setChecked( False )
+        self.layout.dif_6_live.setChecked( False )
+        self.layout.dif_5_live.setChecked( False )
+        self.layout.dif_4_live.setChecked( False )
+        self.layout.dif_3_live.setChecked( False )
+        self.layout.dif_2_live.setChecked( False )
+        self.layout.dif_1_live.setChecked( False )
+        self.layout.bg_3_live.setChecked( False )
+        self.layout.bg_2_live.setChecked( False )
+        self.layout.bg_1_live.setChecked( False )
     def Mask_Live_B1( self, boolean ):
         self.mask_live["b1"] = boolean
         if boolean == True:
@@ -9529,7 +9558,6 @@ To Do:
     - F16
     - F32
 - Profile UVD / ARD LUTs
-
 
 Investigate Krita
 - YUV / YCbCr color conversion formula - YUV formula is RED and Blue inverted ? or is it Krita ?

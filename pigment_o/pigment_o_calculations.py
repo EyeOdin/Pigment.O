@@ -394,11 +394,6 @@ class Convert():
         mult = ( la[0] * lb[0] ) + ( la[1] * lb[1] ) + ( la[2] * lb[2] )
         return mult
 
-    def Path_Os( self, os, path ):
-        if os != "winnt":
-            path = path.replace( '\\','//'  )
-        return path
-
     #endregion
     #region LERP ###################################################################
 
@@ -1401,7 +1396,6 @@ class Convert():
         # Return
         return [ a, r, d ]
     def ard_to_rgb( self, a, r, d ):
-        # QtCore.qDebug( f"value = { value }" )
         # Channel
         di = d * 3
         lu = 0
