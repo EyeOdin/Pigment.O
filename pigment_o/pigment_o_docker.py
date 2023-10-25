@@ -3911,7 +3911,6 @@ class PigmentO_Docker( DockWidget ):
         except:
             pass
 
-
     #endregion
     #region Pigmento Paths #########################################################
 
@@ -6760,6 +6759,7 @@ class PigmentO_Docker( DockWidget ):
         self.mask_alpha["b1"] = 0
         self.mask_b1.Set_Color( cor )
         self.mask_b1.Set_Alpha( 0 )
+        self.Update_Panel_Mask()
         Krita.instance().writeSetting( "Pigment.O", "mask_color", str( self.mask_color ) )
         Krita.instance().writeSetting( "Pigment.O", "mask_alpha", str( self.mask_alpha ) )
     def Mask_Clean_B2( self, SIGNAL_CLEAN ):
@@ -6768,6 +6768,7 @@ class PigmentO_Docker( DockWidget ):
         self.mask_alpha["b2"] = 0
         self.mask_b2.Set_Color( cor )
         self.mask_b2.Set_Alpha( 0 )
+        self.Update_Panel_Mask()
         Krita.instance().writeSetting( "Pigment.O", "mask_color", str( self.mask_color ) )
         Krita.instance().writeSetting( "Pigment.O", "mask_alpha", str( self.mask_alpha ) )
     def Mask_Clean_B3( self, SIGNAL_CLEAN ):
@@ -6776,6 +6777,7 @@ class PigmentO_Docker( DockWidget ):
         self.mask_alpha["b3"] = 0
         self.mask_b3.Set_Color( cor )
         self.mask_b3.Set_Alpha( 0 )
+        self.Update_Panel_Mask()
         Krita.instance().writeSetting( "Pigment.O", "mask_color", str( self.mask_color ) )
         Krita.instance().writeSetting( "Pigment.O", "mask_alpha", str( self.mask_alpha ) )
     def Mask_Clean_D1( self, SIGNAL_CLEAN ):
@@ -6784,6 +6786,7 @@ class PigmentO_Docker( DockWidget ):
         self.mask_alpha["d1"] = 0
         self.mask_d1.Set_Color( cor )
         self.mask_d1.Set_Alpha( 0 )
+        self.Update_Panel_Mask()
         Krita.instance().writeSetting( "Pigment.O", "mask_color", str( self.mask_color ) )
         Krita.instance().writeSetting( "Pigment.O", "mask_alpha", str( self.mask_alpha ) )
     def Mask_Clean_D2( self, SIGNAL_CLEAN ):
@@ -6792,6 +6795,7 @@ class PigmentO_Docker( DockWidget ):
         self.mask_alpha["d2"] = 0
         self.mask_d2.Set_Color( cor )
         self.mask_d2.Set_Alpha( 0 )
+        self.Update_Panel_Mask()
         Krita.instance().writeSetting( "Pigment.O", "mask_color", str( self.mask_color ) )
         Krita.instance().writeSetting( "Pigment.O", "mask_alpha", str( self.mask_alpha ) )
     def Mask_Clean_D3( self, SIGNAL_CLEAN ):
@@ -6800,6 +6804,7 @@ class PigmentO_Docker( DockWidget ):
         self.mask_alpha["d3"] = 0
         self.mask_d3.Set_Color( cor )
         self.mask_d3.Set_Alpha( 0 )
+        self.Update_Panel_Mask()
         Krita.instance().writeSetting( "Pigment.O", "mask_color", str( self.mask_color ) )
         Krita.instance().writeSetting( "Pigment.O", "mask_alpha", str( self.mask_alpha ) )
     def Mask_Clean_D4( self, SIGNAL_CLEAN ):
@@ -6808,6 +6813,7 @@ class PigmentO_Docker( DockWidget ):
         self.mask_alpha["d4"] = 0
         self.mask_d4.Set_Color( cor )
         self.mask_d4.Set_Alpha( 0 )
+        self.Update_Panel_Mask()
         Krita.instance().writeSetting( "Pigment.O", "mask_color", str( self.mask_color ) )
         Krita.instance().writeSetting( "Pigment.O", "mask_alpha", str( self.mask_alpha ) )
     def Mask_Clean_D5( self, SIGNAL_CLEAN ):
@@ -6816,6 +6822,7 @@ class PigmentO_Docker( DockWidget ):
         self.mask_alpha["d5"] = 0
         self.mask_d5.Set_Color( cor )
         self.mask_d5.Set_Alpha( 0 )
+        self.Update_Panel_Mask()
         Krita.instance().writeSetting( "Pigment.O", "mask_color", str( self.mask_color ) )
         Krita.instance().writeSetting( "Pigment.O", "mask_alpha", str( self.mask_alpha ) )
     def Mask_Clean_D6( self, SIGNAL_CLEAN ):
@@ -6824,6 +6831,7 @@ class PigmentO_Docker( DockWidget ):
         self.mask_alpha["d6"] = 0
         self.mask_d6.Set_Color( cor )
         self.mask_d6.Set_Alpha( 0 )
+        self.Update_Panel_Mask()
         Krita.instance().writeSetting( "Pigment.O", "mask_color", str( self.mask_color ) )
         Krita.instance().writeSetting( "Pigment.O", "mask_alpha", str( self.mask_alpha ) )
     def Mask_Clean_F1( self, SIGNAL_CLEAN ):
@@ -6832,6 +6840,7 @@ class PigmentO_Docker( DockWidget ):
         self.mask_alpha["f1"] = 0
         self.mask_f1.Set_Color( cor )
         self.mask_f1.Set_Alpha( 0 )
+        self.Update_Panel_Mask()
         Krita.instance().writeSetting( "Pigment.O", "mask_color", str( self.mask_color ) )
         Krita.instance().writeSetting( "Pigment.O", "mask_alpha", str( self.mask_alpha ) )
     def Mask_Clean_F2( self, SIGNAL_CLEAN ):
@@ -6840,6 +6849,7 @@ class PigmentO_Docker( DockWidget ):
         self.mask_alpha["f2"] = 0
         self.mask_f2.Set_Color( cor )
         self.mask_f2.Set_Alpha( 0 )
+        self.Update_Panel_Mask()
         Krita.instance().writeSetting( "Pigment.O", "mask_color", str( self.mask_color ) )
         Krita.instance().writeSetting( "Pigment.O", "mask_alpha", str( self.mask_alpha ) )
     def Mask_Clean_F3( self, SIGNAL_CLEAN ):
@@ -6848,6 +6858,7 @@ class PigmentO_Docker( DockWidget ):
         self.mask_alpha["f3"] = 0
         self.mask_f3.Set_Color( cor )
         self.mask_f3.Set_Alpha( 0 )
+        self.Update_Panel_Mask()
         Krita.instance().writeSetting( "Pigment.O", "mask_color", str( self.mask_color ) )
         Krita.instance().writeSetting( "Pigment.O", "mask_alpha", str( self.mask_alpha ) )
     # Alpha
