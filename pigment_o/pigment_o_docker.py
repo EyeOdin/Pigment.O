@@ -8792,7 +8792,7 @@ class PigmentS_Docker( DockWidget ):
             elif self.sample_mode == "CMYK":
                 channels = 4
                 extra = 2
-a            else:
+            else:
                 channels = 3
                 extra = 2
             # Item Selection
