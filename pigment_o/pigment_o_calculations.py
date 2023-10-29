@@ -79,7 +79,7 @@ class Geometry():
         return angle
 
     #endregion
-    #region Range ######################################################################
+    #region LERP #######################################################################
 
     def Lerp_1D( self, percent, bot, top ):
         lerp = bot + ( ( top - bot ) * percent )
@@ -104,6 +104,9 @@ class Geometry():
             lerp = bot[i] + ( ( top[i] - bot[i] ) * percent )
             lista.append( lerp )
         return lista
+
+    #endregion
+    #region Range ######################################################################
 
     def Random_Range( self, range ):
         time = int( QtCore.QTime.currentTime().toString( 'hhmmssms' ) )
@@ -414,8 +417,8 @@ class Convert():
             vector = [ color["hsv_1"], color["hsv_2"], color["hsv_3"] ]
         elif mode == "HSL":
             vector = [ color["hsl_1"], color["hsl_2"], color["hsl_3"] ]
-        elif mode == "HSY":
-            vector = [ color["hsy_1"], color["hsy_2"], color["hsy_3"] ]
+        elif mode == "HCY":
+            vector = [ color["hcy_1"], color["hcy_2"], color["hcy_3"] ]
         elif mode == "ARD":
             vector = [ color["ard_1"], color["ard_2"], color["ard_3"] ]
         elif mode == "XYZ":
@@ -430,7 +433,7 @@ class Convert():
     def color_lerp( self, mode, channels, color_a, color_b, factor ):
         color = []
         if channels >= 1:
-            hue_rgb = ( "HSV", "HSL", "HSY", "ARD" )
+            hue_rgb = ( "HSV", "HSL", "HCY", "ARD" )
             if mode in hue_rgb: # Circular
                 dist_a = color_b[0] - color_a[0]
                 if color_a[0] < color_b[0]:
@@ -483,7 +486,7 @@ class Convert():
         lab = None
 
         # Lists
-        list_rgb = [ "A", "RGB", "CMY", "CMYK", "RYB", "YUV", "HSV", "HSL", "HSY", "ARD" ]
+        list_rgb = [ "A", "RGB", "CMY", "CMYK", "RYB", "YUV", "HSV", "HSL", "HCY", "ARD" ]
         list_xyz = [ "XYZ", "XYY", "LAB", "LCH" ]
         if mode in list_rgb:form = 0
         if mode in list_xyz:form = 1
@@ -532,8 +535,8 @@ class Convert():
             cor = self.rgb_to_hsv( rgb[0], rgb[1], rgb[2] )
         elif mode == "HSL":
             cor = self.rgb_to_hsl( rgb[0], rgb[1], rgb[2] )
-        elif mode == "HSY":
-            cor = self.rgb_to_hsy( rgb[0], rgb[1], rgb[2] )
+        elif mode == "HCY":
+            cor = self.rgb_to_hcy( rgb[0], rgb[1], rgb[2] )
         elif mode == "ARD":
             cor = self.rgb_to_ard( rgb[0], rgb[1], rgb[2] )
         elif mode == "XYZ":
@@ -736,22 +739,22 @@ class Convert():
 
     # YUV
     def rgb_to_yuv( self, r, g, b ):
-        y = self.List_Mult_3( [ self.luma_r                          , self.luma_g                          , self.luma_b                          ], [ r, g, b ] )
-        u = self.List_Mult_3( [ -0.5*((self.luma_r)/(1-self.luma_b)) , -0.5*((self.luma_g)/(1-self.luma_b)) , 0.5                                  ], [ r, g, b ] )
-        v = self.List_Mult_3( [ 0.5                                  , -0.5*((self.luma_g)/(1-self.luma_r)) , -0.5*((self.luma_b)/(1-self.luma_r)) ], [ r, g, b ] )
+        y = self.List_Mult_3( [ self.luma_r                                      , self.luma_g                                      , self.luma_b                                      ], [ r, g, b ] )
+        u = self.List_Mult_3( [ -0.5 * ( ( self.luma_r ) / ( 1 - self.luma_b ) ) , -0.5 * ( ( self.luma_g ) / ( 1 - self.luma_b ) ) , +0.5                                             ], [ r, g, b ] )
+        v = self.List_Mult_3( [ +0.5                                             , -0.5 * ( ( self.luma_g ) / ( 1 - self.luma_r ) ) , -0.5 * ( ( self.luma_b ) / ( 1 - self.luma_r ) ) ], [ r, g, b ] )
         y, u, v = self.Vector_Safe( y, 0.5 + u, 0.5 + v )
         return [ y, u, v ]
     def yuv_to_rgb( self, y, u, v ):
         u -= 0.5
         v -= 0.5
         if self.luminosity == "ITU-R BT.2020":
-            r = self.List_Mult_3( [ 1 , 0                 , 1.4746            ], [ y, u, v ] )
-            g = self.List_Mult_3( [ 1 , -0.16455312684366 , -0.57135312684366 ], [ y, u, v ] )
-            b = self.List_Mult_3( [ 1 , 1.8814            , 0                 ], [ y, u, v ] )
+            r = self.List_Mult_3( [ +1 , +0                , +1.4746           ], [ y, u, v ] )
+            g = self.List_Mult_3( [ +1 , -0.16455312684366 , -0.57135312684366 ], [ y, u, v ] )
+            b = self.List_Mult_3( [ +1 , +1.8814           , +0                ], [ y, u, v ] )
         else:
-            r = self.List_Mult_3( [ 1 , 0 , 2-2*self.luma_r ], [ y, u, v ] )
-            g = self.List_Mult_3( [ 1 , -(self.luma_b/self.luma_g)*(2-2*self.luma_b) , -(self.luma_r/self.luma_g)*(2-2*self.luma_r) ], [ y, u, v ] )
-            b = self.List_Mult_3( [ 1 , 2-2*self.luma_b , 0 ], [ y, u, v ] )
+            r = self.List_Mult_3( [ +1 , +0                                                       , 2 - 2 * self.luma_r                                      ], [ y, u, v ] )
+            g = self.List_Mult_3( [ +1 , -( self.luma_b / self.luma_g ) * ( 2 - 2 * self.luma_b ) , -( self.luma_r / self.luma_g ) * ( 2 - 2 * self.luma_r ) ], [ y, u, v ] )
+            b = self.List_Mult_3( [ +1 , +2 - 2 * self.luma_b                                     , 0                                                        ], [ y, u, v ] )
         r, g, b = self.Vector_Safe( r, g, b )
         return [r,g,b]
 
@@ -767,20 +770,23 @@ class Convert():
             g = lsl[1]
             b = lsl[2]
 
-        maxc = max( r, g, b )
-        minc = min( r, g, b )
-        if minc == maxc:
-            return self.hue # Hue = 0
-        rc = ( maxc-r ) / ( maxc-minc )
-        gc = ( maxc-g ) / ( maxc-minc )
-        bc = ( maxc-b ) / ( maxc-minc )
-        if r == maxc:
-            h = bc-gc
-        elif g == maxc:
-            h = 2.0 + rc - bc
+        # sRGB to HSX
+        v_min = min( r, g, b  )
+        v_max = max( r, g, b  )
+        d_max = v_max - v_min
+        if d_max == 0:
+            h = self.hue
         else:
-            h = 4.0 + gc - rc
-        h = ( h / 6.0  ) % 1.0
+            d_r = ( ( ( v_max - r  ) / 6  ) + ( d_max / 2  )  ) / d_max
+            d_g = ( ( ( v_max - g  ) / 6  ) + ( d_max / 2  )  ) / d_max
+            d_b = ( ( ( v_max - b  ) / 6  ) + ( d_max / 2  )  ) / d_max
+            if r == v_max :
+                h = d_b - d_g
+            elif g == v_max :
+                h = ( 1 / 3  ) + d_r - d_b
+            elif b == v_max :
+                h = ( 2 / 3  ) + d_g - d_r
+            h = self.geometry.Limit_Looper( h, 1 )
         return h
     def hue_to_rgb( self, h ):
         vh = h * 6
@@ -853,40 +859,15 @@ class Convert():
                 hued = ( digital_step[i] + ( digital_step[i+1] - digital_step[i] ) * var  )
         return hued
     # Hue YUV
-    def yuv_to_angle( self, y, u, v, a ):
-        # delta
-        du = u
-        dv = v
-        if du >= 0.5:du = 1 - u
-        if dv >= 0.5:dv = 1 - v
-        if du <= dv:ds = du
-        else:ds = dv
-        # Points
-        p1x = ds
-        p1y = ds
-        p2x = ds
-        p2y = 1 - ds
-        p3x = 1 - ds
-        p3y = 1 - ds
-        p4x = 1 - ds
-        p4y = ds
-        # angles
-        az = self.geometry.Limit_Looper( self.geometry.Trig_2D_Points_Lines_Angle( u, v, 0.5, 0.5, 0, 0 ), 360 )
-        aa = self.geometry.Limit_Looper( az - a*360, 360 )
-        if a == 0:
-            sx = u
-            sy = v
-        else:
-            if ( aa <= 90 ):
-                sx, sy = self.geometry.Lerp_2D( aa/90, p1x, p1y, p2x, p2y )
-            if ( aa > 90 and aa <= 180 ):
-                sx, sy = self.geometry.Lerp_2D( (aa-90)/90, p2x, p2y, p3x, p3y )
-            if ( aa > 180 and aa <= 270 ):
-                sx, sy = self.geometry.Lerp_2D( (aa-180)/90, p3x, p3y, p4x, p4y )
-            if ( aa > 270 ):
-                sx, sy = self.geometry.Lerp_2D( (aa-270)/90, p4x, p4y, p1x, p1y )
-        # Return
-        return y, sx, sy
+    def uv_to_hue( self, y, u, v, angle ):
+        rgb = self.yuv_to_rgb( y, u, v )
+        hcy = self.rgb_to_hcy( rgb[0], rgb[1], rgb[2] )
+        nrgb = self.hcy_to_rgb( angle, hcy[1], hcy[2] )
+        nyuv = self.rgb_to_yuv( nrgb[0], nrgb[1], nrgb[2] )
+        ny = y
+        nu = nyuv[1]
+        nv = nyuv[2]
+        return ny, nu, nv
 
     # HSV
     def rgb_to_hsv( self, r, g, b ):
@@ -1255,28 +1236,28 @@ class Convert():
             b = lsl[2]
 
         # sRGB to HSX
-        y = self.luma_r*r + self.luma_g*g + self.luma_b*b
+        y = self.luma_r * r + self.luma_g * g + self.luma_b * b
         p = max( r, g, b )
         n = min( r, g, b )
         d = p - n
         if n == p:
             h = self.hue
         elif p == r:
-            h = ( g - b )/d
+            h = ( g - b ) / d
             if h < 0:
                 h += 6.0
         elif p == g:
-            h = ( ( b - r )/d ) + 2.0
-        else:  # p==b
-            h = ( ( r - g )/d ) + 4.0
+            h = ( ( b - r ) / d ) + 2.0
+        elif p == b:
+            h = ( ( r - g ) / d ) + 4.0
         h /= 6.0
         if ( r == g == b or y == 0 or y == 1 ):
             h = self.hue
             c = 0.0
         else:
-            c = max( ( y-n )/y, ( p-y )/( 1-y ) )
+            c = max( ( y-n ) / y, ( p - y ) / ( 1 - y ) )
         if self.d_cd != "U8": # == vs !=
-            y = y**( 1/self.gamma_y ) # Gama compression of the luma value
+            y = y**( 1 / self.gamma_y ) # Gama compression of the luma value
         return [h, c, y]
     def hcy_to_rgb( self, h, c, y ):
         if self.d_cd != "U8": # == vs !=
@@ -1307,13 +1288,13 @@ class Convert():
             tm = self.luma_r + self.luma_b * th
         # Calculate the RGB components in sorted order
         if tm >= y:
-            p = y + y*c*( 1-tm )/tm
-            o = y + y*c*( th-tm )/tm
-            n = y - ( y*c )
+            p = y + y * c * ( 1 - tm ) / tm
+            o = y + y * c * ( th - tm ) / tm
+            n = y - ( y * c )
         else:
-            p = y + ( 1-y )*c
-            o = y + ( 1-y )*c*( th-tm )/( 1-tm )
-            n = y - ( 1-y )*c*tm/( 1-tm )
+            p = y + ( 1 - y ) * c
+            o = y + ( 1 - y ) * c * ( th - tm ) / ( 1 - tm )
+            n = y - ( 1 - y ) * c * tm / ( 1 - tm )
         # Back to RGB order
         if h < 1:
             r = p
@@ -1369,7 +1350,7 @@ class Convert():
             r = 0
         else:
             # Angle
-            a = self.rgb_to_hue( r, g, b)
+            a = self.rgb_to_hue( r, g, b )
             # Channel
             O1, O2, O3, O4, O5, O6, C12, C23, C34, C45, C56, C61 = self.uvd_hexagon( d, 1, 0, 1 )
             c = self.ard_channel( d, a, O1, O2, O3, O4, O5, O6, C12, C23, C34, C45, C56, C61 )

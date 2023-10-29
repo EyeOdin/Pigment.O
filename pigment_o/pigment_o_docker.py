@@ -63,7 +63,7 @@ from .pigment_o_modulo import (
 
 DOCKER_NAME_1 = "Pigment.O"
 DOCKER_NAME_2 = "Pigment.S"
-pigment_o_version = "2023_10_01"
+pigment_o_version = "2023_10_29"
 
 #endregion
 
@@ -135,7 +135,7 @@ class PigmentO_Docker( DockWidget ):
         self.zoom = False
         # Color Wheel
         self.wheel_mode = "DIGITAL" # "DIGITAL" "ANALOG"
-        self.wheel_space = "HSV" # "HSV" "HSL" "HSY" "ARD"
+        self.wheel_space = "HSV" # "HSV" "HSL" "HCY" "ARD"
         # Hue
         self.huecircle_shape = "None" # "None" "Triangle" "Square" "Diamond"
         # Gamut
@@ -243,7 +243,7 @@ class PigmentO_Docker( DockWidget ):
         self.chan_yuv = False
         self.chan_hsv = False
         self.chan_hsl = False
-        self.chan_hsy = False
+        self.chan_hcy = False
         self.chan_ard = False
         self.chan_xyz = False
         self.chan_xyy = False
@@ -374,13 +374,13 @@ class PigmentO_Docker( DockWidget ):
         self.layout.hsl_1_value.setMaximum( krange["hsl_1"] )
         self.layout.hsl_2_value.setMaximum( krange["hsl_2"] )
         self.layout.hsl_3_value.setMaximum( krange["hsl_3"] )
-        # HSY
-        self.layout.hsy_1_value.setMinimum( 0 )
-        self.layout.hsy_2_value.setMinimum( 0 )
-        self.layout.hsy_3_value.setMinimum( 0 )
-        self.layout.hsy_1_value.setMaximum( krange["hsy_1"] )
-        self.layout.hsy_2_value.setMaximum( krange["hsy_2"] )
-        self.layout.hsy_3_value.setMaximum( krange["hsy_3"] )
+        # HCY
+        self.layout.hcy_1_value.setMinimum( 0 )
+        self.layout.hcy_2_value.setMinimum( 0 )
+        self.layout.hcy_3_value.setMinimum( 0 )
+        self.layout.hcy_1_value.setMaximum( krange["hcy_1"] )
+        self.layout.hcy_2_value.setMaximum( krange["hcy_2"] )
+        self.layout.hcy_3_value.setMaximum( krange["hcy_3"] )
         # ARD
         self.layout.ard_1_value.setMinimum( 0 )
         self.layout.ard_2_value.setMinimum( 0 )
@@ -454,10 +454,10 @@ class PigmentO_Docker( DockWidget ):
         self.layout.hsl_1_value.valueChanged.connect( self.Channels_HSL_1_Value )
         self.layout.hsl_2_value.valueChanged.connect( self.Channels_HSL_2_Value )
         self.layout.hsl_3_value.valueChanged.connect( self.Channels_HSL_3_Value )
-        # HSY
-        self.layout.hsy_1_value.valueChanged.connect( self.Channels_HSY_1_Value )
-        self.layout.hsy_2_value.valueChanged.connect( self.Channels_HSY_2_Value )
-        self.layout.hsy_3_value.valueChanged.connect( self.Channels_HSY_3_Value )
+        # HCY
+        self.layout.hcy_1_value.valueChanged.connect( self.Channels_HCY_1_Value )
+        self.layout.hcy_2_value.valueChanged.connect( self.Channels_HCY_2_Value )
+        self.layout.hcy_3_value.valueChanged.connect( self.Channels_HCY_3_Value )
         # ARD
         self.layout.ard_1_value.valueChanged.connect( self.Channels_ARD_1_Value )
         self.layout.ard_2_value.valueChanged.connect( self.Channels_ARD_2_Value )
@@ -555,7 +555,7 @@ class PigmentO_Docker( DockWidget ):
         self.dialog.chan_yuv.toggled.connect( self.Channel_YUV )
         self.dialog.chan_hsv.toggled.connect( self.Channel_HSV )
         self.dialog.chan_hsl.toggled.connect( self.Channel_HSL )
-        self.dialog.chan_hsy.toggled.connect( self.Channel_HSY )
+        self.dialog.chan_hcy.toggled.connect( self.Channel_HCY )
         self.dialog.chan_ard.toggled.connect( self.Channel_ARD )
         self.dialog.chan_xyz.toggled.connect( self.Channel_XYZ )
         self.dialog.chan_xyy.toggled.connect( self.Channel_XYY )
@@ -572,7 +572,7 @@ class PigmentO_Docker( DockWidget ):
         self.dialog.range_hue.valueChanged.connect( self.Range_HUE )
         self.dialog.range_hsv.valueChanged.connect( self.Range_HSV )
         self.dialog.range_hsl.valueChanged.connect( self.Range_HSL )
-        self.dialog.range_hsy.valueChanged.connect( self.Range_HSY )
+        self.dialog.range_hcy.valueChanged.connect( self.Range_HCY )
         self.dialog.range_ard.valueChanged.connect( self.Range_ARD )
         self.dialog.range_xyz.valueChanged.connect( self.Range_XYZ )
         self.dialog.range_xyy.valueChanged.connect( self.Range_XYY )
@@ -589,7 +589,7 @@ class PigmentO_Docker( DockWidget ):
         self.dialog.reset_hue.clicked.connect( self.Reset_HUE )
         self.dialog.reset_hsv.clicked.connect( self.Reset_HSV )
         self.dialog.reset_hsl.clicked.connect( self.Reset_HSL )
-        self.dialog.reset_hsy.clicked.connect( self.Reset_HSY )
+        self.dialog.reset_hcy.clicked.connect( self.Reset_HCY )
         self.dialog.reset_ard.clicked.connect( self.Reset_ARD )
         self.dialog.reset_xyz.clicked.connect( self.Reset_XYZ )
         self.dialog.reset_xyy.clicked.connect( self.Reset_XYY )
@@ -664,7 +664,7 @@ class PigmentO_Docker( DockWidget ):
         self.layout.yuv_slider.installEventFilter( self )
         self.layout.hsv_slider.installEventFilter( self )
         self.layout.hsl_slider.installEventFilter( self )
-        self.layout.hsy_slider.installEventFilter( self )
+        self.layout.hcy_slider.installEventFilter( self )
         self.layout.ard_slider.installEventFilter( self )
         self.layout.xyz_slider.installEventFilter( self )
         self.layout.xyy_slider.installEventFilter( self )
@@ -1059,19 +1059,19 @@ class PigmentO_Docker( DockWidget ):
         self.hsl_1_slider.Set_Stops( stops["hsl_1"] )
         self.hsl_2_slider.Set_Stops( stops["hsl_2"] )
         self.hsl_3_slider.Set_Stops( stops["hsl_3"] )
-        # HSY
-        self.hsy_1_slider = Channel_Slider( self.layout.hsy_1_slider )
-        self.hsy_2_slider = Channel_Slider( self.layout.hsy_2_slider )
-        self.hsy_3_slider = Channel_Slider( self.layout.hsy_3_slider )
-        self.hsy_1_slider.Set_Mode( "CIRCULAR" )
-        self.hsy_2_slider.Set_Mode( "LINEAR" )
-        self.hsy_3_slider.Set_Mode( "LINEAR" )
-        self.hsy_1_slider.Set_Limits( 0, 0.5, 1 )
-        self.hsy_2_slider.Set_Limits( 0, 0.5, 1 )
-        self.hsy_3_slider.Set_Limits( 0, 0.5, 1 )
-        self.hsy_1_slider.Set_Stops( stops["hsy_1"] )
-        self.hsy_2_slider.Set_Stops( stops["hsy_2"] )
-        self.hsy_3_slider.Set_Stops( stops["hsy_3"] )
+        # HCY
+        self.hcy_1_slider = Channel_Slider( self.layout.hcy_1_slider )
+        self.hcy_2_slider = Channel_Slider( self.layout.hcy_2_slider )
+        self.hcy_3_slider = Channel_Slider( self.layout.hcy_3_slider )
+        self.hcy_1_slider.Set_Mode( "CIRCULAR" )
+        self.hcy_2_slider.Set_Mode( "LINEAR" )
+        self.hcy_3_slider.Set_Mode( "LINEAR" )
+        self.hcy_1_slider.Set_Limits( 0, 0.5, 1 )
+        self.hcy_2_slider.Set_Limits( 0, 0.5, 1 )
+        self.hcy_3_slider.Set_Limits( 0, 0.5, 1 )
+        self.hcy_1_slider.Set_Stops( stops["hcy_1"] )
+        self.hcy_2_slider.Set_Stops( stops["hcy_2"] )
+        self.hcy_3_slider.Set_Stops( stops["hcy_3"] )
         # ARD
         self.ard_1_slider = Channel_Slider( self.layout.ard_1_slider )
         self.ard_2_slider = Channel_Slider( self.layout.ard_2_slider )
@@ -1267,21 +1267,21 @@ class PigmentO_Docker( DockWidget ):
         self.hsl_3_slider.SIGNAL_STOPS.connect( self.Channels_HSL_3_Stops )
         self.hsl_3_slider.SIGNAL_TEXT.connect( self.Label_String )
 
-        # HSY 1
-        self.hsy_1_slider.SIGNAL_VALUE.connect( self.Channels_HSY_1_Slider )
-        self.hsy_1_slider.SIGNAL_RELEASE.connect( self.Pigmento_RELEASE )
-        self.hsy_1_slider.SIGNAL_STOPS.connect( self.Channels_HSY_1_Stops )
-        self.hsy_1_slider.SIGNAL_TEXT.connect( self.Label_String )
-        # HSY 2
-        self.hsy_2_slider.SIGNAL_VALUE.connect( self.Channels_HSY_2_Slider )
-        self.hsy_2_slider.SIGNAL_RELEASE.connect( self.Pigmento_RELEASE )
-        self.hsy_2_slider.SIGNAL_STOPS.connect( self.Channels_HSY_2_Stops )
-        self.hsy_2_slider.SIGNAL_TEXT.connect( self.Label_String )
-        # HSY 3
-        self.hsy_3_slider.SIGNAL_VALUE.connect( self.Channels_HSY_3_Slider )
-        self.hsy_3_slider.SIGNAL_RELEASE.connect( self.Pigmento_RELEASE )
-        self.hsy_3_slider.SIGNAL_STOPS.connect( self.Channels_HSY_3_Stops )
-        self.hsy_3_slider.SIGNAL_TEXT.connect( self.Label_String )
+        # HCY 1
+        self.hcy_1_slider.SIGNAL_VALUE.connect( self.Channels_HCY_1_Slider )
+        self.hcy_1_slider.SIGNAL_RELEASE.connect( self.Pigmento_RELEASE )
+        self.hcy_1_slider.SIGNAL_STOPS.connect( self.Channels_HCY_1_Stops )
+        self.hcy_1_slider.SIGNAL_TEXT.connect( self.Label_String )
+        # HCY 2
+        self.hcy_2_slider.SIGNAL_VALUE.connect( self.Channels_HCY_2_Slider )
+        self.hcy_2_slider.SIGNAL_RELEASE.connect( self.Pigmento_RELEASE )
+        self.hcy_2_slider.SIGNAL_STOPS.connect( self.Channels_HCY_2_Stops )
+        self.hcy_2_slider.SIGNAL_TEXT.connect( self.Label_String )
+        # HCY 3
+        self.hcy_3_slider.SIGNAL_VALUE.connect( self.Channels_HCY_3_Slider )
+        self.hcy_3_slider.SIGNAL_RELEASE.connect( self.Pigmento_RELEASE )
+        self.hcy_3_slider.SIGNAL_STOPS.connect( self.Channels_HCY_3_Stops )
+        self.hcy_3_slider.SIGNAL_TEXT.connect( self.Label_String )
 
         # ARD 1
         self.ard_1_slider.SIGNAL_VALUE.connect( self.Channels_ARD_1_Slider )
@@ -1634,7 +1634,7 @@ class PigmentO_Docker( DockWidget ):
         self.dialog.chan_yuv.setChecked( self.Set_Read( "EVAL", "chan_yuv", False ) )
         self.dialog.chan_hsv.setChecked( self.Set_Read( "EVAL", "chan_hsv", True ) )
         self.dialog.chan_hsl.setChecked( self.Set_Read( "EVAL", "chan_hsl", False ) )
-        self.dialog.chan_hsy.setChecked( self.Set_Read( "EVAL", "chan_hsy", False ) )
+        self.dialog.chan_hcy.setChecked( self.Set_Read( "EVAL", "chan_hcy", False ) )
         self.dialog.chan_ard.setChecked( self.Set_Read( "EVAL", "chan_ard", False ) )
         self.dialog.chan_xyz.setChecked( self.Set_Read( "EVAL", "chan_xyz", False ) )
         self.dialog.chan_xyy.setChecked( self.Set_Read( "EVAL", "chan_xyy", False ) )
@@ -1734,7 +1734,7 @@ class PigmentO_Docker( DockWidget ):
         self.Channel_YUV( self.dialog.chan_yuv.isChecked() )
         self.Channel_HSV( self.dialog.chan_hsv.isChecked() )
         self.Channel_HSL( self.dialog.chan_hsl.isChecked() )
-        self.Channel_HSY( self.dialog.chan_hsy.isChecked() )
+        self.Channel_HCY( self.dialog.chan_hcy.isChecked() )
         self.Channel_ARD( self.dialog.chan_ard.isChecked() )
         self.Channel_XYZ( self.dialog.chan_xyz.isChecked() )
         self.Channel_XYY( self.dialog.chan_xyy.isChecked() )
@@ -2135,7 +2135,7 @@ class PigmentO_Docker( DockWidget ):
             self.sele_2_slider.Set_Mode( "LINEAR" )
             self.sele_3_slider.Set_Mode( "LINEAR" )
             self.sele_4_slider.Set_Mode( None )
-        if self.sele_mode in [ "HSV", "HSL", "HSY", "ARD" ]:
+        if self.sele_mode in [ "HSV", "HSL", "HCY", "ARD" ]:
             self.sele_1_slider.Set_Mode( "CIRCULAR" )
             self.sele_2_slider.Set_Mode( "LINEAR" )
             self.sele_3_slider.Set_Mode( "LINEAR" )
@@ -2161,7 +2161,7 @@ class PigmentO_Docker( DockWidget ):
         chan_yuv = self.dialog.chan_yuv.isChecked()
         chan_hsv = self.dialog.chan_hsv.isChecked()
         chan_hsl = self.dialog.chan_hsl.isChecked()
-        chan_hsy = self.dialog.chan_hsy.isChecked()
+        chan_hcy = self.dialog.chan_hcy.isChecked()
         chan_ard = self.dialog.chan_ard.isChecked()
         chan_xyz = self.dialog.chan_xyz.isChecked()
         chan_xyy = self.dialog.chan_xyy.isChecked()
@@ -2179,7 +2179,7 @@ class PigmentO_Docker( DockWidget ):
         self.Channel_YUV( chan_yuv )
         self.Channel_HSV( chan_hsv )
         self.Channel_HSL( chan_hsl )
-        self.Channel_HSY( chan_hsy )
+        self.Channel_HCY( chan_hcy )
         self.Channel_ARD( chan_ard )
         self.Channel_XYZ( chan_xyz )
         self.Channel_XYY( chan_xyy )
@@ -2355,8 +2355,8 @@ class PigmentO_Docker( DockWidget ):
         self.Pigmento_RELEASE()
         # Save
         Krita.instance().writeSetting( "Pigment.O", "chan_hsl", str( self.chan_hsl ) )
-    def Channel_HSY( self, boolean ):
-        self.chan_hsy = boolean
+    def Channel_HCY( self, boolean ):
+        self.chan_hcy = boolean
         if ( boolean == True and self.ui_channel == True ):
             maxi = max_val
             horz = 0
@@ -2367,15 +2367,15 @@ class PigmentO_Docker( DockWidget ):
             vert = 0
 
         # layout
-        self.layout.hsy_label.setMaximumHeight( maxi )
-        self.layout.hsy_slider.setMaximumHeight( maxi )
-        self.layout.hsy_value.setMaximumHeight( maxi )
-        self.layout.hsy_label_layout.setContentsMargins( horz, vert, horz, vert )
-        self.layout.hsy_slider_layout.setContentsMargins( horz, vert, horz, vert )
-        self.layout.hsy_value_layout.setContentsMargins( horz, vert, horz, vert )
+        self.layout.hcy_label.setMaximumHeight( maxi )
+        self.layout.hcy_slider.setMaximumHeight( maxi )
+        self.layout.hcy_value.setMaximumHeight( maxi )
+        self.layout.hcy_label_layout.setContentsMargins( horz, vert, horz, vert )
+        self.layout.hcy_slider_layout.setContentsMargins( horz, vert, horz, vert )
+        self.layout.hcy_value_layout.setContentsMargins( horz, vert, horz, vert )
         self.Pigmento_RELEASE()
         # Save
-        Krita.instance().writeSetting( "Pigment.O", "chan_hsy", str( self.chan_hsy ) )
+        Krita.instance().writeSetting( "Pigment.O", "chan_hcy", str( self.chan_hcy ) )
     def Channel_ARD( self, boolean ):
         self.chan_ard = boolean
         if ( boolean == True and self.ui_channel == True ):
@@ -2553,7 +2553,7 @@ class PigmentO_Docker( DockWidget ):
         self.dialog.range_hue.blockSignals( boolean )
         self.dialog.range_hsv.blockSignals( boolean )
         self.dialog.range_hsl.blockSignals( boolean )
-        self.dialog.range_hsy.blockSignals( boolean )
+        self.dialog.range_hcy.blockSignals( boolean )
         self.dialog.range_ard.blockSignals( boolean )
 
         self.dialog.range_xyz.blockSignals( boolean )
@@ -2586,9 +2586,9 @@ class PigmentO_Docker( DockWidget ):
         self.layout.hsl_1_value.setMaximum( dict["hsl_1"] )
         self.layout.hsl_2_value.setMaximum( dict["hsl_2"] )
         self.layout.hsl_3_value.setMaximum( dict["hsl_3"] )
-        self.layout.hsy_1_value.setMaximum( dict["hsy_1"] )
-        self.layout.hsy_2_value.setMaximum( dict["hsy_2"] )
-        self.layout.hsy_3_value.setMaximum( dict["hsy_3"] )
+        self.layout.hcy_1_value.setMaximum( dict["hcy_1"] )
+        self.layout.hcy_2_value.setMaximum( dict["hcy_2"] )
+        self.layout.hcy_3_value.setMaximum( dict["hcy_3"] )
         self.layout.ard_1_value.setMaximum( dict["ard_1"] )
         self.layout.ard_2_value.setMaximum( dict["ard_2"] )
         self.layout.ard_3_value.setMaximum( dict["ard_3"] )
@@ -2616,7 +2616,7 @@ class PigmentO_Docker( DockWidget ):
         self.dialog.range_hue.setValue( dict["hsv_1"] )
         self.dialog.range_hsv.setValue( dict["hsv_2"] )
         self.dialog.range_hsl.setValue( dict["hsl_2"] )
-        self.dialog.range_hsy.setValue( dict["hsy_2"] )
+        self.dialog.range_hcy.setValue( dict["hcy_2"] )
         self.dialog.range_ard.setValue( dict["ard_2"] )
         self.dialog.range_xyz.setValue( dict["xyz_1"] )
         self.dialog.range_xyy.setValue( dict["xyy_1"] )
@@ -2686,11 +2686,11 @@ class PigmentO_Docker( DockWidget ):
         chan_range = int( self.geometry.Limit_Unit( chan_range ) )
         krange["hsv_1"] = chan_range
         krange["hsl_1"] = chan_range
-        krange["hsy_1"] = chan_range
+        krange["hcy_1"] = chan_range
         krange["ard_1"] = chan_range
         self.layout.hsv_1_value.setMaximum( chan_range )
         self.layout.hsl_1_value.setMaximum( chan_range )
-        self.layout.hsy_1_value.setMaximum( chan_range )
+        self.layout.hcy_1_value.setMaximum( chan_range )
         self.layout.ard_1_value.setMaximum( chan_range )
         self.Pigmento_RELEASE()
         Krita.instance().writeSetting( "Pigment.O", "krange", str( krange ) )
@@ -2710,12 +2710,12 @@ class PigmentO_Docker( DockWidget ):
         self.layout.hsl_3_value.setMaximum( chan_range )
         self.Pigmento_RELEASE()
         Krita.instance().writeSetting( "Pigment.O", "krange", str( krange ) )
-    def Range_HSY( self, chan_range ):
+    def Range_HCY( self, chan_range ):
         chan_range = int( self.geometry.Limit_Unit( chan_range ) )
-        krange["hsy_2"] = chan_range
-        krange["hsy_3"] = chan_range
-        self.layout.hsy_2_value.setMaximum( chan_range )
-        self.layout.hsy_3_value.setMaximum( chan_range )
+        krange["hcy_2"] = chan_range
+        krange["hcy_3"] = chan_range
+        self.layout.hcy_2_value.setMaximum( chan_range )
+        self.layout.hcy_3_value.setMaximum( chan_range )
         self.Pigmento_RELEASE()
         Krita.instance().writeSetting( "Pigment.O", "krange", str( krange ) )
     def Range_ARD( self, chan_range ):
@@ -2803,8 +2803,8 @@ class PigmentO_Docker( DockWidget ):
         self.dialog.range_hsl.setValue( self.doc["depth"] )
         self.Pigmento_RELEASE()
         self.Reset_UnFocus()
-    def Reset_HSY( self ):
-        self.dialog.range_hsy.setValue( self.doc["depth"] )
+    def Reset_HCY( self ):
+        self.dialog.range_hcy.setValue( self.doc["depth"] )
         self.Pigmento_RELEASE()
         self.Reset_UnFocus()
     def Reset_ARD( self ):
@@ -2839,7 +2839,7 @@ class PigmentO_Docker( DockWidget ):
         self.dialog.range_hue.clearFocus()
         self.dialog.range_hsv.clearFocus()
         self.dialog.range_hsl.clearFocus()
-        self.dialog.range_hsy.clearFocus()
+        self.dialog.range_hcy.clearFocus()
         self.dialog.range_ard.clearFocus()
 
         self.dialog.range_xyz.clearFocus()
@@ -2929,9 +2929,9 @@ class PigmentO_Docker( DockWidget ):
         # HSL
         self.layout.hsl_label.setMaximumWidth( a )
         self.layout.hsl_value.setMaximumWidth( b )
-        # HSY
-        self.layout.hsy_label.setMaximumWidth( a )
-        self.layout.hsy_value.setMaximumWidth( b )
+        # HCY
+        self.layout.hcy_label.setMaximumWidth( a )
+        self.layout.hcy_value.setMaximumWidth( b )
         # HSV
         self.layout.ard_label.setMaximumWidth( a )
         self.layout.ard_value.setMaximumWidth( b )
@@ -3295,10 +3295,10 @@ class PigmentO_Docker( DockWidget ):
         self.hsl_1_slider.Set_Size( self.layout.hsl_1_slider.width(), self.layout.hsl_1_slider.height() )
         self.hsl_2_slider.Set_Size( self.layout.hsl_2_slider.width(), self.layout.hsl_2_slider.height() )
         self.hsl_3_slider.Set_Size( self.layout.hsl_3_slider.width(), self.layout.hsl_3_slider.height() )
-        # HSY
-        self.hsy_1_slider.Set_Size( self.layout.hsy_1_slider.width(), self.layout.hsy_1_slider.height() )
-        self.hsy_2_slider.Set_Size( self.layout.hsy_2_slider.width(), self.layout.hsy_2_slider.height() )
-        self.hsy_3_slider.Set_Size( self.layout.hsy_3_slider.width(), self.layout.hsy_3_slider.height() )
+        # HCY
+        self.hcy_1_slider.Set_Size( self.layout.hcy_1_slider.width(), self.layout.hcy_1_slider.height() )
+        self.hcy_2_slider.Set_Size( self.layout.hcy_2_slider.width(), self.layout.hcy_2_slider.height() )
+        self.hcy_3_slider.Set_Size( self.layout.hcy_3_slider.width(), self.layout.hcy_3_slider.height() )
         # ARD
         self.ard_1_slider.Set_Size( self.layout.ard_1_slider.width(), self.layout.ard_1_slider.height() )
         self.ard_2_slider.Set_Size( self.layout.ard_2_slider.width(), self.layout.ard_2_slider.height() )
@@ -3392,10 +3392,10 @@ class PigmentO_Docker( DockWidget ):
         self.layout.hsl_1_value.clearFocus()
         self.layout.hsl_2_value.clearFocus()
         self.layout.hsl_3_value.clearFocus()
-        # HSY
-        self.layout.hsy_1_value.clearFocus()
-        self.layout.hsy_2_value.clearFocus()
-        self.layout.hsy_3_value.clearFocus()
+        # HCY
+        self.layout.hcy_1_value.clearFocus()
+        self.layout.hcy_2_value.clearFocus()
+        self.layout.hcy_3_value.clearFocus()
         # ARD
         self.layout.ard_1_value.clearFocus()
         self.layout.ard_2_value.clearFocus()
@@ -3515,10 +3515,10 @@ class PigmentO_Docker( DockWidget ):
         self.hsl_1_slider.Set_Stops( dictionary["hsl_1"] )
         self.hsl_2_slider.Set_Stops( dictionary["hsl_2"] )
         self.hsl_3_slider.Set_Stops( dictionary["hsl_3"] )
-        # HSY
-        self.hsy_1_slider.Set_Stops( dictionary["hsy_1"] )
-        self.hsy_2_slider.Set_Stops( dictionary["hsy_2"] )
-        self.hsy_3_slider.Set_Stops( dictionary["hsy_3"] )
+        # HCY
+        self.hcy_1_slider.Set_Stops( dictionary["hcy_1"] )
+        self.hcy_2_slider.Set_Stops( dictionary["hcy_2"] )
+        self.hcy_3_slider.Set_Stops( dictionary["hcy_3"] )
         # ARD
         self.ard_1_slider.Set_Stops( dictionary["ard_1"] )
         self.ard_2_slider.Set_Stops( dictionary["ard_2"] )
@@ -3629,6 +3629,14 @@ class PigmentO_Docker( DockWidget ):
                     Krita.instance().action( "fill_selection_foreground_color_opacity" ).trigger()
                 else:
                     self.Fill_None()
+    def Pigmento_Update( self ):
+        if ( ( self.canvas() is not None ) and ( self.canvas().view() is not None ) ):
+            doc = self.Current_Document()
+            d_cm = doc["d_cm"]
+            d_cd = doc["d_cd"]
+            d_cp = doc["d_cp"]
+            d = doc["depth"]
+            self.Read_Color( doc, d_cm, d_cd, d_cp, d )
 
     def Read_Color( self, doc, d_cm, d_cd, d_cp, d ):
         # Check Eraser Mode ON or OFF
@@ -3928,17 +3936,8 @@ class PigmentO_Docker( DockWidget ):
         self.widget_press = False
         self.Sync_Elements( True, True, True )
 
-    def Pigmento_UPDATE( self ):
-        if ( ( self.canvas() is not None ) and ( self.canvas().view() is not None ) ):
-            doc = self.Current_Document()
-            d_cm = doc["d_cm"]
-            d_cd = doc["d_cd"]
-            d_cp = doc["d_cp"]
-            d = doc["depth"]
-            self.Read_Color( doc, d_cm, d_cd, d_cp, d )
-
     #endregion
-    #region Pigmento & Scripts #####################################################
+    #region Scripts ( API ) ########################################################
 
     def Script_Request_FG( self ):
         return kac
@@ -3971,7 +3970,7 @@ class PigmentO_Docker( DockWidget ):
         start_from - start from given given number. Default is zero but if non zero nothing will be deleted.
         max_val - finish at given number.
 
-        notes - YUV=255 UVD=255 HSV=360 HSL=360 HSY=360 CD_CA=255
+        notes - YUV=255 UVD=255 HSV=360 HSL=360 HCY=360 CD_CA=255
         """
 
         # Variables
@@ -4069,8 +4068,8 @@ class PigmentO_Docker( DockWidget ):
                         rgb = self.convert.hsv_to_rgb( hue, sat, hsx )
                     if mode == "HSL":
                         rgb = self.convert.hsl_to_rgb( hue, sat, hsx )
-                    if mode == "HSY":
-                        rgb = self.convert.hsy_to_rgb( hue, sat, hsx )
+                    if mode == "HCY":
+                        rgb = self.convert.hcy_to_rgb( hue, sat, hsx )
                     if mode == "ARD":
                         rgb = self.convert.ard_to_rgb( hue, sat, hsx )
 
@@ -4090,7 +4089,7 @@ class PigmentO_Docker( DockWidget ):
                         color = self.Color_Display( d_cm, d_cd, d_cp, vc, yuv )
 
                     # Write Pixels
-                    qimage.setPixelColor( x, y, QColor( color[0]*255, color[1]*255, color[2]*255 ) )
+                    qimage.setPixelColor( x, y, QColor( int( color[0] * 255 ), int( color[1] * 255 ), int( color[2] * 255 ) ) )
 
             # Save Image to File
             qpixmap = QPixmap().fromImage( qimage )
@@ -4106,6 +4105,12 @@ class PigmentO_Docker( DockWidget ):
             # Delete all Render Files
             shutil.rmtree( temporary )
 
+    def Script_Image_Analyse( self, path ):
+        exists = os.path.exists( path )
+        null = QImage( path ).isNull()
+        if ( exists == True and null == False ):
+            self.Color_Analyse( path )
+
     def Pigmento_Sample_Script( self ):
         # Import Pigment.O reference object
         """
@@ -4120,7 +4125,7 @@ class PigmentO_Docker( DockWidget ):
 
         # Print Maps
         """
-        space = [ "HSV", "HSL", "HSY" ]
+        space = [ "HSV", "HSL", "HCY" ]
         geo = [ "3", "4", "R" ]
         directory = "C:\\Users\\EyeOd\\Desktop\\pigmento\\Directory" # path to finished zip folder
         render = "C:\\Users\\EyeOd\\Desktop\\pigmento\\Render" # path to temporary render folder
@@ -4167,12 +4172,6 @@ class PigmentO_Docker( DockWidget ):
         managed_color.setComponents( comp )
         Krita.instance().activeWindow().activeView().setForeGroundColor( managed_color )
         """
-
-    def Script_Image_Analyse( self, path ):
-        exists = os.path.exists( path )
-        null = QImage( path ).isNull()
-        if ( exists == True and null == False ):
-            self.Color_Analyse( path )
 
     #endregion
     #region Color ##################################################################
@@ -4237,10 +4236,10 @@ class PigmentO_Docker( DockWidget ):
             hsl = [var_1, var_2, var_3]
             rgb = self.convert.hsl_to_rgb( hsl[0], hsl[1], hsl[2] )
             xyz = self.convert.rgb_to_xyz( rgb[0], rgb[1], rgb[2] )
-        if mode == "HSY":
+        if mode == "HCY":
             hue_d = var_1
-            hsy = [var_1, var_2, var_3]
-            rgb = self.convert.hsy_to_rgb( hsy[0], hsy[1], hsy[2] )
+            hcy = [var_1, var_2, var_3]
+            rgb = self.convert.hcy_to_rgb( hcy[0], hcy[1], hcy[2] )
             xyz = self.convert.rgb_to_xyz( rgb[0], rgb[1], rgb[2] )
         if mode == "ARD":
             hue_d = var_1
@@ -4312,8 +4311,8 @@ class PigmentO_Docker( DockWidget ):
             hsv = self.convert.rgb_to_hsv( rgb[0], rgb[1], rgb[2] )
         if mode != "HSL":
             hsl = self.convert.rgb_to_hsl( rgb[0], rgb[1], rgb[2] )
-        if mode != "HSY":
-            hsy = self.convert.rgb_to_hsy( rgb[0], rgb[1], rgb[2] )
+        if mode != "HCY":
+            hcy = self.convert.rgb_to_hcy( rgb[0], rgb[1], rgb[2] )
         if mode != "ARD":
             ard = self.convert.rgb_to_ard( rgb[0], rgb[1], rgb[2] )
 
@@ -4386,10 +4385,10 @@ class PigmentO_Docker( DockWidget ):
         color["hsl_1"] = hue_d
         color["hsl_2"] = hsl[1]
         color["hsl_3"] = hsl[2]
-        # HSY
-        color["hsy_1"] = hue_d
-        color["hsy_2"] = hsy[1]
-        color["hsy_3"] = hsy[2]
+        # HCY
+        color["hcy_1"] = hue_d
+        color["hcy_2"] = hcy[1]
+        color["hcy_3"] = hcy[2]
         # ARD
         color["ard_1"] = hue_d
         color["ard_2"] = ard[1]
@@ -4474,6 +4473,7 @@ class PigmentO_Docker( DockWidget ):
             # Wheel
             if self.wheel_mode == "DIGITAL":index = "hue_d"
             if self.wheel_mode == "ANALOG" :index = "hue_a"
+
             # Director Angle
             if self.harmony_index == 1:angulus = hue_1[ index ]
             if self.harmony_index == 2:angulus = hue_2[ index ]
@@ -4525,8 +4525,8 @@ class PigmentO_Docker( DockWidget ):
                     angle_1 = self.geometry.Limit_Looper( angulus - span * 0.75 , 1 )
                     angle_2 = self.geometry.Limit_Looper( angulus - span * 0.50 , 1 )
                     angle_3 = self.geometry.Limit_Looper( angulus - span * 0.25 , 1 )
-                    angle_4 = angulus
                     angle_5 = self.geometry.Limit_Looper( angulus + span * 0.25 , 1 )
+                    angle_4 = angulus
                 if self.harmony_index == 5:
                     angle_1 = self.geometry.Limit_Looper( angulus - span * 1.00 , 1 )
                     angle_2 = self.geometry.Limit_Looper( angulus - span * 0.75 , 1 )
@@ -4588,41 +4588,66 @@ class PigmentO_Docker( DockWidget ):
             c1, c2, c3 = self.Hue_Index( mode )
 
             if self.panel_index == "Luma":
+                luma = self.cor[c1]
+
                 # Angulus no Edit
                 if self.harmony_edit == False:
-                    y1, u1, v1 = self.convert.yuv_to_angle( self.cor[c1], self.cor[c2], self.cor[c3], self.geometry.Limit_Looper( angle_1 - angulus , 1 ) )
-                    y2, u2, v2 = self.convert.yuv_to_angle( self.cor[c1], self.cor[c2], self.cor[c3], self.geometry.Limit_Looper( angle_2 - angulus , 1 ) )
-                    y3, u3, v3 = self.convert.yuv_to_angle( self.cor[c1], self.cor[c2], self.cor[c3], self.geometry.Limit_Looper( angle_3 - angulus , 1 ) )
-                    y4, u4, v4 = self.convert.yuv_to_angle( self.cor[c1], self.cor[c2], self.cor[c3], self.geometry.Limit_Looper( angle_4 - angulus , 1 ) )
-                    y5, u5, v5 = self.convert.yuv_to_angle( self.cor[c1], self.cor[c2], self.cor[c3], self.geometry.Limit_Looper( angle_5 - angulus , 1 ) )
+                    y1, u1, v1 = self.convert.uv_to_hue( self.cor[c1], self.cor[c2], self.cor[c3], angle_1 )
+                    y2, u2, v2 = self.convert.uv_to_hue( self.cor[c1], self.cor[c2], self.cor[c3], angle_2 )
+                    y3, u3, v3 = self.convert.uv_to_hue( self.cor[c1], self.cor[c2], self.cor[c3], angle_3 )
+                    y4, u4, v4 = self.convert.uv_to_hue( self.cor[c1], self.cor[c2], self.cor[c3], angle_4 )
+                    y5, u5, v5 = self.convert.uv_to_hue( self.cor[c1], self.cor[c2], self.cor[c3], angle_5 )
+
                 # Angulus with Edit
                 if self.harmony_edit == True:
-                    y1, u1, v1 = self.convert.yuv_to_angle( har_01[c1], self.cor[c2], self.cor[c3], self.geometry.Limit_Looper( angle_1 - angulus , 1 ) )
-                    y2, u2, v2 = self.convert.yuv_to_angle( har_02[c1], self.cor[c2], self.cor[c3], self.geometry.Limit_Looper( angle_2 - angulus , 1 ) )
-                    y3, u3, v3 = self.convert.yuv_to_angle( har_03[c1], self.cor[c2], self.cor[c3], self.geometry.Limit_Looper( angle_3 - angulus , 1 ) )
-                    y4, u4, v4 = self.convert.yuv_to_angle( har_04[c1], self.cor[c2], self.cor[c3], self.geometry.Limit_Looper( angle_4 - angulus , 1 ) )
-                    y5, u5, v5 = self.convert.yuv_to_angle( har_05[c1], self.cor[c2], self.cor[c3], self.geometry.Limit_Looper( angle_5 - angulus , 1 ) )
-                # Harmony
-                self.Color_Convert( mode, y1, u1, v1, 0, har_01 )
-                self.Color_Convert( mode, y2, u2, v2, 0, har_02 )
-                self.Color_Convert( mode, y3, u3, v3, 0, har_03 )
-                self.Color_Convert( mode, y4, u4, v4, 0, har_04 )
-                self.Color_Convert( mode, y5, u5, v5, 0, har_05 )
+                    y1, u1, v1 = self.convert.uv_to_hue( har_01[c1], har_01[c2], har_01[c3], angle_1 )
+                    y2, u2, v2 = self.convert.uv_to_hue( har_02[c1], har_02[c2], har_02[c3], angle_2 )
+                    y3, u3, v3 = self.convert.uv_to_hue( har_03[c1], har_03[c2], har_03[c3], angle_3 )
+                    y4, u4, v4 = self.convert.uv_to_hue( har_04[c1], har_04[c2], har_04[c3], angle_4 )
+                    y5, u5, v5 = self.convert.uv_to_hue( har_05[c1], har_05[c2], har_05[c3], angle_5 )
+
+                # Others
+                if self.harmony_index != 1:self.Color_Convert( mode, luma, u1, v1, 0, har_01 )
+                if self.harmony_index != 2:self.Color_Convert( mode, luma, u2, v2, 0, har_02 )
+                if self.harmony_index != 3:self.Color_Convert( mode, luma, u3, v3, 0, har_03 )
+                if self.harmony_index != 4:self.Color_Convert( mode, luma, u4, v4, 0, har_04 )
+                if self.harmony_index != 5:self.Color_Convert( mode, luma, u5, v5, 0, har_05 )
+                # Active
+                if self.harmony_index == 1:self.Color_Convert( mode, luma, u1, v1, 0, har_01 )
+                if self.harmony_index == 2:self.Color_Convert( mode, luma, u2, v2, 0, har_02 )
+                if self.harmony_index == 3:self.Color_Convert( mode, luma, u3, v3, 0, har_03 )
+                if self.harmony_index == 4:self.Color_Convert( mode, luma, u4, v4, 0, har_04 )
+                if self.harmony_index == 5:self.Color_Convert( mode, luma, u5, v5, 0, har_05 )
+
             else:
                 # Angulus no Edit
                 if self.harmony_edit == False:
-                    self.Color_Convert( mode, angle_1, self.cor[c2], self.cor[c3], 0, har_01 )
-                    self.Color_Convert( mode, angle_2, self.cor[c2], self.cor[c3], 0, har_02 )
-                    self.Color_Convert( mode, angle_3, self.cor[c2], self.cor[c3], 0, har_03 )
-                    self.Color_Convert( mode, angle_4, self.cor[c2], self.cor[c3], 0, har_04 )
-                    self.Color_Convert( mode, angle_5, self.cor[c2], self.cor[c3], 0, har_05 )
+                    # Others
+                    if self.harmony_index != 1:self.Color_Convert( mode, angle_1, self.cor[c2], self.cor[c3], 0, har_01 )
+                    if self.harmony_index != 2:self.Color_Convert( mode, angle_2, self.cor[c2], self.cor[c3], 0, har_02 )
+                    if self.harmony_index != 3:self.Color_Convert( mode, angle_3, self.cor[c2], self.cor[c3], 0, har_03 )
+                    if self.harmony_index != 4:self.Color_Convert( mode, angle_4, self.cor[c2], self.cor[c3], 0, har_04 )
+                    if self.harmony_index != 5:self.Color_Convert( mode, angle_5, self.cor[c2], self.cor[c3], 0, har_05 )
+                    # Active
+                    if self.harmony_index == 1:self.Color_Convert( mode, angle_1, self.cor[c2], self.cor[c3], 0, har_01 )
+                    if self.harmony_index == 2:self.Color_Convert( mode, angle_2, self.cor[c2], self.cor[c3], 0, har_02 )
+                    if self.harmony_index == 3:self.Color_Convert( mode, angle_3, self.cor[c2], self.cor[c3], 0, har_03 )
+                    if self.harmony_index == 4:self.Color_Convert( mode, angle_4, self.cor[c2], self.cor[c3], 0, har_04 )
+                    if self.harmony_index == 5:self.Color_Convert( mode, angle_5, self.cor[c2], self.cor[c3], 0, har_05 )
                 # Angulus with Edit
                 if self.harmony_edit == True:
-                    self.Color_Convert( mode, angle_1, har_01[c2], har_01[c3], 0, har_01 )
-                    self.Color_Convert( mode, angle_2, har_02[c2], har_02[c3], 0, har_02 )
-                    self.Color_Convert( mode, angle_3, har_03[c2], har_03[c3], 0, har_03 )
-                    self.Color_Convert( mode, angle_4, har_04[c2], har_04[c3], 0, har_04 )
-                    self.Color_Convert( mode, angle_5, har_05[c2], har_05[c3], 0, har_05 )
+                    # Others
+                    if self.harmony_index != 1:self.Color_Convert( mode, angle_1, har_01[c2], har_01[c3], 0, har_01 )
+                    if self.harmony_index != 2:self.Color_Convert( mode, angle_2, har_02[c2], har_02[c3], 0, har_02 )
+                    if self.harmony_index != 3:self.Color_Convert( mode, angle_3, har_03[c2], har_03[c3], 0, har_03 )
+                    if self.harmony_index != 4:self.Color_Convert( mode, angle_4, har_04[c2], har_04[c3], 0, har_04 )
+                    if self.harmony_index != 5:self.Color_Convert( mode, angle_5, har_05[c2], har_05[c3], 0, har_05 )
+                    # Active
+                    if self.harmony_index == 1:self.Color_Convert( mode, angle_1, har_01[c2], har_01[c3], 0, har_01 )
+                    if self.harmony_index == 2:self.Color_Convert( mode, angle_2, har_02[c2], har_02[c3], 0, har_02 )
+                    if self.harmony_index == 3:self.Color_Convert( mode, angle_3, har_03[c2], har_03[c3], 0, har_03 )
+                    if self.harmony_index == 4:self.Color_Convert( mode, angle_4, har_04[c2], har_04[c3], 0, har_04 )
+                    if self.harmony_index == 5:self.Color_Convert( mode, angle_5, har_05[c2], har_05[c3], 0, har_05 )
 
             # Save
             Krita.instance().writeSetting( "Pigment.O", "har_01", str( har_01 ) )
@@ -4638,7 +4663,7 @@ class PigmentO_Docker( DockWidget ):
             check_null = ( hex_code == None or hex_code == "" )
             check_hex6 = self.HEX_Valid( hex_code, 6 )
             check_hex3 = self.HEX_Valid( hex_code, 3 )
-            space = list( filter( None, re.findall( r"(GRAY|CMYK|AAA|RGB|CMY|RYB|YUV|HSV|HSL|HSY|XYZ|XYY|LAB|LCH)+", hex_code.upper() ) ) )
+            space = list( filter( None, re.findall( r"(GRAY|CMYK|AAA|RGB|CMY|RYB|YUV|HSV|HSL|HCY|XYZ|XYY|LAB|LCH)+", hex_code.upper() ) ) )
             if len( space ) > 0:
                 color_space = space[0].upper()
             else:
@@ -4691,7 +4716,7 @@ class PigmentO_Docker( DockWidget ):
                     self.cor
                     )
                 self.Sync_Elements( True, True, True )
-            elif ( color_space in [ "HSV", "HSL","HSY" ] and vector == 3 ): #HSV(100, 100, 100)
+            elif ( color_space in [ "HSV", "HSL","HCY" ] and vector == 3 ): #HSV(100, 100, 100)
                 self.Color_Convert(
                     color_space,
                     int( values[0] ) / 360,
@@ -4856,8 +4881,8 @@ class PigmentO_Docker( DockWidget ):
             self.Pigmento_APPLY( "HSV", hue, self.cor["hsv_2"], self.cor["hsv_3"], 0, self.cor )
         if self.wheel_space == "HSL":
             self.Pigmento_APPLY( "HSL", hue, self.cor["hsl_2"], self.cor["hsl_3"], 0, self.cor )
-        if self.wheel_space == "HSY":
-            self.Pigmento_APPLY( "HSY", hue, self.cor["hsy_2"], self.cor["hsy_3"], 0, self.cor )
+        if self.wheel_space == "HCY":
+            self.Pigmento_APPLY( "HCY", hue, self.cor["hcy_2"], self.cor["hcy_3"], 0, self.cor )
         if self.wheel_space == "ARD":
             self.Pigmento_APPLY( "ARD", hue, self.cor["ard_2"], self.cor["ard_3"], 0, self.cor )
 
@@ -5005,13 +5030,13 @@ class PigmentO_Docker( DockWidget ):
         self.layout.hsl_1_value.blockSignals( boolean )
         self.layout.hsl_2_value.blockSignals( boolean )
         self.layout.hsl_3_value.blockSignals( boolean )
-        # HSY
-        self.layout.hsy_1_slider.blockSignals( boolean )
-        self.layout.hsy_2_slider.blockSignals( boolean )
-        self.layout.hsy_3_slider.blockSignals( boolean )
-        self.layout.hsy_1_value.blockSignals( boolean )
-        self.layout.hsy_2_value.blockSignals( boolean )
-        self.layout.hsy_3_value.blockSignals( boolean )
+        # HCY
+        self.layout.hcy_1_slider.blockSignals( boolean )
+        self.layout.hcy_2_slider.blockSignals( boolean )
+        self.layout.hcy_3_slider.blockSignals( boolean )
+        self.layout.hcy_1_value.blockSignals( boolean )
+        self.layout.hcy_2_value.blockSignals( boolean )
+        self.layout.hcy_3_value.blockSignals( boolean )
         # ARD
         self.layout.ard_1_slider.blockSignals( boolean )
         self.layout.ard_2_slider.blockSignals( boolean )
@@ -5190,14 +5215,14 @@ class PigmentO_Docker( DockWidget ):
             self.layout.hsl_1_value.setValue( self.cor["hsl_1"] * krange["hsl_1"] )
             self.layout.hsl_2_value.setValue( self.cor["hsl_2"] * krange["hsl_2"] )
             self.layout.hsl_3_value.setValue( self.cor["hsl_3"] * krange["hsl_3"] )
-        # HSY
-        if self.chan_hsy == True:
-            self.hsy_1_slider.Set_Value( self.cor["hsy_1"] )
-            self.hsy_2_slider.Set_Value( self.cor["hsy_2"] )
-            self.hsy_3_slider.Set_Value( self.cor["hsy_3"] )
-            self.layout.hsy_1_value.setValue( self.cor["hsy_1"] * krange["hsy_1"] )
-            self.layout.hsy_2_value.setValue( self.cor["hsy_2"] * krange["hsy_2"] )
-            self.layout.hsy_3_value.setValue( self.cor["hsy_3"] * krange["hsy_3"] )
+        # HCY
+        if self.chan_hcy == True:
+            self.hcy_1_slider.Set_Value( self.cor["hcy_1"] )
+            self.hcy_2_slider.Set_Value( self.cor["hcy_2"] )
+            self.hcy_3_slider.Set_Value( self.cor["hcy_3"] )
+            self.layout.hcy_1_value.setValue( self.cor["hcy_1"] * krange["hcy_1"] )
+            self.layout.hcy_2_value.setValue( self.cor["hcy_2"] * krange["hcy_2"] )
+            self.layout.hcy_3_value.setValue( self.cor["hcy_3"] * krange["hcy_3"] )
         # ARD
         if self.chan_ard == True:
             self.ard_1_slider.Set_Value( self.cor["ard_1"] )
@@ -5289,10 +5314,10 @@ class PigmentO_Docker( DockWidget ):
                 self.sele_2_slider.Update_Value( self.cor["hsl_2"] )
                 self.sele_3_slider.Update_Value( self.cor["hsl_3"] )
                 self.sele_4_slider.Update_Value( None )
-            if self.sele_mode == "HSY":
-                self.sele_1_slider.Update_Value( self.cor["hsy_1"] )
-                self.sele_2_slider.Update_Value( self.cor["hsy_2"] )
-                self.sele_3_slider.Update_Value( self.cor["hsy_3"] )
+            if self.sele_mode == "HCY":
+                self.sele_1_slider.Update_Value( self.cor["hcy_1"] )
+                self.sele_2_slider.Update_Value( self.cor["hcy_2"] )
+                self.sele_3_slider.Update_Value( self.cor["hcy_3"] )
                 self.sele_4_slider.Update_Value( None )
             if self.sele_mode == "ARD":
                 self.sele_1_slider.Update_Value( self.cor["ard_1"] )
@@ -5424,16 +5449,16 @@ class PigmentO_Docker( DockWidget ):
             self.hsl_1_slider.Set_Colors( hsl_1, 1 )
             self.hsl_2_slider.Set_Colors( hsl_2, 1 )
             self.hsl_3_slider.Set_Colors( hsl_3, 1 )
-        if self.chan_hsy == True:
+        if self.chan_hcy == True:
             if self.hue_shine == True:
-                hsy_1 = self.Gradient_Style( "HSV", False, circular, [0, 1, 1], [1, 1, 1] )
+                hcy_1 = self.Gradient_Style( "HSV", False, circular, [0, 1, 1], [1, 1, 1] )
             else:
-                hsy_1 = self.Gradient_Style( "HSY", False, circular, [0, self.cor["hsy_2"], self.cor["hsy_3"]], [1, self.cor["hsy_2"], self.cor["hsy_3"]] )
-            hsy_2 = self.Gradient_Style( "HSY", False, linear, [self.cor["hsy_1"], 0, self.cor["hsy_3"]], [self.cor["hsy_1"], 1, self.cor["hsy_3"]] )
-            hsy_3 = self.Gradient_Style( "HSY", False, linear, [self.cor["hsy_1"], self.cor["hsy_2"], 0], [self.cor["hsy_1"], self.cor["hsy_2"], 1] )
-            self.hsy_1_slider.Set_Colors( hsy_1, 1 )
-            self.hsy_2_slider.Set_Colors( hsy_2, 1 )
-            self.hsy_3_slider.Set_Colors( hsy_3, 1 )
+                hcy_1 = self.Gradient_Style( "HCY", False, circular, [0, self.cor["hcy_2"], self.cor["hcy_3"]], [1, self.cor["hcy_2"], self.cor["hcy_3"]] )
+            hcy_2 = self.Gradient_Style( "HCY", False, linear, [self.cor["hcy_1"], 0, self.cor["hcy_3"]], [self.cor["hcy_1"], 1, self.cor["hcy_3"]] )
+            hcy_3 = self.Gradient_Style( "HCY", False, linear, [self.cor["hcy_1"], self.cor["hcy_2"], 0], [self.cor["hcy_1"], self.cor["hcy_2"], 1] )
+            self.hcy_1_slider.Set_Colors( hcy_1, 1 )
+            self.hcy_2_slider.Set_Colors( hcy_2, 1 )
+            self.hcy_3_slider.Set_Colors( hcy_3, 1 )
         if self.chan_ard == True:
             if self.hue_shine == True:
                 ard_1 = self.Gradient_Style( "HSV", False, circular, [0, 1, 1], [1, 1, 1] )
@@ -5526,13 +5551,13 @@ class PigmentO_Docker( DockWidget ):
                 sele_2 = self.Gradient_Style( "HSL", False, linear, [self.cor["hsl_1"], 0, self.cor["hsl_3"]], [self.cor["hsl_1"], 1, self.cor["hsl_3"]] )
                 sele_3 = self.Gradient_Style( "HSL", False, linear, [self.cor["hsl_1"], self.cor["hsl_2"], 0], [self.cor["hsl_1"], self.cor["hsl_2"], 1] )
                 sele_4 = None
-            if self.sele_mode == "HSY":
+            if self.sele_mode == "HCY":
                 if self.hue_shine == True:
                     sele_1 = self.Gradient_Style( "HSV", False, circular, [0, 1, 1], [1, 1, 1] )
                 else:
-                    sele_1 = self.Gradient_Style( "HSY", False, circular, [0, self.cor["hsy_2"], self.cor["hsy_3"]], [1, self.cor["hsy_2"], self.cor["hsy_3"]] )
-                sele_2 = self.Gradient_Style( "HSY", False, linear, [self.cor["hsy_1"], 0, self.cor["hsy_3"]], [self.cor["hsy_1"], 1, self.cor["hsy_3"]] )
-                sele_3 = self.Gradient_Style( "HSY", False, linear, [self.cor["hsy_1"], self.cor["hsy_2"], 0], [self.cor["hsy_1"], self.cor["hsy_2"], 1] )
+                    sele_1 = self.Gradient_Style( "HCY", False, circular, [0, self.cor["hcy_2"], self.cor["hcy_3"]], [1, self.cor["hcy_2"], self.cor["hcy_3"]] )
+                sele_2 = self.Gradient_Style( "HCY", False, linear, [self.cor["hcy_1"], 0, self.cor["hcy_3"]], [self.cor["hcy_1"], 1, self.cor["hcy_3"]] )
+                sele_3 = self.Gradient_Style( "HCY", False, linear, [self.cor["hcy_1"], self.cor["hcy_2"], 0], [self.cor["hcy_1"], self.cor["hcy_2"], 1] )
                 sele_4 = None
             if self.sele_mode == "ARD":
                 if self.hue_shine == True:
@@ -5598,8 +5623,8 @@ class PigmentO_Docker( DockWidget ):
                         mixed = self.Gradient_Style( mode, short, stops, [ ll["hsv_1"], ll["hsv_2"], ll["hsv_3"] ], [ rr["hsv_1"], rr["hsv_2"], rr["hsv_3"] ] )
                     elif mode == "HSL":
                         mixed = self.Gradient_Style( mode, short, stops, [ ll["hsl_1"], ll["hsl_2"], ll["hsl_3"] ], [ rr["hsl_1"], rr["hsl_2"], rr["hsl_3"] ] )
-                    elif mode == "HSY":
-                        mixed = self.Gradient_Style( mode, short, stops, [ ll["hsy_1"], ll["hsy_2"], ll["hsy_3"] ], [ rr["hsy_1"], rr["hsy_2"], rr["hsy_3"] ] )
+                    elif mode == "HCY":
+                        mixed = self.Gradient_Style( mode, short, stops, [ ll["hcy_1"], ll["hcy_2"], ll["hcy_3"] ], [ rr["hcy_1"], rr["hcy_2"], rr["hcy_3"] ] )
                     elif mode == "ARD":
                         mixed = self.Gradient_Style( mode, short, stops, [ ll["ard_1"], ll["ard_2"], ll["ard_3"] ], [ rr["ard_1"], rr["ard_2"], rr["ard_3"] ] )
                     elif mode == "XYZ":
@@ -5644,7 +5669,7 @@ class PigmentO_Docker( DockWidget ):
         """
 
         # Variables
-        hue = [ "HSV", "HSL", "HSY", "ARD" ]
+        hue = [ "HSV", "HSL", "HCY", "ARD" ]
 
         # Length
         len_left = len( left )
@@ -5716,8 +5741,8 @@ class PigmentO_Docker( DockWidget ):
                     rgb = self.convert.hsv_to_rgb( *stop_i )
                 if mode == "HSL":
                     rgb = self.convert.hsl_to_rgb( *stop_i )
-                if mode == "HSY":
-                    rgb = self.convert.hsy_to_rgb( *stop_i )
+                if mode == "HCY":
+                    rgb = self.convert.hcy_to_rgb( *stop_i )
                 if mode == "ARD":
                     rgb = self.convert.ard_to_rgb( *stop_i )
 
@@ -6969,13 +6994,13 @@ class PigmentO_Docker( DockWidget ):
         self.Pigmento_PRESS( "HSL", self.cor["hsl_1"], sv["value"], self.cor["hsl_3"], 0, self.cor )
     def Channels_HSL_3_Slider( self, sv ):
         self.Pigmento_PRESS( "HSL", self.cor["hsl_1"], self.cor["hsl_2"], sv["value"], 0, self.cor )
-    # HSY
-    def Channels_HSY_1_Slider( self, sv ):
-        self.Pigmento_PRESS( "HSY", sv["value"], self.cor["hsy_2"], self.cor["hsy_3"], 0, self.cor )
-    def Channels_HSY_2_Slider( self, sv ):
-        self.Pigmento_PRESS( "HSY", self.cor["hsy_1"], sv["value"], self.cor["hsy_3"], 0, self.cor )
-    def Channels_HSY_3_Slider( self, sv ):
-        self.Pigmento_PRESS( "HSY", self.cor["hsy_1"], self.cor["hsy_2"], sv["value"], 0, self.cor )
+    # HCY
+    def Channels_HCY_1_Slider( self, sv ):
+        self.Pigmento_PRESS( "HCY", sv["value"], self.cor["hcy_2"], self.cor["hcy_3"], 0, self.cor )
+    def Channels_HCY_2_Slider( self, sv ):
+        self.Pigmento_PRESS( "HCY", self.cor["hcy_1"], sv["value"], self.cor["hcy_3"], 0, self.cor )
+    def Channels_HCY_3_Slider( self, sv ):
+        self.Pigmento_PRESS( "HCY", self.cor["hcy_1"], self.cor["hcy_2"], sv["value"], 0, self.cor )
     # ARD
     def Channels_ARD_1_Slider( self, sv ):
         self.Pigmento_PRESS( "ARD", sv["value"], self.cor["ard_2"], self.cor["ard_3"], 0, self.cor )
@@ -7095,15 +7120,15 @@ class PigmentO_Docker( DockWidget ):
     def Channels_HSL_3_Stops( self, ss ):
         stops["hsl_3"] = ss
         Krita.instance().writeSetting( "Pigment.O", "stops", str( stops ) )
-    # HSY
-    def Channels_HSY_1_Stops( self, ss ):
-        stops["hsy_1"] = ss
+    # HCY
+    def Channels_HCY_1_Stops( self, ss ):
+        stops["hcy_1"] = ss
         Krita.instance().writeSetting( "Pigment.O", "stops", str( stops ) )
-    def Channels_HSY_2_Stops( self, ss ):
-        stops["hsy_2"] = ss
+    def Channels_HCY_2_Stops( self, ss ):
+        stops["hcy_2"] = ss
         Krita.instance().writeSetting( "Pigment.O", "stops", str( stops ) )
-    def Channels_HSY_3_Stops( self, ss ):
-        stops["hsy_3"] = ss
+    def Channels_HCY_3_Stops( self, ss ):
+        stops["hcy_3"] = ss
         Krita.instance().writeSetting( "Pigment.O", "stops", str( stops ) )
     # ARD
     def Channels_ARD_1_Stops( self, ss ):
@@ -7262,18 +7287,18 @@ class PigmentO_Docker( DockWidget ):
         value = sv / krange["hsl_3"]
         self.Pigmento_PRESS( "HSL", self.cor["hsl_1"], self.cor["hsl_2"], value, 0, self.cor )
         self.Label_String( f"{ round( value * 100, 2 ) } %" )
-    # HSY
-    def Channels_HSY_1_Value( self, sv ):
-        value = sv / krange["hsy_1"]
-        self.Pigmento_PRESS( "HSY", value, self.cor["hsy_2"], self.cor["hsy_3"], 0, self.cor )
+    # HCY
+    def Channels_HCY_1_Value( self, sv ):
+        value = sv / krange["hcy_1"]
+        self.Pigmento_PRESS( "HCY", value, self.cor["hcy_2"], self.cor["hcy_3"], 0, self.cor )
         self.Label_String( f"{ round( value * 100, 2 ) } %" )
-    def Channels_HSY_2_Value( self, sv ):
-        value = sv / krange["hsy_2"]
-        self.Pigmento_PRESS( "HSY", self.cor["hsy_1"], value, self.cor["hsy_3"], 0, self.cor )
+    def Channels_HCY_2_Value( self, sv ):
+        value = sv / krange["hcy_2"]
+        self.Pigmento_PRESS( "HCY", self.cor["hcy_1"], value, self.cor["hcy_3"], 0, self.cor )
         self.Label_String( f"{ round( value * 100, 2 ) } %" )
-    def Channels_HSY_3_Value( self, sv ):
-        value = sv / krange["hsy_3"]
-        self.Pigmento_PRESS( "HSY", self.cor["hsy_1"], self.cor["hsy_2"], value, 0, self.cor )
+    def Channels_HCY_3_Value( self, sv ):
+        value = sv / krange["hcy_3"]
+        self.Pigmento_PRESS( "HCY", self.cor["hcy_1"], self.cor["hcy_2"], value, 0, self.cor )
         self.Label_String( f"{ round( value * 100, 2 ) } %" )
     # ARD
     def Channels_ARD_1_Value( self, sv ):
@@ -7472,8 +7497,8 @@ class PigmentO_Docker( DockWidget ):
                 self.Pigmento_PRESS( mode, color["hsv_1"], color["hsv_2"], color["hsv_3"], 0, self.cor )
             if mode == "HSL":
                 self.Pigmento_PRESS( mode, color["hsl_1"], color["hsl_2"], color["hsl_3"], 0, self.cor )
-            if mode == "HSY":
-                self.Pigmento_PRESS( mode, color["hsy_1"], color["hsy_2"], color["hsy_3"], 0, self.cor )
+            if mode == "HCY":
+                self.Pigmento_PRESS( mode, color["hcy_1"], color["hcy_2"], color["hcy_3"], 0, self.cor )
             if mode == "ARD":
                 self.Pigmento_PRESS( mode, color["ard_1"], color["ard_2"], color["ard_3"], 0, self.cor )
             if mode == "XYZ":
@@ -7748,7 +7773,7 @@ class PigmentO_Docker( DockWidget ):
                 num_array = Bytes_to_Integer( self, byte_array, d_cd )
 
                 # Calculation
-                hue_rgb = [ "HSV", "HSL", "HSY", "ARD" ]
+                hue_rgb = [ "HSV", "HSL", "HCY", "ARD" ]
                 hue_xyz = [ "LCH" ]
                 index = 0
                 sel_pixels = []
@@ -8072,16 +8097,16 @@ class PigmentO_Docker( DockWidget ):
         if key == "HSL 3":
             value = self.geometry.Limit_Float( self.cor["hsl_3"] + delta / krange["hsl_3"] )
             self.Pigmento_APPLY( "HSL", self.cor["hsl_1"], self.cor["hsl_2"], value, 0, self.cor )
-        # HSY
-        if key == "HSY 1":
-            value = self.geometry.Limit_Looper( self.cor["hsy_1"] + delta / krange["hsy_1"], 1 )
-            self.Pigmento_APPLY( "HSY", value, self.cor["hsy_2"], self.cor["hsy_3"], 0, self.cor )
-        if key == "HSY 2":
-            value = self.geometry.Limit_Float( self.cor["hsy_2"] + delta / krange["hsy_2"] )
-            self.Pigmento_APPLY( "HSY", self.cor["hsy_1"], value, self.cor["hsy_3"], 0, self.cor )
-        if key == "HSY 3":
-            value = self.geometry.Limit_Float( self.cor["hsy_3"] + delta / krange["hsy_3"] )
-            self.Pigmento_APPLY( "HSY", self.cor["hsy_1"], self.cor["hsy_2"], value, 0, self.cor )
+        # HCY
+        if key == "HCY 1":
+            value = self.geometry.Limit_Looper( self.cor["hcy_1"] + delta / krange["hcy_1"], 1 )
+            self.Pigmento_APPLY( "HCY", value, self.cor["hcy_2"], self.cor["hcy_3"], 0, self.cor )
+        if key == "HCY 2":
+            value = self.geometry.Limit_Float( self.cor["hcy_2"] + delta / krange["hcy_2"] )
+            self.Pigmento_APPLY( "HCY", self.cor["hcy_1"], value, self.cor["hcy_3"], 0, self.cor )
+        if key == "HCY 3":
+            value = self.geometry.Limit_Float( self.cor["hcy_3"] + delta / krange["hcy_3"] )
+            self.Pigmento_APPLY( "HCY", self.cor["hcy_1"], self.cor["hcy_2"], value, 0, self.cor )
         # ARD
         if key == "ARD 1":
             value = self.geometry.Limit_Looper( self.cor["ard_1"] + delta / krange["ard_1"], 1 )
@@ -8372,7 +8397,7 @@ class PigmentO_Docker( DockWidget ):
             self.Pigmento_RELEASE()
         # Update
         if self.mode_index == 1:
-            self.Pigmento_UPDATE()
+            self.Pigmento_Update()
     def leaveEvent( self, event ):
         # Variables
         self.inbound = False
@@ -8406,7 +8431,7 @@ class PigmentO_Docker( DockWidget ):
             self.layout.yuv_slider,
             self.layout.hsv_slider,
             self.layout.hsl_slider,
-            self.layout.hsy_slider,
+            self.layout.hcy_slider,
             self.layout.ard_slider,
             self.layout.xyz_slider,
             self.layout.xyy_slider,
@@ -8499,6 +8524,20 @@ class PigmentS_Docker( DockWidget ):
         self.Settings()
         self.Loader()
 
+
+    def User_Interface( self ):
+        # Window
+        self.setWindowTitle( DOCKER_NAME_2 )
+
+        # Operating System
+        self.OS = str( QSysInfo.kernelType() ) # WINDOWS=winnt & LINUX=linux
+
+        # Path Name
+        self.directory_plugin = str( os.path.dirname( os.path.realpath( __file__ ) ) )
+
+        # Widget Docker
+        self.layout = uic.loadUi( os.path.join( self.directory_plugin, "pigment_s_docker.ui" ), QWidget( self ) )
+        self.setWidget( self.layout )
     def Variables( self ):
         # Sample
         self.sample_mode = "RGB"
@@ -8520,19 +8559,6 @@ class PigmentS_Docker( DockWidget ):
 
         # Colors
         self.color_alpha = QColor( 0, 0, 0, 0 )
-    def User_Interface( self ):
-        # Window
-        self.setWindowTitle( DOCKER_NAME_2 )
-
-        # Operating System
-        self.OS = str( QSysInfo.kernelType() ) # WINDOWS=winnt & LINUX=linux
-
-        # Path Name
-        self.directory_plugin = str( os.path.dirname( os.path.realpath( __file__ ) ) )
-
-        # Widget Docker
-        self.layout = uic.loadUi( os.path.join( self.directory_plugin, "pigment_s_docker.ui" ), QWidget( self ) )
-        self.setWidget( self.layout )
     def Connections( self ):
         # Lists
         self.layout.sample_list.itemClicked.connect( self.Sample_Display )
@@ -8593,29 +8619,36 @@ class PigmentS_Docker( DockWidget ):
         # Style Sheet
         self.layout.progress_bar.setStyleSheet( "#progress_bar{background-color: rgba( 0, 0, 0, 50 );}" )
     def Settings( self ):
-        # Settings
         self.sample_mode = self.Set_Read( "STR", "sample_mode", self.sample_mode )
         self.sample_limit = self.Set_Read( "INT", "sample_limit", self.sample_limit )
+        try:
+            self.Loader()
+        except Exception as e:
+            QMessageBox.information( QWidget(), i18n( "Warnning" ), i18n( f"Pigment.S | ERROR Load failed\nReason : {e}" ) )
+            self.Variables()
+            self.Loader()
+
     def Loader( self ):
         self.Sample_Block( True )
         self.layout.sample_mode.setCurrentText( self.sample_mode )
         self.layout.sample_slider.setValue( self.sample_limit )
         self.layout.sample_value.setValue( self.sample_limit )
         self.Sample_Block( False )
-
     def Set_Read( self, mode, entry, default ):
         setting = Krita.instance().readSetting( "Pigment.O", entry, "" )
         if setting == "":
             read = default
-            Krita.instance().writeSetting( "Pigment.O", entry, str( default ) )
         else:
-            read = setting
-            if mode == "EVAL":
-                read = eval( read )
-            elif mode == "STR":
-                read = str( read )
-            elif mode == "INT":
-                read = int( read )
+            try:
+                if mode == "EVAL":
+                    read = eval( setting )
+                elif mode == "STR":
+                    read = str( setting )
+                elif mode == "INT":
+                    read = int( setting )
+            except:
+                read = default
+        Krita.instance().writeSetting( "Pigment.O", entry, str( read ) )
         return read
 
     #endregion
@@ -8681,9 +8714,9 @@ class PigmentS_Docker( DockWidget ):
             chan_0 = "Hue"
             chan_1 = "Saturation"
             chan_2 = "Lightness"
-        if mode == "HSY":
+        if mode == "HCY":
             chan_0 = "Hue"
-            chan_1 = "Saturation"
+            chan_1 = "Chroma"
             chan_2 = "Luma"
         if mode == "ARD":
             chan_0 = "Angle"
@@ -8767,7 +8800,7 @@ class PigmentS_Docker( DockWidget ):
             c1 = 0.25
             c2 = 0.25
             cor = False
-            hue_rgb = [ "HSV", "HSL", "HSY", "ARD" ]
+            hue_rgb = [ "HSV", "HSL", "HCY", "ARD" ]
             hue_xyz = [ "LCH" ]
 
             # Document

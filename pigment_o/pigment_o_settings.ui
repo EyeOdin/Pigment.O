@@ -427,7 +427,7 @@
                    </item>
                    <item>
                     <property name="text">
-                     <string>HSY</string>
+                     <string>HCY</string>
                     </property>
                    </item>
                    <item>
@@ -695,7 +695,7 @@
                    </item>
                    <item>
                     <property name="text">
-                     <string>HSY</string>
+                     <string>HCY</string>
                     </property>
                    </item>
                    <item>
@@ -1127,7 +1127,7 @@
                         </item>
                         <item>
                          <property name="text">
-                          <string>HSY</string>
+                          <string>HCY</string>
                          </property>
                         </item>
                         <item>
@@ -2333,7 +2333,7 @@
                     </widget>
                    </item>
                    <item row="3" column="3">
-                    <widget class="QPushButton" name="chan_hsy">
+                    <widget class="QPushButton" name="chan_hcy">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -2350,7 +2350,7 @@
                       <enum>Qt::NoFocus</enum>
                      </property>
                      <property name="text">
-                      <string>HSY</string>
+                      <string>HCY</string>
                      </property>
                      <property name="checkable">
                       <bool>true</bool>
@@ -2361,7 +2361,7 @@
                     </widget>
                    </item>
                    <item row="3" column="4">
-                    <widget class="QSpinBox" name="range_hsy">
+                    <widget class="QSpinBox" name="range_hcy">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -2398,7 +2398,7 @@
                     </widget>
                    </item>
                    <item row="3" column="5">
-                    <widget class="QPushButton" name="reset_hsy">
+                    <widget class="QPushButton" name="reset_hcy">
                      <property name="enabled">
                       <bool>true</bool>
                      </property>
@@ -3052,17 +3052,17 @@
                      </item>
                      <item>
                       <property name="text">
-                       <string>HSY 1</string>
+                       <string>HCY 1</string>
                       </property>
                      </item>
                      <item>
                       <property name="text">
-                       <string>HSY 2</string>
+                       <string>HCY 2</string>
                       </property>
                      </item>
                      <item>
                       <property name="text">
-                       <string>HSY 3</string>
+                       <string>HCY 3</string>
                       </property>
                      </item>
                      <item>
@@ -3283,17 +3283,17 @@
                      </item>
                      <item>
                       <property name="text">
-                       <string>HSY 1</string>
+                       <string>HCY 1</string>
                       </property>
                      </item>
                      <item>
                       <property name="text">
-                       <string>HSY 2</string>
+                       <string>HCY 2</string>
                       </property>
                      </item>
                      <item>
                       <property name="text">
-                       <string>HSY 3</string>
+                       <string>HCY 3</string>
                       </property>
                      </item>
                      <item>
@@ -3514,17 +3514,17 @@
                      </item>
                      <item>
                       <property name="text">
-                       <string>HSY 1</string>
+                       <string>HCY 1</string>
                       </property>
                      </item>
                      <item>
                       <property name="text">
-                       <string>HSY 2</string>
+                       <string>HCY 2</string>
                       </property>
                      </item>
                      <item>
                       <property name="text">
-                       <string>HSY 3</string>
+                       <string>HCY 3</string>
                       </property>
                      </item>
                      <item>
@@ -3745,17 +3745,17 @@
                      </item>
                      <item>
                       <property name="text">
-                       <string>HSY 1</string>
+                       <string>HCY 1</string>
                       </property>
                      </item>
                      <item>
                       <property name="text">
-                       <string>HSY 2</string>
+                       <string>HCY 2</string>
                       </property>
                      </item>
                      <item>
                       <property name="text">
-                       <string>HSY 3</string>
+                       <string>HCY 3</string>
                       </property>
                      </item>
                      <item>

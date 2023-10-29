@@ -58,7 +58,7 @@ krange = {
     # HUE-RGB Based
     "hsv_1" : 360, "hsv_2" : 255, "hsv_3" : 255,
     "hsl_1" : 360, "hsl_2" : 255, "hsl_3" : 255,
-    "hsy_1" : 360, "hsy_2" : 255, "hsy_3" : 255,
+    "hcy_1" : 360, "hcy_2" : 255, "hcy_3" : 255,
     "ard_1" : 360, "ard_2" : 255, "ard_3" : 255,
     # XYZ Based
     "xyz_1" : 255, "xyz_2" : 255, "xyz_3" : 255,
@@ -79,7 +79,7 @@ stops = {
     # HUE-RGB Based
     "hsv_1" : 6, "hsv_2" : 4, "hsv_3" : 4,
     "hsl_1" : 6, "hsl_2" : 4, "hsl_3" : 4,
-    "hsy_1" : 6, "hsy_2" : 4, "hsy_3" : 4,
+    "hcy_1" : 6, "hcy_2" : 4, "hcy_3" : 4,
     "ard_1" : 6, "ard_2" : 4, "ard_3" : 6,
     # XYZ Based
     "xyz_1" : 4, "xyz_2" : 4, "xyz_3" : 4,
@@ -110,7 +110,7 @@ color_neutral = {
     "hue_d" : 0, "hue_a" : 0,
     "hsv_1" : 0, "hsv_2" : 0, "hsv_3" : 0,
     "hsl_1" : 0, "hsl_2" : 0, "hsl_3" : 0,
-    "hsy_1" : 0, "hsy_2" : 0, "hsy_3" : 0,
+    "hcy_1" : 0, "hcy_2" : 0, "hcy_3" : 0,
     "ard_1" : 0, "ard_2" : 0, "ard_3" : 0,
     # XYZ Based
     "xyz_1" : 0, "xyz_2" : 0, "xyz_3" : 0,

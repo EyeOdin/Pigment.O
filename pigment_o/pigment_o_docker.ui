@@ -1562,14 +1562,14 @@
           <number>0</number>
          </property>
          <item row="8" column="0">
-          <widget class="QWidget" name="hsy_label" native="true">
+          <widget class="QWidget" name="hcy_label" native="true">
            <property name="maximumSize">
             <size>
              <width>20</width>
              <height>16777215</height>
             </size>
            </property>
-           <layout class="QVBoxLayout" name="hsy_label_layout">
+           <layout class="QVBoxLayout" name="hcy_label_layout">
             <property name="spacing">
              <number>1</number>
             </property>
@@ -1586,7 +1586,7 @@
              <number>1</number>
             </property>
             <item>
-             <widget class="QPushButton" name="hsy_1_label">
+             <widget class="QPushButton" name="hcy_1_label">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                 <horstretch>0</horstretch>
@@ -1617,7 +1617,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="hsy_2_label">
+             <widget class="QPushButton" name="hcy_2_label">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                 <horstretch>0</horstretch>
@@ -1634,7 +1634,7 @@
                <enum>Qt::NoFocus</enum>
               </property>
               <property name="text">
-               <string>S</string>
+               <string>C</string>
               </property>
               <property name="iconSize">
                <size>
@@ -1648,7 +1648,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="hsy_3_label">
+             <widget class="QPushButton" name="hcy_3_label">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                 <horstretch>0</horstretch>
@@ -5153,8 +5153,8 @@
           </widget>
          </item>
          <item row="8" column="1">
-          <widget class="QWidget" name="hsy_slider" native="true">
-           <layout class="QVBoxLayout" name="hsy_slider_layout">
+          <widget class="QWidget" name="hcy_slider" native="true">
+           <layout class="QVBoxLayout" name="hcy_slider_layout">
             <property name="spacing">
              <number>1</number>
             </property>
@@ -5171,7 +5171,7 @@
              <number>1</number>
             </property>
             <item>
-             <widget class="QWidget" name="hsy_1_slider" native="true">
+             <widget class="QWidget" name="hcy_1_slider" native="true">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
                 <horstretch>0</horstretch>
@@ -5190,7 +5190,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QWidget" name="hsy_2_slider" native="true">
+             <widget class="QWidget" name="hcy_2_slider" native="true">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
                 <horstretch>0</horstretch>
@@ -5209,7 +5209,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QWidget" name="hsy_3_slider" native="true">
+             <widget class="QWidget" name="hcy_3_slider" native="true">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
                 <horstretch>0</horstretch>
@@ -5665,14 +5665,14 @@
           </widget>
          </item>
          <item row="8" column="2">
-          <widget class="QWidget" name="hsy_value" native="true">
+          <widget class="QWidget" name="hcy_value" native="true">
            <property name="maximumSize">
             <size>
              <width>100</width>
              <height>16777215</height>
             </size>
            </property>
-           <layout class="QVBoxLayout" name="hsy_value_layout">
+           <layout class="QVBoxLayout" name="hcy_value_layout">
             <property name="spacing">
              <number>1</number>
             </property>
@@ -5689,7 +5689,7 @@
              <number>1</number>
             </property>
             <item>
-             <widget class="QDoubleSpinBox" name="hsy_1_value">
+             <widget class="QDoubleSpinBox" name="hcy_1_value">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                 <horstretch>0</horstretch>
@@ -5717,7 +5717,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QDoubleSpinBox" name="hsy_2_value">
+             <widget class="QDoubleSpinBox" name="hcy_2_value">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                 <horstretch>0</horstretch>
@@ -5745,7 +5745,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QDoubleSpinBox" name="hsy_3_value">
+             <widget class="QDoubleSpinBox" name="hcy_3_value">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                 <horstretch>0</horstretch>

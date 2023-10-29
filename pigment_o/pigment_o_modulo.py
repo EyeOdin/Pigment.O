@@ -693,9 +693,9 @@ class Panel_Square( QWidget ):
         self.directory = None # Path
         self.d_cm = None # "A" "RGB" "CMYK" "YUV" "XYZ" "LAB"
         self.shape = None # "3" "4" "R"
-        self.chan = None # "hsv" "hsl" "hsy" "ard" / "yuv"
+        self.chan = None # "hsv" "hsl" "hcy" "ard" / "yuv"
         # Wheel
-        self.wheel_space = None # "HSV" "HSL" "HSY" "ARD"
+        self.wheel_space = None # "HSV" "HSL" "HCY" "ARD"
 
         # Colors
         self.hex_color = QColor( "#000000" )
@@ -1290,7 +1290,7 @@ class Panel_HueCircle( QWidget ):
         self.side = 0
         # Variables
         self.wheel_mode = "DIGITAL" # "DIGITAL" "ANALOG"
-        self.wheel_space = "HSV" # "HSV" "HSL" "HSY" "ARD"
+        self.wheel_space = "HSV" # "HSV" "HSL" "HCY" "ARD"
         self.huecircle_shape = "None" # "None" "Triangle" "Square" "Diamond"
 
         # Color
@@ -1700,10 +1700,10 @@ class Panel_Gamut( QWidget ):
         self.directory = None # Path
         self.shape = None # "CD" "CA"
         self.d_cm = None # "A" "RGB" "CMYK" "YUV" "XYZ" "LAB"
-        self.chan = None # "hsv" "hsl" "hsy" "ard"
+        self.chan = None # "hsv" "hsl" "hcy" "ard"
         # Wheel
         self.wheel_mode = "DIGITAL" # "DIGITAL" "ANALOG"
-        self.wheel_space = "HSV" # "HSV" "HSL" "HSY" "ARD"
+        self.wheel_space = "HSV" # "HSV" "HSL" "HCY" "ARD"
 
         # Color
         self.color = None
@@ -2663,7 +2663,7 @@ class Panel_Hexagon( QWidget ):
         self.d_cm = None # "A" "RGB" "CMYK" "YUV" "XYZ" "LAB"
         # Wheel
         self.wheel_mode = "DIGITAL" # "DIGITAL" "ANALOG"
-        self.wheel_space = "HSV" # "HSV" "HSL" "HSY" "ARD"
+        self.wheel_space = "HSV" # "HSV" "HSL" "HCY" "ARD"
 
         # Geometry
         self.O1 = None
@@ -3319,7 +3319,7 @@ class Panel_Dot( QWidget ):
             cmenu_int_yuv = cmenu_interpolation.addAction( "YUV" )
             cmenu_int_hsv = cmenu_interpolation.addAction( "HSV" )
             cmenu_int_hsl = cmenu_interpolation.addAction( "HSL" )
-            cmenu_int_hsy = cmenu_interpolation.addAction( "HSY" )
+            cmenu_int_hcy = cmenu_interpolation.addAction( "HCY" )
             cmenu_int_ard = cmenu_interpolation.addAction( "ARD" )
             cmenu_int_rgb.setCheckable( True )
             cmenu_int_cmyk.setCheckable( True )
@@ -3327,7 +3327,7 @@ class Panel_Dot( QWidget ):
             cmenu_int_yuv.setCheckable( True )
             cmenu_int_hsv.setCheckable( True )
             cmenu_int_hsl.setCheckable( True )
-            cmenu_int_hsy.setCheckable( True )
+            cmenu_int_hcy.setCheckable( True )
             cmenu_int_ard.setCheckable( True )
             cmenu_int_rgb.setChecked( self.dot_interpolation == "RGB" )
             cmenu_int_cmyk.setChecked( self.dot_interpolation == "CMYK" )
@@ -3335,7 +3335,7 @@ class Panel_Dot( QWidget ):
             cmenu_int_yuv.setChecked( self.dot_interpolation == "YUV" )
             cmenu_int_hsv.setChecked( self.dot_interpolation == "HSV" )
             cmenu_int_hsl.setChecked( self.dot_interpolation == "HSL" )
-            cmenu_int_hsy.setChecked( self.dot_interpolation == "HSY" )
+            cmenu_int_hcy.setChecked( self.dot_interpolation == "HCY" )
             cmenu_int_ard.setChecked( self.dot_interpolation == "ARD" )
             # Dimension
             cmenu_dimension = cmenu.addMenu( "Dimension" )
@@ -3397,8 +3397,8 @@ class Panel_Dot( QWidget ):
             if action == cmenu_int_hsl:
                 self.dot_interpolation = "HSL"
                 self.SIGNAL_INTERPOLATION.emit( self.dot_interpolation )
-            if action == cmenu_int_hsy:
-                self.dot_interpolation = "HSY"
+            if action == cmenu_int_hcy:
+                self.dot_interpolation = "HCY"
                 self.SIGNAL_INTERPOLATION.emit( self.dot_interpolation )
             if action == cmenu_int_ard:
                 self.dot_interpolation = "ARD"

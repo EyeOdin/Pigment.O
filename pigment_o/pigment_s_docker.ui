@@ -274,7 +274,7 @@
             <enum>Qt::NoFocus</enum>
            </property>
            <property name="currentIndex">
-            <number>1</number>
+            <number>0</number>
            </property>
            <item>
             <property name="text">
@@ -318,7 +318,7 @@
            </item>
            <item>
             <property name="text">
-             <string>HSY</string>
+             <string>HCY</string>
             </property>
            </item>
            <item>
