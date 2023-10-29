@@ -8568,8 +8568,7 @@ class PigmentS_Docker( DockWidget ):
         # Buttons
         self.layout.sample_mode.currentTextChanged.connect( self.Sample_Mode )
         self.layout.sample_generate.clicked.connect( self.Sample_Generate )
-        self.layout.sample_slider.valueChanged.connect( self.Sample_Slider )
-        self.layout.sample_value.valueChanged.connect( self.Sample_Value )
+        self.layout.sample_value.valueChanged.connect( self.Sample_Limit )
 
         # Profile
         # self.layout.profile_file.clicked.connect( self.Profile_File )
@@ -8631,7 +8630,6 @@ class PigmentS_Docker( DockWidget ):
     def Loader( self ):
         self.Sample_Block( True )
         self.layout.sample_mode.setCurrentText( self.sample_mode )
-        self.layout.sample_slider.setValue( self.sample_limit )
         self.layout.sample_value.setValue( self.sample_limit )
         self.Sample_Block( False )
     def Set_Read( self, mode, entry, default ):
@@ -8669,10 +8667,8 @@ class PigmentS_Docker( DockWidget ):
         self.update()
     def Sample_Block( self, boolean ):
         self.layout.sample_mode.blockSignals( boolean )
-        self.layout.sample_slider.blockSignals( boolean )
         self.layout.sample_value.blockSignals( boolean )
     def Clear_Focus( self ):
-        self.layout.sample_slider.clearFocus()
         self.layout.sample_value.clearFocus()
 
     def Text_Index( self, mode ):
@@ -8743,24 +8739,6 @@ class PigmentS_Docker( DockWidget ):
         return chan_0, chan_1, chan_2, chan_3
 
     #endregion
-    #region Slider #################################################################
-
-    def Sample_Slider( self, value ):
-        # Widgets
-        self.Sample_Block( True )
-        self.layout.sample_value.setValue( value )
-        self.Sample_Block( False )
-        # Variables
-        self.Sample_Limit( value )
-    def Sample_Value( self, value ):
-        # Widgets
-        self.Sample_Block( True )
-        self.layout.sample_slider.setValue( value )
-        self.Sample_Block( False )
-        # Variables
-        self.Sample_Limit( value )
-
-    #endregion
     #region Samples ################################################################
 
     def Sample_Generate( self ):
@@ -8814,10 +8792,7 @@ class PigmentS_Docker( DockWidget ):
             elif self.sample_mode == "CMYK":
                 channels = 4
                 extra = 2
-            elif self.sample_mode in hue_rgb:
-                channels = 3
-                extra = 1
-            else:
+a            else:
                 channels = 3
                 extra = 2
             # Item Selection
@@ -8924,8 +8899,8 @@ class PigmentS_Docker( DockWidget ):
                             hue2 = int( hrgb[2] * k )
                         if self.sample_mode in hue_xyz:
                             rgb = self.convert.lch_to_rgb( conv[0], conv[1], conv[2] )
-                            h = self.convert.rgb_to_hue( rgb[0], rgb[1], rgb[2] )
-                            hrgb = self.convert.hsv_to_rgb( h, 1, 1 )
+                            hhh = self.convert.rgb_to_hue( rgb[0], rgb[1], rgb[2] )
+                            hrgb = self.convert.hue_to_rgb( hhh )
                             hue0 = int( hrgb[0] * k )
                             hue1 = int( hrgb[1] * k )
                             hue2 = int( hrgb[2] * k )
@@ -8943,16 +8918,15 @@ class PigmentS_Docker( DockWidget ):
                             s1 = int( self.geometry.Limit_Float( conv[1] ) * k )
                             s2 = int( self.geometry.Limit_Float( conv[2] ) * k )
                             s3 = int( self.geometry.Limit_Float( conv[3] ) * k )
-                    # Total Ink Cove_rage
-                    if self.sample_mode not in hue_rgb:
-                        tic = self.convert.cmyk_to_tic( cmyk[0], cmyk[1], cmyk[2], cmyk[3] )
-                        t0, t1, t2, tw, cor = self.Total_Ink_Coverage( tic, self.sample_limit, c0, c1, c2, bw, cor )
-                        t0 = int( t0 * k )
-                        t1 = int( t1 * k )
-                        t2 = int( t2 * k )
-                        tw = int( tw * k )
                     # Alpha
                     na = int( na * k )
+                    # Total Ink Cove_rage
+                    tic = self.convert.cmyk_to_tic( cmyk[0], cmyk[1], cmyk[2], cmyk[3] )
+                    t0, t1, t2, tw, cor = self.Total_Ink_Coverage( tic, self.sample_limit, c0, c1, c2, bw, cor )
+                    t0 = int( t0 * k )
+                    t1 = int( t1 * k )
+                    t2 = int( t2 * k )
+                    tw = int( tw * k )
 
                     # Images
                     if length == 1:
@@ -8972,9 +8946,8 @@ class PigmentS_Docker( DockWidget ):
                         byte_1_r.extend( [ s1, s1, s1, na ] )
                         byte_2_r.extend( [ s2, s2, s2, na ] )
                         byte_3_r.extend( [ s3, s3, s3, na ] )
-                    if self.sample_mode not in hue_rgb:
-                        byte_t_r.extend( [ t0, t1, t2, na ] )
                     byte_a_r.extend( [ na, na, na, k ] )
+                    byte_t_r.extend( [ t0, t1, t2, na ] )
 
                     # Maps
                     if length == 1:
@@ -8988,9 +8961,8 @@ class PigmentS_Docker( DockWidget ):
                         byte_1_m.append( s1 )
                         byte_2_m.append( s2 )
                         byte_3_m.append( s3 )
-                    if self.sample_mode not in hue_rgb:
-                        byte_t_m.append( tw )
                     byte_a_m.append( na )
+                    byte_t_m.append( tw )
 
                     # Cycle
                     index += 1
@@ -9006,9 +8978,8 @@ class PigmentS_Docker( DockWidget ):
                     self.sample_data.append( { "index" : 2, "render" : byte_2_r, "map" : byte_2_m, "dx" : dx, "dy" : dy, "dw" : dw, "dh" : dh, "text" : chan_2, "cor" : False } )
                 if length == 4:
                     self.sample_data.append( { "index" : 3, "render" : byte_3_r, "map" : byte_3_m, "dx" : dx, "dy" : dy, "dw" : dw, "dh" : dh, "text" : chan_3, "cor" : False } )
-                if self.sample_mode not in hue_rgb:
-                    self.sample_data.append( { "index" : "TIC", "render" : byte_t_r, "map" : byte_t_m, "dx" : dx, "dy" : dy, "dw" : dw, "dh" : dh, "text" : "TIC", "cor" : cor } )
                 self.sample_data.append( { "index" : "Alpha", "render" : byte_a_r, "map" : byte_a_m, "dx" : dx, "dy" : dy, "dw" : dw, "dh" : dh, "text" : "Alpha", "cor" : False } )
+                self.sample_data.append( { "index" : "TIC", "render" : byte_t_r, "map" : byte_t_m, "dx" : dx, "dy" : dy, "dw" : dw, "dh" : dh, "text" : "TIC", "cor" : cor } )
 
                 # Select Previous
                 item = self.sample_data[previous]
