@@ -78,22 +78,22 @@ def Circles( self, painter ):
     v0a = 0
     v0b = 1 - ( 2*v0a )
     circle_0 = QPainterPath()
-    circle_0.addEllipse( self.px + self.side * v0a, self.py + self.side * v0a, self.side * v0b, self.side * v0b )
+    circle_0.addEllipse( int( self.px + self.side * v0a ), int( self.py + self.side * v0a ), int( self.side * v0b ), int( self.side * v0b ) )
     # Circle 1 ( Outter Most Region )
     v1a = 0.025
     v1b = 1 - ( 2*v1a )
     circle_1 = QPainterPath()
-    circle_1.addEllipse( self.px + self.side * v1a, self.py + self.side * v1a, self.side * v1b, self.side * v1b )
+    circle_1.addEllipse( int( self.px + self.side * v1a ), int( self.py + self.side * v1a ), int( self.side * v1b ), int( self.side * v1b ) )
     # Circle 2 ( Inner Most Region )
     v2a = 0.068
     v2b = 1 - ( 2*v2a )
     circle_2 = QPainterPath()
-    circle_2.addEllipse( self.px + self.side * v2a, self.py + self.side * v2a, self.side * v2b, self.side * v2b )
+    circle_2.addEllipse( int( self.px + self.side * v2a ), int( self.py + self.side * v2a ), int( self.side * v2b ), int( self.side * v2b ) )
     # Circle 3 ( Central Dot )
     v3a = 0.13
     v3b = 1 - ( 2*v3a )
     circle_3 = QPainterPath()
-    circle_3.addEllipse( self.px + self.side * v3a, self.py + self.side * v3a, self.side * v3b, self.side * v3b )
+    circle_3.addEllipse( int( self.px + self.side * v3a ), int( self.py + self.side * v3a ), int( self.side * v3b ), int( self.side * v3b ) )
 
     # Return
     return circle_0, circle_1, circle_2, circle_3
@@ -289,36 +289,36 @@ class Color_Header( QWidget ):
 
         # Progress Bar Mask
         mask = QPainterPath()
-        mask.addRect( 0, 0, self.widget_width * self.progress_bar, self.widget_height )
+        mask.addRect( int( 0 ), int( 0 ), int( self.widget_width * self.progress_bar ), int( self.widget_height ) )
         painter.setClipPath( mask )
 
         # Mode FG
         if self.mode_ab == True:
             # FG Active
             painter.setBrush( QBrush( self.kac_1 ) )
-            painter.drawRect( 0, 0, w2, self.widget_height )
+            painter.drawRect( int( 0 ), int( 0 ), int( w2 ), int( self.widget_height ) )
             # FG Previous
             painter.setBrush( QBrush( self.kac_2 ) )
-            painter.drawRect( w2, 0, w2, self.widget_height )
+            painter.drawRect( int( w2 ), int( 0 ), int( w2 ), int( self.widget_height ) )
 
             # BG over FG
             painter.setBrush( QBrush( self.kbc_1 ) )
             if self.other_show == True:
                 point = w1 - self.other_a
-                painter.drawRect( point, 0, self.other_a, self.widget_height )
+                painter.drawRect( int( point ), int( 0 ), int( self.other_a ), int( self.widget_height ) )
         # Mode BG
         if self.mode_ab == False:
             # BG Active
             painter.setBrush( QBrush( self.kbc_1 ) )
-            painter.drawRect( 0, 0, w2, self.widget_height )
+            painter.drawRect( int( 0 ), int( 0 ), int( w2 ), int( self.widget_height ) )
             # BG Previous
             painter.setBrush( QBrush( self.kbc_2 ) )
-            painter.drawRect( w2, 0, w2, self.widget_height )
+            painter.drawRect( int( w2 ), int( 0 ), int( w2 ), int( self.widget_height ) )
 
             # FG over BG
             painter.setBrush( QBrush( self.kac_1 ) )
             if self.other_show == True:
-                painter.drawRect( 0, 0, self.other_a, self.widget_height )
+                painter.drawRect( int( 0 ), int( 0 ), int( self.other_a ), int( self.widget_height ) )
 
 class Harmony_Swatch( QWidget ):
     SIGNAL_RULE = QtCore.pyqtSignal( str )
@@ -455,9 +455,9 @@ class Harmony_Swatch( QWidget ):
             self.harmony_index = 0
 
         # Swatch
-        painter.setPen( QtCore.Qt.NoPen )
         points = []
         factor = 0.7
+        painter.setPen( QtCore.Qt.NoPen )
         width = int( self.widget_width / self.harmony_parts + 1 )
         height = int( self.widget_height*( 1-factor ) )
         for i in range( 0, self.harmony_parts ):
@@ -466,7 +466,7 @@ class Harmony_Swatch( QWidget ):
             py = int( self.widget_height * factor )
             # Color
             painter.setBrush( QBrush( QColor( self.harmony_color[i] ) ) )
-            painter.drawRect( px, 0, width, self.widget_height )
+            painter.drawRect( int( px ), int( 0 ), int( width ), int( self.widget_height ) )
             # Stops
             points.append( px )
         points.append( self.widget_width )
@@ -477,9 +477,9 @@ class Harmony_Swatch( QWidget ):
             pw = points[ self.harmony_index ]
             width = pw - px
             painter.setBrush( QBrush( self.color_2 ) )
-            painter.drawRect( px, py, width, height + 1 )
+            painter.drawRect( int( px ), int( py ), int( width ), int( height + 1 ) )
             painter.setBrush( QBrush( self.color_1 ) )
-            painter.drawRect( px + 1, py + 1, width - 2, height - 1 )
+            painter.drawRect( int( px + 1 ), int( py + 1 ), int( width - 2 ), int( height - 1 ) )
 class Harmony_Spread( QWidget ):
     SIGNAL_SPAN = QtCore.pyqtSignal( float )
     SIGNAL_RELEASE = QtCore.pyqtSignal( int )
@@ -613,7 +613,7 @@ class Harmony_Spread( QWidget ):
             width = int( self.widget_width * self.harmony_span )
             if width <= 1:
                 width = 1
-        painter.drawRect( px, 2, width, self.widget_height-4 )
+        painter.drawRect( int( px ), int( 2 ), int( width ), int( self.widget_height - 4 ) )
 
 #endregion
 #region Panels #####################################################################
@@ -655,7 +655,7 @@ class Panel_Fill( QWidget ):
         # Draw Pixmaps
         painter.setPen( QtCore.Qt.NoPen )
         painter.setBrush( QBrush( self.hex_color ) )
-        painter.drawRect( 0, 0, self.widget_width, self.widget_height )
+        painter.drawRect( int( 0 ), int( 0 ), int( self.widget_width ), int( self.widget_height ) )
 
 class Panel_Square( QWidget ):
     SIGNAL_VALUE = QtCore.pyqtSignal( dict )
@@ -1128,7 +1128,7 @@ class Panel_Square( QWidget ):
                     render = qpixmap.scaled( self.widget_width, self.widget_height, Qt.IgnoreAspectRatio, Qt.FastTransformation )
                 else:
                     render = qpixmap
-                painter.drawPixmap( 0, 0, render )
+                painter.drawPixmap( int( 0 ), int( 0 ), render )
             except:
                 pass
 
@@ -1144,8 +1144,8 @@ class Panel_Square( QWidget ):
             painter.setPen( QPen( self.color_1, line_size, Qt.SolidLine, Qt.SquareCap, Qt.MiterJoin ) )
             painter.setBrush( QtCore.Qt.NoBrush )
             # Draw Cross
-            painter.drawLine( w2, 0, w2, h1 )
-            painter.drawLine( 0, h2, w1, h2 )
+            painter.drawLine( int( w2 ), int( 0 ), int( w2 ), int( h1 ) )
+            painter.drawLine( int( 0 ), int( h2 ), int( w1 ), int( h2 ) )
             # Draw Primaries
             painter.drawLine( int( self.CR[1] * w1 ), int( ( 1-self.CR[2] ) * h1 ), int( self.CM[1] * w1 ), int( ( 1-self.CM[2] ) * h1 ) )
             painter.drawLine( int( self.CM[1] * w1 ), int( ( 1-self.CM[2] ) * h1 ), int( self.CB[1] * w1 ), int( ( 1-self.CB[2] ) * h1 ) )
@@ -2283,7 +2283,7 @@ class Panel_Gamut( QWidget ):
 
         # Outter Mask
         outline = QPainterPath()
-        outline.addEllipse( 0, 0, self.widget_width, self.widget_height )
+        outline.addEllipse( int( 0 ), int( 0 ), int( self.widget_width ), int( self.widget_height ) )
         painter.setClipPath( circle_0 )
 
         # Dark Border
@@ -2312,8 +2312,8 @@ class Panel_Gamut( QWidget ):
                 px = circle_points[i][0]
                 py = circle_points[i][1]
                 # Draw
-                line_gray.moveTo( self.w2, self.h2 )
-                line_gray.lineTo( px, py )
+                line_gray.moveTo( int( self.w2 ), int( self.h2 ) )
+                line_gray.lineTo( int( px ), int( py ) )
             painter.setClipPath( circle_02 )
             painter.drawPath( line_gray )
 
@@ -2338,7 +2338,7 @@ class Panel_Gamut( QWidget ):
                 if qpixmap.isNull() == False:
                     qtransform = QTransform()
                     qtransform.translate( int( self.disk_x ), int( self.disk_y ) )
-                    qtransform.scale( int( self.disk_side ) / qpixmap.width(), int( self.disk_side ) / qpixmap.height() )
+                    qtransform.scale( int( self.disk_side ) / 256, int( self.disk_side ) / 256 )
                     qbrush.setTransform( qtransform )
                 # Painter
                 painter.setPen( QtCore.Qt.NoPen )
@@ -2429,6 +2429,7 @@ class Panel_Gamut( QWidget ):
             painter.drawEllipse( int( P3_1[0] - dot ), int( P3_1[1] - dot ), int( dot * 2 ), int( dot * 2 ) )
             painter.drawEllipse( int( P4_1[0] - dot ), int( P4_1[1] - dot ), int( dot * 2 ), int( dot * 2 ) )
         if self.gamut_mask == "3 Pie":
+            # Variables
             rect = QRect( int( gdx ), int( gdy ), int( gds ), int( gds ) )
             ang_a1 = 16 * self.geometry.Trig_2D_Points_Lines_Angle(
                 gdx + self.gamut_3pie[1][0] * gds, gdy + self.gamut_3pie[1][1] * gds,
@@ -2990,35 +2991,32 @@ class Panel_Hexagon( QWidget ):
 
         # Draw Gradient
         if len( self.qpixmap_list ) > 0:
-            try:
-                # Draw Masks
-                hexagon = QPainterPath()
-                hexagon.moveTo( int( self.px + self.O1[0] * self.side ), int( self.py + self.O1[1] * self.side ) )
-                hexagon.lineTo( int( self.px + self.O2[0] * self.side ), int( self.py + self.O2[1] * self.side ) )
-                hexagon.lineTo( int( self.px + self.O3[0] * self.side ), int( self.py + self.O3[1] * self.side ) )
-                hexagon.lineTo( int( self.px + self.O4[0] * self.side ), int( self.py + self.O4[1] * self.side ) )
-                hexagon.lineTo( int( self.px + self.O5[0] * self.side ), int( self.py + self.O5[1] * self.side ) )
-                hexagon.lineTo( int( self.px + self.O6[0] * self.side ), int( self.py + self.O6[1] * self.side ) )
-                painter.setClipPath( hexagon )
+            # Draw Masks
+            hexagon = QPainterPath()
+            hexagon.moveTo( int( self.px + self.O1[0] * self.side ), int( self.py + self.O1[1] * self.side ) )
+            hexagon.lineTo( int( self.px + self.O2[0] * self.side ), int( self.py + self.O2[1] * self.side ) )
+            hexagon.lineTo( int( self.px + self.O3[0] * self.side ), int( self.py + self.O3[1] * self.side ) )
+            hexagon.lineTo( int( self.px + self.O4[0] * self.side ), int( self.py + self.O4[1] * self.side ) )
+            hexagon.lineTo( int( self.px + self.O5[0] * self.side ), int( self.py + self.O5[1] * self.side ) )
+            hexagon.lineTo( int( self.px + self.O6[0] * self.side ), int( self.py + self.O6[1] * self.side ) )
+            painter.setClipPath( hexagon )
 
-                # Draw Pixmaps
-                painter.setPen( QtCore.Qt.NoPen )
-                painter.setBrush( QtCore.Qt.NoBrush )
-                index = int( self.tan_axis * self.tan_range )
-                qpixmap = self.qpixmap_list[index]
-                if qpixmap.isNull() == False:
-                    render = qpixmap.scaled( self.side, self.side, Qt.IgnoreAspectRatio, Qt.FastTransformation )
-                    painter.drawPixmap( int( self.px ), int( self.py ), render )
+            # Draw Pixmaps
+            painter.setPen( QtCore.Qt.NoPen )
+            painter.setBrush( QtCore.Qt.NoBrush )
+            index = int( self.tan_axis * self.tan_range )
+            qpixmap = self.qpixmap_list[index]
+            if qpixmap.isNull() == False:
+                render = qpixmap.scaled( self.side, self.side, Qt.IgnoreAspectRatio, Qt.FastTransformation )
+                painter.drawPixmap( int( self.px ), int( self.py ), render )
 
-                # Reset Mask
-                square = QPainterPath()
-                square.moveTo( int( 0 ), int( 0 ) )
-                square.lineTo( int( self.widget_width ), int( 0 ) )
-                square.lineTo( int( self.widget_width ), int( self.widget_height ) )
-                square.lineTo( int( 0 ), int( self.widget_height ) )
-                painter.setClipPath( square )
-            except:
-                pass
+            # Reset Mask
+            square = QPainterPath()
+            square.moveTo( int( 0 ), int( 0 ) )
+            square.lineTo( int( self.widget_width ), int( 0 ) )
+            square.lineTo( int( self.widget_width ), int( self.widget_height ) )
+            square.lineTo( int( 0 ), int( self.widget_height ) )
+            painter.setClipPath( square )
 
         # Analyse Colors
         if self.analyse != None:
@@ -3464,9 +3462,9 @@ class Panel_Dot( QWidget ):
                     point_x = int( self.w2 - ( self.side * 0.5 ) + ( self.unit * x + self.margin * x ) )
                     point_y = int( self.h2 - ( self.side * 0.5 ) + ( self.unit * y + self.margin * y ) )
                     if self.shape == "CIRCLE":
-                        painter.drawEllipse( point_x, point_y, self.unit, self.unit )
+                        painter.drawEllipse( int( point_x ), int( point_y ), int( self.unit ), int( self.unit ) )
                     elif self.shape == "SQUARE":
-                        painter.drawRect( point_x, point_y, self.unit, self.unit )
+                        painter.drawRect( int( point_x ), int( point_y ), int( self.unit ), int( self.unit ) )
 
         # Cursor
         zoom_size = 100
@@ -3866,11 +3864,11 @@ class Panel_Mask( QWidget ):
 
         # Background
         painter.setPen( QtCore.Qt.NoPen )
-        bw = QLinearGradient( 0, 0, 0, self.widget_height )
+        bw = QLinearGradient( int( 0 ), int( 0 ), int( 0 ), int( self.widget_height ) )
         bw.setColorAt( 0.000, QColor( 0, 0, 0, 0 ) ) # White
         bw.setColorAt( 1.000, QColor( 0, 0, 0, 100 ) ) # Black
         painter.setBrush( QBrush( bw ) )
-        painter.drawRect( 0,0, self.widget_width,self.widget_height )
+        painter.drawRect( int( 0 ), int( 0 ), int( self.widget_width ), int( self.widget_height ) )
 
         # Draw Pixmaps
         if self.mask_qpixmaps != None:
@@ -3882,7 +3880,7 @@ class Panel_Mask( QWidget ):
                     h = render.height()
                     px = int( self.w2 - w * 0.5 )
                     py = int( self.h2 - h * 0.5 )
-                    painter.drawPixmap( px, py, render )
+                    painter.drawPixmap( int( px ), int( py ), render )
 
         # Cursor
         size = 10
@@ -4122,32 +4120,32 @@ class Channel_Slider( QWidget ):
         # Background Style
         painter.setPen( QtCore.Qt.NoPen )
         painter.setBrush( QBrush( self.color_alpha ) )
-        painter.drawRect( 0, 0, self.widget_width, self.widget_height )
+        painter.drawRect( int( 0 ), int( 0 ), int( self.widget_width ), int( self.widget_height ) )
 
         # Stops
         painter.setPen( QtCore.Qt.NoPen )
         painter.setBrush( QBrush( self.color_1 ) )
         if self.stops <= 0 :
-            painter.drawRect( 0, 0, self.widget_width, 1 )
+            painter.drawRect( int( 0 ), int( 0 ), int( self.widget_width ), int( 1 ) )
         else:
             for i in range( 0, self.stops ):
-                percent = int( self.widget_width * ( i / self.stops ) )
-                painter.drawRect( percent, 0, 1, 1 )
-            painter.drawRect( self.widget_width * 1 - 1, 0, 1, 1 )
+                percent = self.widget_width * ( i / self.stops )
+                painter.drawRect( int( percent ), int( 0 ), int( 1 ), int( 1 ) )
+            painter.drawRect( int( self.widget_width * 1 - 1 ), int( 0 ), int( 1 ), int( 1 ) )
 
         # Draw Colors Gradient
         if self.colors != None:
             painter.setPen( QtCore.Qt.NoPen )
-            grad = QLinearGradient( 0, 0, self.widget_width, 0 )
+            grad = QLinearGradient( int( 0 ), int( 0 ), int( self.widget_width ), int( 0 ) )
             number = len( self.colors )
             for i in range( 0, number ):
                 grad.setColorAt( round( i / number, 3 ), QColor( int( self.colors[i][0] * 255 ), int( self.colors[i][1] * 255 ), int( self.colors[i][2] * 255 ), int( self.alpha * 255 ) ) )
             painter.setBrush( QBrush( grad ) )
             square = QPolygon( [
-                QPoint( 1, 1 ),
-                QPoint( w1, 1 ),
-                QPoint( w1, h1 ),
-                QPoint( 1, h1 ),
+                QPoint( int( 1 ),  int( 1 ) ),
+                QPoint( int( w1 ), int( 1 ) ),
+                QPoint( int( w1 ), int( h1 ) ),
+                QPoint( int( 1 ),  int( h1 ) ),
                 ] )
             painter.drawPolygon( square )
 
@@ -4165,20 +4163,20 @@ class Channel_Slider( QWidget ):
         painter.setPen( QtCore.Qt.NoPen )
         painter.setBrush( QBrush( self.color_black ) )
         black = QPolygon( [
-            QPoint( bl, top1 ),
-            QPoint( bl, bot1 ),
-            QPoint( br, bot1 ),
-            QPoint( br, top1 ),
+            QPoint( int( bl ), int( top1 ) ),
+            QPoint( int( bl ), int( bot1 ) ),
+            QPoint( int( br ), int( bot1 ) ),
+            QPoint( int( br ), int( top1 ) ),
             ] )
         painter.drawPolygon( black )
         # White Square
         painter.setPen( QtCore.Qt.NoPen )
         painter.setBrush( QBrush( self.color_white ) )
         white = QPolygon( [
-            QPoint( wl, top2 ),
-            QPoint( wl, bot2 ),
-            QPoint( wr, bot2 ),
-            QPoint( wr, top2 ),
+            QPoint( int( wl ), int( top2 ) ),
+            QPoint( int( wl ), int( bot2 ) ),
+            QPoint( int( wr ), int( bot2 ) ),
+            QPoint( int( wr ), int( top2 ) ),
             ] )
         painter.drawPolygon( white )
 
@@ -4458,66 +4456,66 @@ class Channel_Selection( QWidget ):
         # Slider
         if ( self.value != None and self.sele != None ):
             # Variables 1
-            vv = int( self.value * self.widget_width )
-            l0 = int( vv - self.sele["l0"] * self.widget_width )
-            l1 = int( vv - self.sele["l1"] * self.widget_width )
-            r1 = int( vv + self.sele["r1"] * self.widget_width )
-            r0 = int( vv + self.sele["r0"] * self.widget_width )
+            vv = self.value * self.widget_width
+            l0 = vv - self.sele["l0"] * self.widget_width
+            l1 = vv - self.sele["l1"] * self.widget_width
+            r1 = vv + self.sele["r1"] * self.widget_width
+            r0 = vv + self.sele["r0"] * self.widget_width
             # Variables 2
-            l0i = int( l0 + 1 )
-            l1i = int( l1 + 1 )
-            r1i = int( r1 - 1 )
-            r0i = int( r0 - 1 )
+            l0i = l0 + 1
+            l1i = l1 + 1
+            r1i = r1 - 1
+            r0i = r0 - 1
 
             # Background Style
             painter.setPen( QtCore.Qt.NoPen )
             painter.setBrush( QBrush( self.color_alpha ) )
-            painter.drawRect( 0, h5, self.widget_width, 5 )
+            painter.drawRect( int( 0 ), int( h5 ), int( self.widget_width ), int( 5 ) )
 
             # Markers Range
             left_full = QPolygon( [
-                QPoint( vv, 1 ),
-                QPoint( vv, 2 ),
-                QPoint( l1i, 2 ),
-                QPoint( l1i, h6 ),
-                QPoint( vv, h6 ),
-                QPoint( vv, h5 ),
-                QPoint( l1, h5 ),
-                QPoint( l1, 1 ),
+                QPoint( int( vv ),  int( 1 )  ),
+                QPoint( int( vv ),  int( 2 )  ),
+                QPoint( int( l1i ), int( 2 )  ),
+                QPoint( int( l1i ), int( h6 ) ),
+                QPoint( int( vv ),  int( h6 ) ),
+                QPoint( int( vv ),  int( h5 ) ),
+                QPoint( int( l1 ),  int( h5 ) ),
+                QPoint( int( l1 ),  int( 1 )  ),
                 ] )
             right_full = QPolygon( [
-                QPoint( vv, 1 ),
-                QPoint( vv, 2 ),
-                QPoint( r1i, 2 ),
-                QPoint( r1i, h6 ),
-                QPoint( vv, h6 ),
-                QPoint( vv, h5 ),
-                QPoint( r1, h5 ),
-                QPoint( r1, 1 ),
+                QPoint( int( vv ),  int( 1 )  ),
+                QPoint( int( vv ),  int( 2 )  ),
+                QPoint( int( r1i ), int( 2 )  ),
+                QPoint( int( r1i ), int( h6 ) ),
+                QPoint( int( vv ),  int( h6 ) ),
+                QPoint( int( vv ),  int( h5 ) ),
+                QPoint( int( r1 ),  int( h5 ) ),
+                QPoint( int( r1 ),  int( 1 )  ),
                 ] )
             left_tri = QPolygon( [
-                QPoint( l1, 1 ),
-                QPoint( l1, h5 ),
-                QPoint( l0, h5 ),
-                QPoint( l0, 1 ),
+                QPoint( int( l1 ), int( 1 )  ),
+                QPoint( int( l1 ), int( h5 ) ),
+                QPoint( int( l0 ), int( h5 ) ),
+                QPoint( int( l0 ), int( 1 )  ),
                 ] )
             right_tri = QPolygon( [
-                QPoint( r1, 1 ),
-                QPoint( r1, h5 ),
-                QPoint( r0, h5 ),
-                QPoint( r0, 1 ),
+                QPoint( int( r1 ), int( 1 )  ),
+                QPoint( int( r1 ), int( h5 ) ),
+                QPoint( int( r0 ), int( h5 ) ),
+                QPoint( int( r0 ), int( 1 )  ),
                 ] )
             left_cap = QPolygon( [
-                QPoint( l0, 1 ),
-                QPoint( l0, h5 ),
-                QPoint( l0+1, h5 ),
-                QPoint( l0+1, 1 ),
+                QPoint( int( l0 ),  int( 1 )  ),
+                QPoint( int( l0 ),  int( h5 ) ),
+                QPoint( int( l0i ), int( h5 ) ),
+                QPoint( int( l0i ), int( 1 )  ),
                 ] )
             right_cap = QPolygon( [
-                QPoint( r0, 1 ),
-                QPoint( r0, h5 ),
-                QPoint( r0-1, h5 ),
-                QPoint( r0-1, 1 ),
+                QPoint( int( r0 ),  int( 1 )  ),
+                QPoint( int( r0 ),  int( h5 ) ),
+                QPoint( int( r0i ), int( h5 ) ),
+                QPoint( int( r0i ), int( 1 )  ),
                 ] )
 
             painter.setPen( QtCore.Qt.NoPen )
@@ -4540,48 +4538,48 @@ class Channel_Selection( QWidget ):
             if self.mode == "CIRCULAR":
                 # Polygons
                 neg_left_full = QPolygon( [
-                    QPoint( vv - ww, 1 ),
-                    QPoint( vv - ww, 2 ),
-                    QPoint( r1i - ww, 2 ),
-                    QPoint( r1i - ww, h6 ),
-                    QPoint( vv - ww, h6 ),
-                    QPoint( vv - ww, h5 ),
-                    QPoint( r1 - ww, h5 ),
-                    QPoint( r1 - ww, 1 ),
+                    QPoint( int( vv - ww ),  int( 1 )  ),
+                    QPoint( int( vv - ww ),  int( 2 )  ),
+                    QPoint( int( r1i - ww ), int( 2 )  ),
+                    QPoint( int( r1i - ww ), int( h6 ) ),
+                    QPoint( int( vv - ww ),  int( h6 ) ),
+                    QPoint( int( vv - ww ),  int( h5 ) ),
+                    QPoint( int( r1 - ww ),  int( h5 ) ),
+                    QPoint( int( r1 - ww ),  int( 1 )  ),
                     ] )
                 neg_right_full = QPolygon( [
-                    QPoint( vv + ww, 1 ),
-                    QPoint( vv + ww, 2 ),
-                    QPoint( l1i + ww, 2 ),
-                    QPoint( l1i + ww, h6 ),
-                    QPoint( vv + ww, h6 ),
-                    QPoint( vv + ww, h5 ),
-                    QPoint( l1 + ww, h5 ),
-                    QPoint( l1 + ww, 1 ),
+                    QPoint( int( vv + ww ),  int( 1 )  ),
+                    QPoint( int( vv + ww ),  int( 2 )  ),
+                    QPoint( int( l1i + ww ), int( 2 )  ),
+                    QPoint( int( l1i + ww ), int( h6 ) ),
+                    QPoint( int( vv + ww ),  int( h6 ) ),
+                    QPoint( int( vv + ww ),  int( h5 ) ),
+                    QPoint( int( l1 + ww ),  int( h5 ) ),
+                    QPoint( int( l1 + ww ),  int( 1 )  ),
                     ] )
                 neg_left_tri = QPolygon( [
-                    QPoint( r1 - ww, 1 ),
-                    QPoint( r1 - ww, h5 ),
-                    QPoint( r0 - ww, h5 ),
-                    QPoint( r0 - ww, 1 ),
+                    QPoint( int( r1 - ww ), int( 1 )  ),
+                    QPoint( int( r1 - ww ), int( h5 ) ),
+                    QPoint( int( r0 - ww ), int( h5 ) ),
+                    QPoint( int( r0 - ww ), int( 1 )  ),
                     ] )
                 neg_right_tri = QPolygon( [
-                    QPoint( l1 + ww, 1 ),
-                    QPoint( l1 + ww, h5 ),
-                    QPoint( l0 + ww, h5 ),
-                    QPoint( l0 + ww, 1 ),
+                    QPoint( int( l1 + ww ), int( 1 )  ),
+                    QPoint( int( l1 + ww ), int( h5 ) ),
+                    QPoint( int( l0 + ww ), int( h5 ) ),
+                    QPoint( int( l0 + ww ), int( 1 )  ),
                     ] )
                 neg_left_cap = QPolygon( [
-                    QPoint( r0 - ww, 1 ),
-                    QPoint( r0 - ww, h5 ),
-                    QPoint( r0-1 - ww, h5 ),
-                    QPoint( r0-1 - ww, 1 ),
+                    QPoint( int( r0 - ww ),  int( 1 )  ),
+                    QPoint( int( r0 - ww ),  int( h5 ) ),
+                    QPoint( int( r0i - ww ), int( h5 ) ),
+                    QPoint( int( r0i - ww ), int( 1 )  ),
                     ] )
                 neg_right_cap = QPolygon( [
-                    QPoint( l0 + ww, 1 ),
-                    QPoint( l0 + ww, h5 ),
-                    QPoint( l0+1 + ww, h5 ),
-                    QPoint( l0+1 + ww, 1 ),
+                    QPoint( int( l0 + ww ),  int( 1 )  ),
+                    QPoint( int( l0 + ww ),  int( h5 ) ),
+                    QPoint( int( l0i + ww ), int( h5 ) ),
+                    QPoint( int( l0i + ww ), int( 1 )  ),
                     ] )
 
                 # Draw
@@ -4604,16 +4602,16 @@ class Channel_Selection( QWidget ):
         # Draw Colors Gradient
         if self.colors != None:
             painter.setPen( QtCore.Qt.NoPen )
-            grad = QLinearGradient( 0, 0, self.widget_width, 0 )
+            grad = QLinearGradient( int( 0 ), int( 0 ), int( self.widget_width ), int( 0 ) )
             number = len( self.colors )
             for i in range( 0, number ):
                 grad.setColorAt( round( i / number, 3 ), QColor( int( self.colors[i][0] * 255 ), int( self.colors[i][1] * 255 ), int( self.colors[i][2] * 255 ), int( self.alpha * 255 ) ) )
             painter.setBrush( QBrush( grad ) )
             square = QPolygon( [
-                QPoint( 1, h4 ),
-                QPoint( w1, h4 ),
-                QPoint( w1, h1 ),
-                QPoint( 1, h1 ),
+                QPoint( int( 1 ),  int( h4 ) ),
+                QPoint( int( w1 ), int( h4 ) ),
+                QPoint( int( w1 ), int( h1 ) ),
+                QPoint( int( 1 ),  int( h1 ) ),
                 ] )
             painter.drawPolygon( square )
 
@@ -4632,20 +4630,20 @@ class Channel_Selection( QWidget ):
             painter.setPen( QtCore.Qt.NoPen )
             painter.setBrush( QBrush( self.color_black ) )
             black = QPolygon( [
-                QPoint( bl, top1 ),
-                QPoint( bl, bot1 ),
-                QPoint( br, bot1 ),
-                QPoint( br, top1 ),
+                QPoint( int( bl ), int( top1 ) ),
+                QPoint( int( bl ), int( bot1 ) ),
+                QPoint( int( br ), int( bot1 ) ),
+                QPoint( int( br ), int( top1 ) ),
                 ] )
             painter.drawPolygon( black )
             # White Square
             painter.setPen( QtCore.Qt.NoPen )
             painter.setBrush( QBrush( self.color_white ) )
             white = QPolygon( [
-                QPoint( wl, top2 ),
-                QPoint( wl, bot2 ),
-                QPoint( wr, bot2 ),
-                QPoint( wr, top2 ),
+                QPoint( int( wl ), int( top2 ) ),
+                QPoint( int( wl ), int( bot2 ) ),
+                QPoint( int( wr ), int( bot2 ) ),
+                QPoint( int( wr ), int( top2 ) ),
                 ] )
             painter.drawPolygon( white )
 
@@ -4833,7 +4831,7 @@ class Pin_Color( QWidget ):
         # Background
         painter.setPen( QtCore.Qt.NoPen )
         painter.setBrush( QBrush( self.color_alpha ) )
-        painter.drawRect( 0, 0, self.widget_width, self.widget_height )
+        painter.drawRect( int( 0 ), int( 0 ), int( self.widget_width ), int( self.widget_height ) )
 
         # Active
         if self.active == True:
@@ -4857,7 +4855,7 @@ class Pin_Color( QWidget ):
         # Dot
         painter.setPen( QtCore.Qt.NoPen )
         painter.setBrush( QBrush( QColor( self.color_1 ) ) )
-        painter.drawRect( w1, 0, w3, 1 )
+        painter.drawRect( int( w1 ), int( 0 ), int( w3 ), int( 1 ) )
 
         # Color
         painter.setPen( QtCore.Qt.NoPen )
@@ -4866,17 +4864,17 @@ class Pin_Color( QWidget ):
             if self.alpha != None:
                 qcolor.setAlphaF( self.alpha )
             painter.setBrush( QBrush( qcolor ) )
-            painter.drawRect( QRectF( 1, h2, self.widget_width - 2, h4 - a1 ) )
+            painter.drawRect( QRect( int( 1 ), int( h2 ), int( self.widget_width - 2 ), int( h4 - a1 ) ) )
 
         # Alpha
         if self.alpha != None:
             painter.setPen( QtCore.Qt.NoPen )
             # Background
             painter.setBrush( QBrush( self.color_2 ) )
-            painter.drawRect( QRectF( 1, self.widget_height-a1, self.widget_width - 2, a1 ) )
+            painter.drawRect( QRect( int( 1 ), int( self.widget_height - a1 ), int( self.widget_width - 2 ), int( a1 ) ) )
             # Slider
             painter.setBrush( QBrush( self.color_1 ) )
-            painter.drawRect( QRectF( 1, self.widget_height-a1, ( self.widget_width*self.alpha ) - 2, a1 ) )
+            painter.drawRect( QRect( int( 1 ), int( self.widget_height - a1 ), int( ( self.widget_width * self.alpha ) - 2 ), int( a1 ) ) )
 
 #endregion
 #region Ink #######################################################################
@@ -4941,12 +4939,12 @@ class Sample_Map( QWidget ):
         # Background
         painter.setPen( QtCore.Qt.NoPen )
         painter.setBrush( QBrush( self.qcolor ) )
-        painter.drawRect( 0, 0, self.widget_width, self.widget_height )
+        painter.drawRect( int( 0 ), int( 0 ), int( self.widget_width ), int( self.widget_height ) )
 
         # Render
         try:
             # Scale
-            render_pix = self.qpixmap.scaled( self.widget_width, self.widget_height, Qt.KeepAspectRatio, Qt.FastTransformation )
+            render_pix = self.qpixmap.scaled( int( self.widget_width ), int( self.widget_height ), Qt.KeepAspectRatio, Qt.FastTransformation )
             # Variables
             rw = render_pix.width()
             rh = render_pix.height()
@@ -4956,7 +4954,7 @@ class Sample_Map( QWidget ):
             painter.setPen( QtCore.Qt.NoPen )
             painter.setBrush( QtCore.Qt.NoBrush )
             # Image
-            painter.drawPixmap( px, py, render_pix )
+            painter.drawPixmap( int( px ), int( py ), render_pix )
         except:
             self.Render_None( painter, event )
     def Render_None( self, painter, event ):

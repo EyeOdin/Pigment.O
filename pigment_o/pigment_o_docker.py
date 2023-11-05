@@ -3950,12 +3950,22 @@ class PigmentO_Docker( DockWidget ):
         convert = self.Color_Convert( mode, var_1, var_2, var_3, var_4, color )
         return convert
 
+    def Script_Input_Kelvin( self, kelvin ):
+        # range : 1000-12000 neutral : 6500
+        self.Kelvin_Class( kelvin )
+        percent = self.convert.kkk_scale_to_percent( kelvin )
+        self.Pigmento_PRESS( "KKK", percent, kelvin, 0, 0, self.cor )
+        return self.cor
     def Script_Input_Preview( self, mode, var_1, var_2, var_3, var_4 ):
+        # mode : color space
+        # var : 0-1
         self.widget_press = True
         self.Color_Convert( mode, var_1, var_2, var_3, var_4, self.cor )
         self.Sync_Elements( False, True, False )
         return self.cor
     def Script_Input_Apply( self, mode, var_1, var_2, var_3, var_4 ):
+        # mode : color space
+        # var : 0-1
         self.widget_press = False
         self.Color_Convert( mode, var_1, var_2, var_3, var_4, self.cor )
         self.Sync_Elements( True, True, True )
@@ -4787,7 +4797,7 @@ class PigmentO_Docker( DockWidget ):
         #endregion
         #region Color for Canvas
 
-        if ( self.performance_inaccurate == False or side == "RETURN" ):
+        if self.performance_inaccurate == False:
             display = managed_color.colorForCanvas( vc )
             r = display.redF()
             g = display.greenF()
@@ -9576,5 +9586,23 @@ To Do:
 
 Investigate Krita
 - YUV / YCbCr color conversion formula - YUV formula is RED and Blue inverted ? or is it Krita ?
+
+Idea :
+Color Picking outside Krita
+
+cursor = QCursor()
+position = cursor.pos()
+QtCore.qDebug( f"position = { position }" )
+
+window = QWindow()
+name = window.screen().name()
+model = window.screen().model()
+serialNumber = window.screen().serialNumber()
+QtCore.qDebug( f"name = { name }" )
+QtCore.qDebug( f"model = { model }" )
+QtCore.qDebug( f"serialNumber = { serialNumber }" )
+
+wid = widget.windid()
+qpixmap = window.screen().grabWindow( WId window = 0, int x = 0, int y = 0, int width = -1, int height = -1 )
 
 """

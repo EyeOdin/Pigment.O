@@ -35,7 +35,7 @@ class Pigmento_Extension( Extension ):
     SIGNAL_KEY_1 = QtCore.pyqtSignal( int )
     SIGNAL_KEY_2 = QtCore.pyqtSignal( int )
     SIGNAL_KEY_3 = QtCore.pyqtSignal( int )
-    SIGNAL_KEY_4 = QtCore.pyqtSignal( int )    
+    SIGNAL_KEY_4 = QtCore.pyqtSignal( int )
     SIGNAL_LOCK = QtCore.pyqtSignal( str )
 
     #region Initialize #############################################################
@@ -50,38 +50,35 @@ class Pigmento_Extension( Extension ):
 
     def createActions( self, window ):
         # Main Menu
-        action_pigmento = window.createAction( "pigment_o", "Pigment.O", "tools/scripts" )
-        menu_pin = QtWidgets.QMenu( "pigment_o", window.qwindow() )
-        menu_key   = QtWidgets.QMenu( "pigment_o", window.qwindow() )
-        menu_lock  = QtWidgets.QMenu( "pigment_o", window.qwindow() )
+        menu_pigment_o = QtWidgets.QMenu( "pigment_o_menu", window.qwindow() )
+        action_pigment_o = window.createAction( "pigment_o_menu", "Pigment.O", "tools/scripts" )
+        action_pigment_o.setMenu( menu_pigment_o )
 
-        # Sub Menu
-        action_pin = window.createAction( "pin", "Pin", "tools/scripts/pigment_o" )
-        action_key   = window.createAction( "key", "Key", "tools/scripts/pigment_o" )
-        action_lock  = window.createAction( "lock", "Lock", "tools/scripts/pigment_o" )
-        action_pigmento.setMenu( menu_pin )
-        action_pigmento.setMenu( menu_key )
-        action_pigmento.setMenu( menu_lock )
-
-        menu_pin = QtWidgets.QMenu( "pin", window.qwindow() )
-        menu_key = QtWidgets.QMenu( "key", window.qwindow() )
-        menu_lock = QtWidgets.QMenu( "lock", window.qwindow() )
+        # Sub Menus
+        menu_pin = QtWidgets.QMenu( "pin_menu", window.qwindow() )
+        action_pin = window.createAction( "pin_menu", "Pin", "tools/scripts/pigment_o_menu" )
         action_pin.setMenu( menu_pin )
+
+        menu_key = QtWidgets.QMenu( "key_menu", window.qwindow() )
+        action_key = window.createAction( "key_menu", "Key", "tools/scripts/pigment_o_menu" )
         action_key.setMenu( menu_key )
+
+        menu_lock = QtWidgets.QMenu( "lock_menu", window.qwindow() )
+        action_lock = window.createAction( "lock_menu", "Lock", "tools/scripts/pigment_o_menu" )
         action_lock.setMenu( menu_lock )
 
         # Pin Actions
-        action_pin_00 = window.createAction( "pigment_o_pin_00", "Pin 00", "tools/scripts/pigment_o/pin" )
-        action_pin_01 = window.createAction( "pigment_o_pin_01", "Pin 01", "tools/scripts/pigment_o/pin" )
-        action_pin_02 = window.createAction( "pigment_o_pin_02", "Pin 02", "tools/scripts/pigment_o/pin" )
-        action_pin_03 = window.createAction( "pigment_o_pin_03", "Pin 03", "tools/scripts/pigment_o/pin" )
-        action_pin_04 = window.createAction( "pigment_o_pin_04", "Pin 04", "tools/scripts/pigment_o/pin" )
-        action_pin_05 = window.createAction( "pigment_o_pin_05", "Pin 05", "tools/scripts/pigment_o/pin" )
-        action_pin_06 = window.createAction( "pigment_o_pin_06", "Pin 06", "tools/scripts/pigment_o/pin" )
-        action_pin_07 = window.createAction( "pigment_o_pin_07", "Pin 07", "tools/scripts/pigment_o/pin" )
-        action_pin_08 = window.createAction( "pigment_o_pin_08", "Pin 08", "tools/scripts/pigment_o/pin" )
-        action_pin_09 = window.createAction( "pigment_o_pin_09", "Pin 09", "tools/scripts/pigment_o/pin" )
-        action_pin_10 = window.createAction( "pigment_o_pin_10", "Pin 10", "tools/scripts/pigment_o/pin" )
+        action_pin_00 = window.createAction( "pigment_o_pin_00", "Pin 00", "tools/scripts/pigment_o_menu/pin_menu" )
+        action_pin_01 = window.createAction( "pigment_o_pin_01", "Pin 01", "tools/scripts/pigment_o_menu/pin_menu" )
+        action_pin_02 = window.createAction( "pigment_o_pin_02", "Pin 02", "tools/scripts/pigment_o_menu/pin_menu" )
+        action_pin_03 = window.createAction( "pigment_o_pin_03", "Pin 03", "tools/scripts/pigment_o_menu/pin_menu" )
+        action_pin_04 = window.createAction( "pigment_o_pin_04", "Pin 04", "tools/scripts/pigment_o_menu/pin_menu" )
+        action_pin_05 = window.createAction( "pigment_o_pin_05", "Pin 05", "tools/scripts/pigment_o_menu/pin_menu" )
+        action_pin_06 = window.createAction( "pigment_o_pin_06", "Pin 06", "tools/scripts/pigment_o_menu/pin_menu" )
+        action_pin_07 = window.createAction( "pigment_o_pin_07", "Pin 07", "tools/scripts/pigment_o_menu/pin_menu" )
+        action_pin_08 = window.createAction( "pigment_o_pin_08", "Pin 08", "tools/scripts/pigment_o_menu/pin_menu" )
+        action_pin_09 = window.createAction( "pigment_o_pin_09", "Pin 09", "tools/scripts/pigment_o_menu/pin_menu" )
+        action_pin_10 = window.createAction( "pigment_o_pin_10", "Pin 10", "tools/scripts/pigment_o_menu/pin_menu" )
         # Pin Connections
         action_pin_00.triggered.connect( self.PIN_00 )
         action_pin_01.triggered.connect( self.PIN_01 )
@@ -96,14 +93,14 @@ class Pigmento_Extension( Extension ):
         action_pin_10.triggered.connect( self.PIN_10 )
 
         # Key Actions
-        action_key_1_minus = window.createAction( "pigment_o_key_1_minus", "Key 1 Minus", "tools/scripts/pigment_o/key" )
-        action_key_1_plus  = window.createAction( "pigment_o_key_1_plus",  "Key 1 Plus",  "tools/scripts/pigment_o/key" )
-        action_key_2_minus = window.createAction( "pigment_o_key_2_minus", "Key 2 Minus", "tools/scripts/pigment_o/key" )
-        action_key_2_plus  = window.createAction( "pigment_o_key_2_plus",  "Key 2 Plus",  "tools/scripts/pigment_o/key" )
-        action_key_3_minus = window.createAction( "pigment_o_key_3_minus", "Key 3 Minus", "tools/scripts/pigment_o/key" )
-        action_key_3_plus  = window.createAction( "pigment_o_key_3_plus",  "Key 3 Plus",  "tools/scripts/pigment_o/key" )
-        action_key_4_minus = window.createAction( "pigment_o_key_4_minus", "Key 4 Minus", "tools/scripts/pigment_o/key" )
-        action_key_4_plus  = window.createAction( "pigment_o_key_4_plus",  "Key 4 Plus",  "tools/scripts/pigment_o/key" )
+        action_key_1_minus = window.createAction( "pigment_o_key_1_minus", "Key 1 Minus", "tools/scripts/pigment_o_menu/key_menu" )
+        action_key_1_plus  = window.createAction( "pigment_o_key_1_plus",  "Key 1 Plus",  "tools/scripts/pigment_o_menu/key_menu" )
+        action_key_2_minus = window.createAction( "pigment_o_key_2_minus", "Key 2 Minus", "tools/scripts/pigment_o_menu/key_menu" )
+        action_key_2_plus  = window.createAction( "pigment_o_key_2_plus",  "Key 2 Plus",  "tools/scripts/pigment_o_menu/key_menu" )
+        action_key_3_minus = window.createAction( "pigment_o_key_3_minus", "Key 3 Minus", "tools/scripts/pigment_o_menu/key_menu" )
+        action_key_3_plus  = window.createAction( "pigment_o_key_3_plus",  "Key 3 Plus",  "tools/scripts/pigment_o_menu/key_menu" )
+        action_key_4_minus = window.createAction( "pigment_o_key_4_minus", "Key 4 Minus", "tools/scripts/pigment_o_menu/key_menu" )
+        action_key_4_plus  = window.createAction( "pigment_o_key_4_plus",  "Key 4 Plus",  "tools/scripts/pigment_o_menu/key_menu" )
         # Key Connections
         action_key_1_minus.triggered.connect( self.KEY_1_Minus )
         action_key_1_plus.triggered.connect( self.KEY_1_Plus )
@@ -115,8 +112,8 @@ class Pigmento_Extension( Extension ):
         action_key_4_plus.triggered.connect( self.KEY_4_Plus )
 
         # Lock Actions
-        action_lock_cmyk = window.createAction( "pigment_o_lock_cmyk", "Lock CMYK", "tools/scripts/pigment_o/lock" )
-        action_lock_kkk  = window.createAction( "pigment_o_lock_kkk", "Lock Kelvin", "tools/scripts/pigment_o/lock" )
+        action_lock_cmyk = window.createAction( "pigment_o_lock_cmyk", "Lock CMYK",   "tools/scripts/pigment_o_menu/lock_menu" )
+        action_lock_kkk  = window.createAction( "pigment_o_lock_kkk",  "Lock Kelvin", "tools/scripts/pigment_o_menu/lock_menu" )
         # Lock Connections
         action_lock_cmyk.triggered.connect( self.LOCK_CMYK )
         action_lock_kkk.triggered.connect( self.LOCK_KKK )

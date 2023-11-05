@@ -4,116 +4,263 @@
         <text>Pigment.O</text>
 
 
-        <Action name="pigment_o_color_00">
-          <text>Color 0</text>
+        <Action name="pigment_o_pin_00">
+          <icon></icon>
+          <text>Pin 0</text>
+          <whatsThis></whatsThis>
+          <toolTip></toolTip>
+          <iconText></iconText>
+          <activationFlags></activationFlags>
+          <activationConditions></activationConditions>
           <shortcut>none</shortcut>
           <isCheckable>false</isCheckable>
+          <statusTip></statusTip>
         </Action>
-        <Action name="pigment_o_color_01">
-          <text>Color 1</text>
+        <Action name="pigment_o_pin_01">
+          <icon></icon>
+          <text>Pin 1</text>
+          <whatsThis></whatsThis>
+          <toolTip></toolTip>
+          <iconText></iconText>
+          <activationFlags></activationFlags>
+          <activationConditions></activationConditions>
           <shortcut>none</shortcut>
           <isCheckable>false</isCheckable>
+          <statusTip></statusTip>
         </Action>
-        <Action name="pigment_o_color_02">
-          <text>Color 2</text>
+        <Action name="pigment_o_pin_02">
+          <icon></icon>
+          <text>Pin 2</text>
+          <whatsThis></whatsThis>
+          <toolTip></toolTip>
+          <iconText></iconText>
+          <activationFlags></activationFlags>
+          <activationConditions></activationConditions>
           <shortcut>none</shortcut>
           <isCheckable>false</isCheckable>
+          <statusTip></statusTip>
         </Action>
-        <Action name="pigment_o_color_03">
-          <text>Color 3</text>
+        <Action name="pigment_o_pin_03">
+          <icon></icon>
+          <text>Pin 3</text>
+          <whatsThis></whatsThis>
+          <toolTip></toolTip>
+          <iconText></iconText>
+          <activationFlags></activationFlags>
+          <activationConditions></activationConditions>
           <shortcut>none</shortcut>
           <isCheckable>false</isCheckable>
+          <statusTip></statusTip>
         </Action>
-        <Action name="pigment_o_color_04">
-          <text>Color 4</text>
+        <Action name="pigment_o_pin_04">
+          <icon></icon>
+          <text>Pin 4</text>
+          <whatsThis></whatsThis>
+          <toolTip></toolTip>
+          <iconText></iconText>
+          <activationFlags></activationFlags>
+          <activationConditions></activationConditions>
           <shortcut>none</shortcut>
           <isCheckable>false</isCheckable>
+          <statusTip></statusTip>
         </Action>
-        <Action name="pigment_o_color_05">
-          <text>Color 5</text>
+        <Action name="pigment_o_pin_05">
+          <icon></icon>
+          <text>Pin 5</text>
+          <whatsThis></whatsThis>
+          <toolTip></toolTip>
+          <iconText></iconText>
+          <activationFlags></activationFlags>
+          <activationConditions></activationConditions>
           <shortcut>none</shortcut>
           <isCheckable>false</isCheckable>
+          <statusTip></statusTip>
         </Action>
-        <Action name="pigment_o_color_06">
-          <text>Color 6</text>
+        <Action name="pigment_o_pin_06">
+          <icon></icon>
+          <text>Pin 6</text>
+          <whatsThis></whatsThis>
+          <toolTip></toolTip>
+          <iconText></iconText>
+          <activationFlags></activationFlags>
+          <activationConditions></activationConditions>
           <shortcut>none</shortcut>
           <isCheckable>false</isCheckable>
+          <statusTip></statusTip>
         </Action>
-        <Action name="pigment_o_color_07">
-          <text>Color 7</text>
+        <Action name="pigment_o_pin_07">
+          <icon></icon>
+          <text>Pin 7</text>
+          <whatsThis></whatsThis>
+          <toolTip></toolTip>
+          <iconText></iconText>
+          <activationFlags></activationFlags>
+          <activationConditions></activationConditions>
           <shortcut>none</shortcut>
           <isCheckable>false</isCheckable>
+          <statusTip></statusTip>
         </Action>
-        <Action name="pigment_o_color_08">
-          <text>Color 8</text>
+        <Action name="pigment_o_pin_08">
+          <icon></icon>
+          <text>Pin 8</text>
+          <whatsThis></whatsThis>
+          <toolTip></toolTip>
+          <iconText></iconText>
+          <activationFlags></activationFlags>
+          <activationConditions></activationConditions>
           <shortcut>none</shortcut>
           <isCheckable>false</isCheckable>
+          <statusTip></statusTip>
         </Action>
-        <Action name="pigment_o_color_09">
-          <text>Color 9</text>
+        <Action name="pigment_o_pin_09">
+          <icon></icon>
+          <text>Pin 9</text>
+          <whatsThis></whatsThis>
+          <toolTip></toolTip>
+          <iconText></iconText>
+          <activationFlags></activationFlags>
+          <activationConditions></activationConditions>
           <shortcut>none</shortcut>
           <isCheckable>false</isCheckable>
+          <statusTip></statusTip>
         </Action>
-        <Action name="pigment_o_color_10">
-          <text>Color 10</text>
+        <Action name="pigment_o_pin_10">
+          <icon></icon>
+          <text>Pin 10</text>
+          <whatsThis></whatsThis>
+          <toolTip></toolTip>
+          <iconText></iconText>
+          <activationFlags></activationFlags>
+          <activationConditions></activationConditions>
           <shortcut>none</shortcut>
           <isCheckable>false</isCheckable>
+          <statusTip></statusTip>
         </Action>
 
 
         <Action name="pigment_o_key_1_minus">
+          <icon></icon>
           <text>Key 1 Minus</text>
+          <whatsThis></whatsThis>
+          <toolTip></toolTip>
+          <iconText></iconText>
+          <activationFlags></activationFlags>
+          <activationConditions></activationConditions>
           <shortcut>none</shortcut>
           <isCheckable>false</isCheckable>
+          <statusTip></statusTip>
         </Action>
         <Action name="pigment_o_key_1_plus">
+          <icon></icon>
           <text>Key 1 Plus</text>
+          <whatsThis></whatsThis>
+          <toolTip></toolTip>
+          <iconText></iconText>
+          <activationFlags></activationFlags>
+          <activationConditions></activationConditions>
           <shortcut>none</shortcut>
           <isCheckable>false</isCheckable>
+          <statusTip></statusTip>
         </Action>
 
         <Action name="pigment_o_key_2_minus">
+          <icon></icon>
           <text>Key 2 Minus</text>
+          <whatsThis></whatsThis>
+          <toolTip></toolTip>
+          <iconText></iconText>
+          <activationFlags></activationFlags>
+          <activationConditions></activationConditions>
           <shortcut>none</shortcut>
           <isCheckable>false</isCheckable>
+          <statusTip></statusTip>
         </Action>
         <Action name="pigment_o_key_2_plus">
+          <icon></icon>
           <text>Key 2 Plus</text>
+          <whatsThis></whatsThis>
+          <toolTip></toolTip>
+          <iconText></iconText>
+          <activationFlags></activationFlags>
+          <activationConditions></activationConditions>
           <shortcut>none</shortcut>
           <isCheckable>false</isCheckable>
+          <statusTip></statusTip>
         </Action>
 
         <Action name="pigment_o_key_3_minus">
+          <icon></icon>
           <text>Key 3 Minus</text>
+          <whatsThis></whatsThis>
+          <toolTip></toolTip>
+          <iconText></iconText>
+          <activationFlags></activationFlags>
+          <activationConditions></activationConditions>
           <shortcut>none</shortcut>
           <isCheckable>false</isCheckable>
+          <statusTip></statusTip>
         </Action>
         <Action name="pigment_o_key_3_plus">
+          <icon></icon>
           <text>Key 3 Plus</text>
+          <whatsThis></whatsThis>
+          <toolTip></toolTip>
+          <iconText></iconText>
+          <activationFlags></activationFlags>
+          <activationConditions></activationConditions>
           <shortcut>none</shortcut>
           <isCheckable>false</isCheckable>
+          <statusTip></statusTip>
         </Action>
 
         <Action name="pigment_o_key_4_minus">
+          <icon></icon>
           <text>Key 4 Minus</text>
+          <whatsThis></whatsThis>
+          <toolTip></toolTip>
+          <iconText></iconText>
+          <activationFlags></activationFlags>
+          <activationConditions></activationConditions>
           <shortcut>none</shortcut>
           <isCheckable>false</isCheckable>
+          <statusTip></statusTip>
         </Action>
         <Action name="pigment_o_key_4_plus">
+          <icon></icon>
           <text>Key 4 Plus</text>
+          <whatsThis></whatsThis>
+          <toolTip></toolTip>
+          <iconText></iconText>
+          <activationFlags></activationFlags>
+          <activationConditions></activationConditions>
           <shortcut>none</shortcut>
           <isCheckable>false</isCheckable>
+          <statusTip></statusTip>
         </Action>
 
         <Action name="pigment_o_lock_cmyk">
+          <icon></icon>
           <text>Lock CMYK</text>
+          <whatsThis></whatsThis>
+          <toolTip></toolTip>
+          <iconText></iconText>
+          <activationFlags></activationFlags>
+          <activationConditions></activationConditions>
           <shortcut>none</shortcut>
-          <isCheckable>false</isCheckable>
+          <isCheckable>true</isCheckable>
+          <statusTip></statusTip>
         </Action>
         <Action name="pigment_o_lock_kkk">
+          <icon></icon>
           <text>Lock Kelvin</text>
+          <whatsThis></whatsThis>
+          <toolTip></toolTip>
+          <iconText></iconText>
+          <activationFlags></activationFlags>
+          <activationConditions></activationConditions>
           <shortcut>none</shortcut>
-          <isCheckable>false</isCheckable>
+          <isCheckable>true</isCheckable>
+          <statusTip></statusTip>
         </Action>
 
 
