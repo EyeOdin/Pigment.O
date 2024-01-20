@@ -49,21 +49,20 @@ from .pigment_o_modulo import (
     Panel_Hexagon,
     Panel_Dot,
     Panel_Mask,
+    Panel_Sample_List,
+    Panel_Sample_Image,
     # Sliders
     Channel_Slider,
     Channel_Selection,
     # Mixer
     Pin_Color,
-    # Maps
-    Sample_Map,
     )
 
 #endregion
 #region Global Variables ###########################################################
 
-DOCKER_NAME_1 = "Pigment.O"
-DOCKER_NAME_2 = "Pigment.S"
-pigment_o_version = "2023_10_29"
+DOCKER_NAME = "Pigment.O"
+pigment_o_version = "2024_01_20"
 
 #endregion
 
@@ -87,10 +86,11 @@ class PigmentO_Docker( DockWidget ):
         self.Timer()
         self.Extension()
         self.Settings()
+        self.Plugin_Load()
 
     def User_Interface( self ):
         # Window
-        self.setWindowTitle( DOCKER_NAME_1 )
+        self.setWindowTitle( DOCKER_NAME )
 
         # Operating System
         self.OS = str( QSysInfo.kernelType() ) # WINDOWS=winnt & LINUX=linux
@@ -147,7 +147,6 @@ class PigmentO_Docker( DockWidget ):
             [ ( 0.5, 0.275 ), ( 0.5, 0.1 ), ( 0.675, 0.275 ), ( 0.5, 0.45 ), ( 0.325, 0.275 ), ( 0.5, 0.725 ), ( 0.5, 0.55 ), ( 0.675, 0.725 ), ( 0.5, 0.9 ), ( 0.325, 0.725 ) ],
             [ ( 0.5, 0.5 ), ( 0.5, 0.15359 ), ( 0.8, 0.32679 ), ( 0.8, 0.67321 ), ( 0.5, 0.84641 ), ( 0.2, 0.67321 ), ( 0.2, 0.32679 ) ],
             ]
-
         # Dots
         self.dot_interpolation = "RGB"
         self.dot_dimension = 11
@@ -201,8 +200,16 @@ class PigmentO_Docker( DockWidget ):
             }
         self.mask_edit = False
         self.mask_write = False
+        # Sample
+        self.sample_mode = "RGB"
+        self.sample_limit = 300
+        self.sample_index = None
+        self.sample_data = []
+        self.sample_index = 0
+        self.sample_edit = False
+        self.invert_cmyk = False
 
-        # UI
+        # Dialog UI
         self.ui_harmony = False
         self.ui_channel = False
         self.ui_mixer = False
@@ -212,7 +219,7 @@ class PigmentO_Docker( DockWidget ):
         # Panels
         self.panel_index = None
         # Mixers
-        self.mixer_space = "RGB" # mix method
+        self.mixer_space = "RGB"
         self.mixer_count = 1
         self.mixer_widget = [ {
             "l" : self.layout.mixer_l_000,
@@ -260,8 +267,9 @@ class PigmentO_Docker( DockWidget ):
         self.lock_kkk_1 = False
 
         # Channel Format
-        self.hue_shine = False
+        self.disp_labels = False
         self.disp_values = False
+        self.hue_shine = False
         self.hex_copy_paste = False
 
         # Shortcut
@@ -517,7 +525,9 @@ class PigmentO_Docker( DockWidget ):
         #region Footer
 
         self.layout.fill.toggled.connect( self.Menu_FILL )
-        self.layout.selection.clicked.connect( self.Selection_APPLY )
+        # self.layout.selection.clicked.connect( lambda: Sample_Generate( self, "COLORS" ) )
+        self.layout.selection.clicked.connect( lambda: self.Sample_Generate( "COLORS" ) )
+        self.layout.analyse.clicked.connect( self.Analyse_Document )
         self.layout.settings.clicked.connect( self.Menu_Settings )
 
         #endregion
@@ -606,8 +616,9 @@ class PigmentO_Docker( DockWidget ):
         self.dialog.hex_sum.toggled.connect( self.Hex_Sum )
 
         # Format
-        self.dialog.hue_shine.toggled.connect( self.Hue_Shine )
+        self.dialog.disp_labels.toggled.connect( self.Display_Labels )
         self.dialog.disp_values.toggled.connect( self.Display_Values )
+        self.dialog.hue_shine.toggled.connect( self.Hue_Shine )
         self.dialog.hex_copy_paste.toggled.connect( self.Hex_CopyPaste )
 
         # Reference
@@ -632,12 +643,6 @@ class PigmentO_Docker( DockWidget ):
         self.dialog.cs_matrix.currentTextChanged.connect( lambda: self.CS_Matrix( self.dialog.cs_matrix.currentText(), self.dialog.cs_illuminant.currentText() ) )
         self.dialog.cs_illuminant.currentTextChanged.connect( lambda: self.CS_Matrix( self.dialog.cs_matrix.currentText(), self.dialog.cs_illuminant.currentText() ) )
 
-        # Annotations
-        self.dialog.annotation_kra_save.toggled.connect( self.AutoSave_KRA )
-        self.dialog.annotation_kra_load.clicked.connect( self.Annotation_KRA_Load )
-        self.dialog.annotation_file_save.toggled.connect( self.AutoSave_File )
-        self.dialog.annotation_file_load.clicked.connect( self.Annotation_FILE_Load )
-
         # Performance
         self.dialog.performance_release.toggled.connect( self.Performace_Release )
         self.dialog.performance_inaccurate.toggled.connect( self.Performace_Inaccurate )
@@ -653,8 +658,9 @@ class PigmentO_Docker( DockWidget ):
 
         # Panel
         self.layout.panel_set.installEventFilter( self )
-        self.layout.edit_dot.installEventFilter( self )
-        self.layout.edit_mask.installEventFilter( self )
+        self.layout.panel_dot.installEventFilter( self )
+        self.layout.panel_mask.installEventFilter( self )
+        self.layout.panel_sample.installEventFilter( self )
         # Channel
         self.layout.aaa_slider.installEventFilter( self )
         self.layout.rgb_slider.installEventFilter( self )
@@ -717,7 +723,6 @@ class PigmentO_Docker( DockWidget ):
         self.color_header.SIGNAL_SWAP.connect( self.Header_Swap )
         self.color_header.SIGNAL_RANDOM.connect( self.Color_Random )
         self.color_header.SIGNAL_COMP.connect( self.Color_Complementary )
-        self.color_header.SIGNAL_ANALYSE.connect( self.Color_AnalyseDocument )
 
         #endregion
         #region Harmony
@@ -954,6 +959,19 @@ class PigmentO_Docker( DockWidget ):
         self.mask_b3.SIGNAL_TEXT.connect( self.Label_String )
         self.mask_b2.SIGNAL_TEXT.connect( self.Label_String )
         self.mask_b1.SIGNAL_TEXT.connect( self.Label_String )
+
+        #endregion
+        #region Panel Samples
+
+        # Samples List
+        self.panel_sample_list = Panel_Sample_List( self.layout.edit_sample )
+        self.panel_sample_list.Set_Display( None )
+        self.panel_sample_list.SIGNAL_INDEX.connect( self.Sample_Index )
+
+        # Samples Image
+        self.panel_sample_image = Panel_Sample_Image( self.layout.panel_sample )
+        self.panel_sample_image.Set_Display( None, False )
+        self.panel_sample_image.SIGNAL_POSITION.connect( self.Samples_Menu )
 
         #endregion
         #region Sliders Module
@@ -1455,13 +1473,14 @@ class PigmentO_Docker( DockWidget ):
         #endregion
     def Style( self ):
         # Icons
-        qicon_swap = Krita.instance().icon( "fileLayer" )
         self.qicon_on = Krita.instance().icon( "showColoring" )
         self.qicon_write = Krita.instance().icon( "media-playback-start" )
         self.qicon_read = Krita.instance().icon( "system-help" )
         self.qicon_off = Krita.instance().icon( "showColoringOff" )
+        qicon_swap = Krita.instance().icon( "fileLayer" )
         qicon_fill = Krita.instance().icon( "folder-documents" )
-        qicon_selection = Krita.instance().icon( "local-selection-inactive" )
+        qicon_selection = Krita.instance().icon( "tool_similar_selection" )
+        qicon_analyse = Krita.instance().icon( "paintbrush" )
         qicon_settings = Krita.instance().icon( "settings-button" )
         self.qicon_lock_layout = Krita.instance().icon( "layer-locked" )
         self.qicon_lock_dialog = Krita.instance().icon( "docker_lock_b" )
@@ -1472,12 +1491,14 @@ class PigmentO_Docker( DockWidget ):
         self.layout.mode.setIcon( self.qicon_on )
         self.layout.fill.setIcon( qicon_fill )
         self.layout.selection.setIcon( qicon_selection )
+        self.layout.analyse.setIcon( qicon_analyse )
         self.layout.settings.setIcon( qicon_settings )
 
         # Tool Tips
         self.layout.mode.setToolTip( "Mode" )
         self.layout.fill.setToolTip( "Fill Pixel" )
         self.layout.selection.setToolTip( "Color Selection" )
+        self.layout.analyse.setToolTip( "Document Analyse" )
         self.layout.hex_string.setToolTip( "Hex Code" )
         self.layout.settings.setToolTip( "Settings" )
 
@@ -1498,14 +1519,15 @@ class PigmentO_Docker( DockWidget ):
         qpixmap_fill.fill( QColor( "#000000" ) )
 
         # Icons
-        icon_path = os.path.join( self.directory_plugin, "ICON" )
-        path_square =  os.path.join( icon_path, "SQUARE.png" )
-        path_hue =     os.path.join( icon_path, "HUE.png" )
-        path_gamut =   os.path.join( icon_path, "GAMUT.png" )
-        path_hexagon = os.path.join( icon_path, "HEXAGON.png" )
-        path_luma =    os.path.join( icon_path, "LUMA.png" )
-        path_dot =     os.path.join( icon_path, "DOT.png" )
-        path_mask =    os.path.join( icon_path, "MASK.png" )
+        icon_path =     os.path.join( self.directory_plugin, "ICON" )
+        path_square =   os.path.join( icon_path, "SQUARE.png" )
+        path_hue =      os.path.join( icon_path, "HUE.png" )
+        path_gamut =    os.path.join( icon_path, "GAMUT.png" )
+        path_hexagon =  os.path.join( icon_path, "HEXAGON.png" )
+        path_luma =     os.path.join( icon_path, "LUMA.png" )
+        path_dot =      os.path.join( icon_path, "DOT.png" )
+        path_mask =     os.path.join( icon_path, "MASK.png" )
+        path_sample =   os.path.join( icon_path, "SAMPLE.png" )
 
         self.dialog.panel_index.blockSignals( True )
         self.dialog.panel_index.setItemIcon( 0, QIcon( qpixmap_fill ) )
@@ -1516,6 +1538,7 @@ class PigmentO_Docker( DockWidget ):
         self.dialog.panel_index.setItemIcon( 5, QIcon( path_luma ) )
         self.dialog.panel_index.setItemIcon( 6, QIcon( path_dot ) )
         self.dialog.panel_index.setItemIcon( 7, QIcon( path_mask ) )
+        self.dialog.panel_index.setItemIcon( 8, QIcon( path_sample ) )
         self.dialog.panel_index.blockSignals( False )
     def Timer( self ):
         #region QTimer
@@ -1607,6 +1630,13 @@ class PigmentO_Docker( DockWidget ):
         self.mask_edit = self.Set_Read( "EVAL", "mask_edit", self.mask_edit )
 
         #endregion
+        #region Panel Sample
+
+        self.sample_mode = self.Set_Read( "STR", "sample_mode", self.sample_mode )
+        self.sample_limit = self.Set_Read( "INT", "sample_limit", self.sample_limit )
+        self.sample_edit = self.Set_Read( "EVAL", "sample_edit", self.sample_edit )
+
+        #endregion
         #region Mixer
 
         self.mixer_colors = self.Set_Read( "EVAL", "mixer_colors", self.mixer_colors )
@@ -1648,8 +1678,9 @@ class PigmentO_Docker( DockWidget ):
         self.dialog.hex_sum.setChecked( self.Set_Read( "EVAL", "hex_sum", False ) )
 
         # Format
-        self.dialog.hue_shine.setChecked( self.Set_Read( "EVAL", "hue_shine", False ) )
+        self.dialog.disp_labels.setChecked( self.Set_Read( "EVAL", "disp_labels", False ) )
         self.dialog.disp_values.setChecked( self.Set_Read( "EVAL", "disp_values", False ) )
+        self.dialog.hue_shine.setChecked( self.Set_Read( "EVAL", "hue_shine", False ) )
         self.dialog.hex_copy_paste.setChecked( self.Set_Read( "EVAL", "hex_copy_paste", False ) )
 
         # Shortcuts
@@ -1670,10 +1701,6 @@ class PigmentO_Docker( DockWidget ):
         self.dialog.cs_matrix.setCurrentText( self.Set_Read( "STR", "cs_matrix", "sRGB" ) )
         self.dialog.cs_illuminant.setCurrentText( self.Set_Read( "STR", "cs_illuminant", "D65" ) )
 
-        # Annotations
-        self.dialog.annotation_kra_save.setChecked( self.Set_Read( "EVAL", "annotation_kra", False ) )
-        self.dialog.annotation_file_save.setChecked( self.Set_Read( "EVAL", "annotation_file", False ) )
-
         # Performance
         self.dialog.performance_release.setChecked( self.Set_Read( "EVAL", "performance_release", False ) )
         self.dialog.performance_inaccurate.setChecked( self.Set_Read( "EVAL", "performance_inaccurate", False ) )
@@ -1688,16 +1715,13 @@ class PigmentO_Docker( DockWidget ):
         self.dialog.history.setChecked( self.Set_Read( "EVAL", "ui_history", False ) )
 
         #endregion
-        #region Loader
-
+    def Plugin_Load( self ):
         try:
             self.Loader()
         except Exception as e:
-            QMessageBox.information( QWidget(), i18n( "Warnning" ), i18n( f"Pigment.O | ERROR Load failed\nReason : {e}" ) )
+            self.Message_Warnning( "ERROR", f"Load \n{ e }" )
             self.Variables()
             self.Loader()
-
-        #endregion
 
     def Loader( self ):
         # Harmony
@@ -1719,6 +1743,8 @@ class PigmentO_Docker( DockWidget ):
         # Mask
         self.panel_mask.Set_Edit( self.mask_edit )
         self.Mask_Widget( self.mask_edit )
+        # Sample
+        self.Sample_Widget( self.sample_edit )
 
         # Dictionaries
         self.Range_Load( krange )
@@ -1757,8 +1783,9 @@ class PigmentO_Docker( DockWidget ):
         self.Wheel_Space( self.dialog.wheel_space.currentText() )
         self.Mixer_Space( self.dialog.mixer_space.currentText() )
         # Dialog Color
-        self.Hue_Shine( self.dialog.hue_shine.isChecked() )
+        self.Display_Labels( self.dialog.disp_labels.isChecked() )
         self.Display_Values( self.dialog.disp_values.isChecked() )
+        self.Hue_Shine( self.dialog.hue_shine.isChecked() )
         self.Hex_CopyPaste( self.dialog.hex_copy_paste.isChecked() )
         # UI Layout
         self.Menu_Harmony( self.dialog.harmony.isChecked() )
@@ -1788,7 +1815,7 @@ class PigmentO_Docker( DockWidget ):
         return read
 
     #endregion
-    #region Menu Displays ##########################################################
+    #region Menu ###################################################################
 
     # Mode Index
     def Mode_Index( self, index ):
@@ -1972,6 +1999,8 @@ class PigmentO_Docker( DockWidget ):
             self.layout.panel_set.setCurrentIndex( 6 )
         if index == "Mask":
             self.layout.panel_set.setCurrentIndex( 7 )
+        if index == "Sample":
+            self.layout.panel_set.setCurrentIndex( 8 )
         # Update
         if self.panel_index != index:
             self.panel_index = index
@@ -2889,78 +2918,78 @@ class PigmentO_Docker( DockWidget ):
         Krita.instance().writeSetting( "Pigment.O", "lock_kkk_1", str( self.lock_kkk_1 ) )
 
     # Format
-    def Hue_Shine( self, boolean ):
-        self.hue_shine = boolean
-        self.Channels_Set_Style()
-        Krita.instance().writeSetting( "Pigment.O", "hue_shine", str( self.hue_shine ) )
+    def Display_Labels( self, boolean ):
+        # Variables
+        self.disp_labels = boolean
+        if boolean == True:
+            l = 20
+            s = 1
+        else:
+            l = 0
+            s = 0
+
+        self.layout.aaa_label.setMaximumWidth( l )
+        self.layout.rgb_label.setMaximumWidth( l )
+        self.layout.cmy_label.setMaximumWidth( l )
+        self.layout.cmyk_label.setMaximumWidth( l )
+        self.layout.ryb_label.setMaximumWidth( l )
+        self.layout.yuv_label.setMaximumWidth( l )
+        self.layout.hsv_label.setMaximumWidth( l )
+        self.layout.hsl_label.setMaximumWidth( l )
+        self.layout.hcy_label.setMaximumWidth( l )
+        self.layout.ard_label.setMaximumWidth( l )
+        self.layout.xyz_label.setMaximumWidth( l )
+        self.layout.xyy_label.setMaximumWidth( l )
+        self.layout.lab_label.setMaximumWidth( l )
+        self.layout.lch_label.setMaximumWidth( l )
+        self.layout.kkk_label.setMaximumWidth( l )
+        self.layout.sele_label.setMaximumWidth( l )
+
+        # Channel Set
+        self.layout.channel_set_layout.setHorizontalSpacing( s )
+        # Update
+        self.Update_Size()
+
+        # Save
+        Krita.instance().writeSetting( "Pigment.O", "disp_labels", str( self.disp_labels ) )
     def Display_Values( self, boolean ):
         # Variables
         self.disp_values = boolean
         if boolean == True:
-            a = 20
-            b = 100
-            c = 1
+            v = 100
+            s = 1
         else:
-            a = 0
-            b = 0
-            c = 0
+            v = 0
+            s = 0
 
-        # AAA
-        self.layout.aaa_label.setMaximumWidth( a )
-        self.layout.aaa_value.setMaximumWidth( b )
-        # RGB
-        self.layout.rgb_label.setMaximumWidth( a )
-        self.layout.rgb_value.setMaximumWidth( b )
-        # CMY
-        self.layout.cmy_label.setMaximumWidth( a )
-        self.layout.cmy_value.setMaximumWidth( b )
-        # CMYK
-        self.layout.cmyk_label.setMaximumWidth( a )
-        self.layout.cmyk_value.setMaximumWidth( b )
-        # RYB
-        self.layout.ryb_label.setMaximumWidth( a )
-        self.layout.ryb_value.setMaximumWidth( b )
-        # YUV
-        self.layout.yuv_label.setMaximumWidth( a )
-        self.layout.yuv_value.setMaximumWidth( b )
-        # HSV
-        self.layout.hsv_label.setMaximumWidth( a )
-        self.layout.hsv_value.setMaximumWidth( b )
-        # HSL
-        self.layout.hsl_label.setMaximumWidth( a )
-        self.layout.hsl_value.setMaximumWidth( b )
-        # HCY
-        self.layout.hcy_label.setMaximumWidth( a )
-        self.layout.hcy_value.setMaximumWidth( b )
-        # HSV
-        self.layout.ard_label.setMaximumWidth( a )
-        self.layout.ard_value.setMaximumWidth( b )
-        # XYZ
-        self.layout.xyz_label.setMaximumWidth( a )
-        self.layout.xyz_value.setMaximumWidth( b )
-        # XYY
-        self.layout.xyy_label.setMaximumWidth( a )
-        self.layout.xyy_value.setMaximumWidth( b )
-        # LAB
-        self.layout.lab_label.setMaximumWidth( a )
-        self.layout.lab_value.setMaximumWidth( b )
-        # LCH
-        self.layout.lch_label.setMaximumWidth( a )
-        self.layout.lch_value.setMaximumWidth( b )
-        # KKK
-        self.layout.kkk_label.setMaximumWidth( a )
-        self.layout.kkk_value.setMaximumWidth( b )
-        # SELE
-        self.layout.sele_label.setMaximumWidth( a )
-        self.layout.sele_value.setMaximumWidth( b )
+        self.layout.aaa_value.setMaximumWidth( v )
+        self.layout.rgb_value.setMaximumWidth( v )
+        self.layout.cmy_value.setMaximumWidth( v )
+        self.layout.cmyk_value.setMaximumWidth( v )
+        self.layout.ryb_value.setMaximumWidth( v )
+        self.layout.yuv_value.setMaximumWidth( v )
+        self.layout.hsv_value.setMaximumWidth( v )
+        self.layout.hsl_value.setMaximumWidth( v )
+        self.layout.hcy_value.setMaximumWidth( v )
+        self.layout.ard_value.setMaximumWidth( v )
+        self.layout.xyz_value.setMaximumWidth( v )
+        self.layout.xyy_value.setMaximumWidth( v )
+        self.layout.lab_value.setMaximumWidth( v )
+        self.layout.lch_value.setMaximumWidth( v )
+        self.layout.kkk_value.setMaximumWidth( v )
+        self.layout.sele_value.setMaximumWidth( v )
 
         # Channel Set
-        self.layout.channel_set_layout.setHorizontalSpacing( c )
+        self.layout.channel_set_layout.setHorizontalSpacing( s )
         # Update
         self.Update_Size()
 
         # Save
         Krita.instance().writeSetting( "Pigment.O", "disp_values", str( self.disp_values ) )
+    def Hue_Shine( self, boolean ):
+        self.hue_shine = boolean
+        self.Channels_Set_Style()
+        Krita.instance().writeSetting( "Pigment.O", "hue_shine", str( self.hue_shine ) )
     def Hex_CopyPaste( self, boolean ):
         self.hex_copy_paste = boolean
         Krita.instance().writeSetting( "Pigment.O", "hex_copy_paste", str( self.hex_copy_paste ) )
@@ -3097,122 +3126,6 @@ class PigmentO_Docker( DockWidget ):
                 if self.mode_index != new_index:
                     self.Mode_Index( new_index )
 
-    #endregion
-    #region Management #############################################################
-
-    # Document
-    def Current_Document( self ):
-        # Active Node Type
-        # type_layer = ["paintlayer", "grouplayer", "clonelayer", "vectorlayer", "filterlayer", "filllayer", "filelayer"]
-        # type_mask = ["transparencymask", "filtermask", "colorizemask", "transformmask", "selectionmask"]
-        if ( ( self.canvas() is not None ) and ( self.canvas().view() is not None ) ):
-            try:
-                # Instance
-                ad = Krita.instance().activeDocument()
-                vc = Krita.instance().activeWindow().activeView().canvas()
-
-                # active document
-                d_nt = ad.activeNode().type()
-                d_nn = ad.activeNode().name()
-
-                # document color
-                d_cm = ad.colorModel()
-                d_cd = ad.colorDepth()
-                d_cp = ad.colorProfile()
-                # Vector Layers
-                vi = self.Vector_Index()
-
-                # Colors
-                fgc = Krita.instance().activeWindow().activeView().foregroundColor()
-                bgc = Krita.instance().activeWindow().activeView().backgroundColor()
-                # view color settings
-                fgc_cm = fgc.colorModel()
-                fgc_cd = fgc.colorDepth()
-                fgc_cp = fgc.colorProfile()
-                bgc_cm = bgc.colorModel()
-                bgc_cd = bgc.colorDepth()
-                bgc_cp = bgc.colorProfile()
-
-                # Color Model
-                if ( d_cm == "A" or d_cm == "GRAYA" ):
-                    d_cm = "A"
-                elif ( d_cm == "RGBA" or d_cm == None ):
-                    d_cm = "RGB"
-                elif d_cm == "CMYKA":
-                    d_cm = "CMYK"
-                elif d_cm == "YCbCr":
-                    d_cm = "YUV"
-                elif d_cm == "XYZA":
-                    d_cm = "XYZ"
-                elif d_cm == "LABA":
-                    d_cm = "LAB"
-
-                # Biggest value for Bit Depth Document
-                if d_cd == "U16":
-                    depth = 65535
-                elif ( d_cd == "F16" or d_cd == "F32" ):
-                    depth = 1
-                else:
-                    depth = 255
-
-                # Create List
-                document = {
-                    "ad" : ad,
-                    "vc" : vc,
-                    "d_nt" : d_nt,
-                    "d_nn" : d_nn,
-                    "d_cm" : d_cm,
-                    "d_cd" : d_cd,
-                    "d_cp" : d_cp,
-                    "vi" : vi,
-                    "fgc" : fgc,
-                    "bgc" : bgc,
-                    "fgc_cm" : fgc_cm,
-                    "fgc_cd" : fgc_cd,
-                    "fgc_cp" : fgc_cp,
-                    "bgc_cm" : bgc_cm,
-                    "bgc_cd" : bgc_cd,
-                    "bgc_cp" : bgc_cp,
-                    "depth" : depth,
-                    }
-            except:
-                document = self.Document_None()
-        else:
-            document = self.Document_None()
-        return document
-    def Document_None( self ):
-        document = {
-            "ad" : None,
-            "vc" : None,
-            "d_nt" : None,
-            "d_nn" : None,
-            "d_cm" : None,
-            "d_cd" : None,
-            "d_cp" : None,
-            "vi" : None,
-            "fgc" : None,
-            "bgc" : None,
-            "fgc_cm" : None,
-            "fgc_cd" : None,
-            "fgc_cp" : None,
-            "bgc_cm" : None,
-            "bgc_cd" : None,
-            "bgc_cp" : None,
-            "depth" : 255,
-            }
-        return document
-    def Panel_inSpace( self, d_cm ):
-        # Document
-        if d_cm != "CMYK":
-            d_cm = "RGB"
-
-        # Panels
-        self.panel_square.Set_ColorModel( d_cm )
-        self.panel_huesubpanel.Set_ColorModel( d_cm )
-        self.panel_gamut.Set_ColorModel( d_cm )
-        self.panel_hexagon.Set_ColorModel( d_cm )
-        self.panel_luma.Set_ColorModel( d_cm )
-
     # Resize Event
     def Update_Size( self ):
         #region Header
@@ -3257,6 +3170,9 @@ class PigmentO_Docker( DockWidget ):
         self.mask_b3.Set_Size( self.layout.bg_3_color.width(), self.layout.bg_3_color.height() )
         self.mask_b2.Set_Size( self.layout.bg_2_color.width(), self.layout.bg_2_color.height() )
         self.mask_b1.Set_Size( self.layout.bg_1_color.width(), self.layout.bg_1_color.height() )
+        # Samples
+        self.panel_sample_list.Set_Size( self.layout.edit_sample.width(), self.layout.edit_sample.height() )
+        self.panel_sample_image.Set_Size( self.layout.panel_sample.width(), self.layout.panel_sample.height() )
 
         self.Panels_Set_Value()
 
@@ -3356,7 +3272,147 @@ class PigmentO_Docker( DockWidget ):
         # Used doing a photoshoot
         width = self.width()
         height = self.height()
-        QtCore.qDebug( "size = " + str( width ) + " x "  + str( height ) )
+        Message_Log( self, "SIZE", f"{ width } x { height }" )
+
+    #endregion
+    #region Management #############################################################
+
+    # Communication
+    def Message_Log( self, operation, message ):
+        string = f"Pigment.O | { operation } { message }"
+        try:QtCore.qDebug( string )
+        except:pass
+    def Message_Warnning( self, operation, message ):
+        string = f"Pigment.O | { operation.upper() } { message }"
+        QMessageBox.information( QWidget(), i18n( "Warnning" ), i18n( string ) )
+    def Message_Float( self, operation, message, icon ):
+        ki = Krita.instance()
+        string = f"Pigment.O | { operation.upper() } { message }"
+        ki.activeWindow().activeView().showFloatingMessage( string, ki.icon( icon ), 5000, 0 )
+
+    # Document
+    def Current_Document( self ):
+        # Active Node Type
+        # type_layer = ["paintlayer", "grouplayer", "clonelayer", "vectorlayer", "filterlayer", "filllayer", "filelayer"]
+        # type_mask = ["transparencymask", "filtermask", "colorizemask", "transformmask", "selectionmask"]
+        try:
+            # Instance
+            ki = Krita.instance()
+            ad = ki.activeDocument()
+            vc = ki.activeWindow().activeView().canvas()
+
+            # active document
+            d_nt = ad.activeNode().type()
+            d_nn = ad.activeNode().name()
+
+            # document color
+            d_cm = ad.colorModel()
+            d_cd = ad.colorDepth()
+            d_cp = ad.colorProfile()
+            # Vector Layers
+            vi = self.Vector_Index( ad )
+
+            # Colors
+            fgc = ki.activeWindow().activeView().foregroundColor()
+            bgc = ki.activeWindow().activeView().backgroundColor()
+            # view color settings
+            fgc_cm = fgc.colorModel()
+            fgc_cd = fgc.colorDepth()
+            fgc_cp = fgc.colorProfile()
+            bgc_cm = bgc.colorModel()
+            bgc_cd = bgc.colorDepth()
+            bgc_cp = bgc.colorProfile()
+
+            # Color Model
+            if ( d_cm == "A" or d_cm == "GRAYA" ):
+                d_cm = "A"
+            elif ( d_cm == "RGBA" or d_cm == None ):
+                d_cm = "RGB"
+            elif d_cm == "CMYKA":
+                d_cm = "CMYK"
+            elif d_cm == "YCbCr":
+                d_cm = "YUV"
+            elif d_cm == "XYZA":
+                d_cm = "XYZ"
+            elif d_cm == "LABA":
+                d_cm = "LAB"
+
+            # Biggest value for Bit Depth Document
+            if d_cd == "U16":
+                depth = 65535
+            elif ( d_cd == "F16" or d_cd == "F32" ):
+                depth = 1
+            else:
+                depth = 255
+
+            # Create List
+            document = {
+                "ad" : ad,
+                "vc" : vc,
+                "d_nt" : d_nt,
+                "d_nn" : d_nn,
+                "d_cm" : d_cm,
+                "d_cd" : d_cd,
+                "d_cp" : d_cp,
+                "vi" : vi,
+                "fgc" : fgc,
+                "bgc" : bgc,
+                "fgc_cm" : fgc_cm,
+                "fgc_cd" : fgc_cd,
+                "fgc_cp" : fgc_cp,
+                "bgc_cm" : bgc_cm,
+                "bgc_cd" : bgc_cd,
+                "bgc_cp" : bgc_cp,
+                "depth" : depth,
+                }
+        except:
+            document = self.Document_None()
+        return document
+    def Document_None( self ):
+        document = {
+            "ad" : None,
+            "vc" : None,
+            "d_nt" : None,
+            "d_nn" : None,
+            "d_cm" : None,
+            "d_cd" : None,
+            "d_cp" : None,
+            "vi" : None,
+            "fgc" : None,
+            "bgc" : None,
+            "fgc_cm" : None,
+            "fgc_cd" : None,
+            "fgc_cp" : None,
+            "bgc_cm" : None,
+            "bgc_cd" : None,
+            "bgc_cp" : None,
+            "depth" : 255,
+            }
+        return document
+    def Vector_Index( self, ad ):
+        node = ad.activeNode()
+        if node.type() == "vectorlayer":
+            index = []
+            shapes = node.shapes()
+            for i in range( 0, len( shapes ) ):
+                if shapes[i].isSelected():
+                    index.append( i )
+            if len( index ) == 0:
+                index = None
+        else:
+            index = None
+        return index
+    def Panel_inSpace( self, d_cm ):
+        # Document
+        if d_cm != "CMYK":
+            d_cm = "RGB"
+
+        # Panels
+        self.panel_square.Set_ColorModel( d_cm )
+        self.panel_huesubpanel.Set_ColorModel( d_cm )
+        self.panel_gamut.Set_ColorModel( d_cm )
+        self.panel_hexagon.Set_ColorModel( d_cm )
+        self.panel_luma.Set_ColorModel( d_cm )
 
     # Leave Event
     def Clear_Focus( self ):
@@ -3449,6 +3505,67 @@ class PigmentO_Docker( DockWidget ):
     # Modules variables
     def Label_String( self, text ):
         self.layout.label.setText( str( text ) )
+    def Text_Index( self, mode ):
+        chan_0 = ""
+        chan_1 = ""
+        chan_2 = ""
+        chan_3 = ""
+        if mode == "A":
+            chan_0 = "Gray"
+        if mode == "RGB":
+            chan_0 = "Red"
+            chan_1 = "Green"
+            chan_2 = "Blue"
+        if mode == "CMY":
+            chan_0 = "Cyan"
+            chan_1 = "Magenta"
+            chan_2 = "Yellow"
+        if mode == "CMYK":
+            chan_0 = "Cyan"
+            chan_1 = "Magenta"
+            chan_2 = "Yellow"
+            chan_3 = "Key"
+        if mode == "RYB":
+            chan_0 = "Red"
+            chan_1 = "Yellow"
+            chan_2 = "Blue"
+        if mode == "YUV":
+            chan_0 = "Luma"
+            chan_1 = "Comp Blue"
+            chan_2 = "Comp Red"
+        if mode == "HSV":
+            chan_0 = "Hue"
+            chan_1 = "Saturation"
+            chan_2 = "Value"
+        if mode == "HSL":
+            chan_0 = "Hue"
+            chan_1 = "Saturation"
+            chan_2 = "Lightness"
+        if mode == "HCY":
+            chan_0 = "Hue"
+            chan_1 = "Chroma"
+            chan_2 = "Luma"
+        if mode == "ARD":
+            chan_0 = "Angle"
+            chan_1 = "Ratio"
+            chan_2 = "Depth"
+        if mode == "XYZ":
+            chan_0 = "XYZ X"
+            chan_1 = "XYZ Y"
+            chan_2 = "XYZ Z"
+        if mode == "XYY":
+            chan_0 = "xyY x"
+            chan_1 = "xyY y"
+            chan_2 = "xyY Y"
+        if mode == "LAB":
+            chan_0 = "LAB L*"
+            chan_1 = "LAB A*"
+            chan_2 = "LAB B*"
+        if mode == "LCH":
+            chan_0 = "Luminosity"
+            chan_1 = "Chroma"
+            chan_2 = "Hue"
+        return chan_0, chan_1, chan_2, chan_3
 
     # Dictionanries
     def Dict_Copy( self, active, load ):
@@ -3465,21 +3582,6 @@ class PigmentO_Docker( DockWidget ):
         c2 = f"{ mode.lower() }_2"
         c3 = f"{ mode.lower() }_3"
         return c1, c2, c3
-
-    # Vector
-    def Vector_Index( self ):
-        node = Krita.instance().activeDocument().activeNode()
-        if node.type() == "vectorlayer":
-            index = []
-            shapes = node.shapes()
-            for i in range( 0, len( shapes ) ):
-                if shapes[i].isSelected():
-                    index.append( i )
-            if len( index ) == 0:
-                index = None
-        else:
-            index = None
-        return index
 
     # Stops
     def Sliders_Stops_Load( self, dictionary ):
@@ -3549,9 +3651,263 @@ class PigmentO_Docker( DockWidget ):
         for i in range( 0, len( self.mixer_widget ) ):
             self.mixer_module[i]["m"].Set_Stops( dictionary["mixer"] )
 
-    # Label
-    def Warn_Message( self, string ):
-        QMessageBox.information( QWidget(), i18n( "Warnning" ), i18n( string ) )
+    #endregion
+    #region API ####################################################################
+
+    def API_Request_FG( self ):
+        return kac
+    def API_Request_BG( self ):
+        return kbc
+    def API_Color_Name( self, hex ):
+        name = self.convert.hex6_to_name( hex, color_names )
+        return name
+    def API_Convert_Color( self, mode, var_1, var_2, var_3, var_4, color ):
+        convert = self.Color_Convert( mode, var_1, var_2, var_3, var_4, color )
+        return convert
+
+    def API_Input_Kelvin( self, kelvin ):
+        # range : 1000-12000 neutral : 6500
+        self.Kelvin_Class( kelvin )
+        percent = self.convert.kkk_scale_to_percent( kelvin )
+        self.Pigmento_PRESS( "KKK", percent, kelvin, 0, 0, self.cor )
+        return self.cor
+    def API_Input_Preview( self, mode, var_1, var_2, var_3, var_4 ):
+        # mode : color space
+        # var : 0-1
+        self.widget_press = True
+        self.Color_Convert( mode, var_1, var_2, var_3, var_4, self.cor )
+        self.Sync_Elements( False, True, False )
+        return self.cor
+    def API_Input_Apply( self, mode, var_1, var_2, var_3, var_4 ):
+        # mode : color space
+        # var : 0-1
+        self.widget_press = False
+        self.Color_Convert( mode, var_1, var_2, var_3, var_4, self.cor )
+        self.Sync_Elements( True, True, True )
+        return self.cor
+
+    def API_Printer( self, mode, geo, directory, render, start_from, max_val ):
+        # mode - color space of the map
+        # geo - geometric shape of the map
+        # directory - location to save zip file
+        # render - location to render images. This folder is deleted and recreated after a cycle
+        # start_from - start from given given number. Default is zero but if non zero nothing will be deleted.
+        # max_val - finish at given number.
+        # notes - YUV=255 UVD=255 HSV=360 HSL=360 HCY=360 CD_CA=255
+
+        # Variables
+        size = 256
+        s2 = size * 0.5
+        wtri = 0.5 * math.sqrt( 3 ) * size
+        cda = [ "D", "A" ]
+
+        # Range
+        if start_from == None:
+            start_from = 0
+        if max_val == None:
+            if geo in cda:
+                max_val = 255
+            else:
+                max_val = 360
+
+        # Document Modifier
+        doc = self.Current_Document()
+        d_cm = doc["d_cm"]
+        d_cd = doc["d_cd"]
+        d_cp = doc["d_cp"]
+        vc = doc["vc"]
+
+        # Temporary Folder
+        zipname = f"{ d_cm }_{ mode }_{ geo }"
+        temporary = os.path.join( render, zipname )
+        os.mkdir( temporary, 0o666 )
+
+        # Third Axis Loop
+        for h in range( start_from, max_val+1 ):
+            # Process update
+            QApplication.processEvents()
+
+            # Base Image to Edit
+            qpixmap = QPixmap( size, size )
+            qpixmap.fill( QColor( 0, 0, 0, 255 ) )
+            qimage = qpixmap.toImage()
+
+            # Calculate Pixels
+            for y in range( 0, size ):
+                for x in range( 0, size ):
+                    # Variables
+                    if geo in [ "3", "4", "R" ]:
+                        # Hue
+                        hue = h / max_val
+                        # Hsx
+                        inv_y = size-y
+                        hsx = inv_y / size
+                    if geo in cda:
+                        # Hsx
+                        hsx = h / max_val
+
+                    # Geometry influence
+                    if geo == "3":
+                        if y >= 0 and y <= size * 0.5:
+                            ix, iy = self.geometry.Trig_2D_Points_Lines_Intersection( 0, y, size, y, 1, 0, wtri + 1, size * 0.5 )
+                        elif y > size * 0.5 and y <= size:
+                            ix, iy = self.geometry.Trig_2D_Points_Lines_Intersection( 0, y, size, y, wtri + 1, size * 0.5, 1, size )
+                        sat = self.geometry.Limit_Float( x / ix )
+                    if geo == "4":
+                        sat = x / size
+                    if geo == "R":
+                        if y >= 0 and y <= size * 0.5:
+                            lix, liy = self.geometry.Trig_2D_Points_Lines_Intersection( 0, y, size, y, 0,    size * 0.5, size * 0.5, 0 )
+                            rix, riy = self.geometry.Trig_2D_Points_Lines_Intersection( 0, y, size, y, size, size * 0.5, size * 0.5, 0 )
+                        elif y > size*0.5 and y <= size:
+                            lix, liy = self.geometry.Trig_2D_Points_Lines_Intersection( 0, y, size, y, 0,    size * 0.5, size * 0.5, size )
+                            rix, riy = self.geometry.Trig_2D_Points_Lines_Intersection( 0, y, size, y, size, size * 0.5, size * 0.5, size )
+                        dist = abs( rix - lix )
+                        margin = abs( ( size - dist ) * 0.5 )
+                        dx = x - margin
+                        if ( dx > 0 and dist > 0 ):
+                            sat = self.geometry.Limit_Range( dx / dist, 0, 1 )
+                        else:
+                            sat = 0
+                    if geo in cda:
+                        # Geometry
+                        dist = self.geometry.Trig_2D_Points_Distance( x, y, s2, s2 )
+                        if geo == "D":
+                            angle = self.geometry.Trig_2D_Points_Lines_Angle( 0, s2, s2, s2, x, y ) / 360
+                        if geo == "A":
+                            hhh = self.geometry.Limit_Looper( self.geometry.Trig_2D_Points_Lines_Angle( 0, s2, s2, s2, x, y ) + hue_a, 360 )
+                            angle = self.convert.huea_to_hued( hhh / 360 )
+                        # Values
+                        hue = angle
+                        sat = self.geometry.Limit_Range( dist / s2, 0, 1 )
+
+                    # Color Spaces to RGB
+                    if mode == "YUV":
+                        rgb = self.convert.yuv_to_rgb( h / max_val, x / 255, inv_y / 255 )
+                    if mode == "UVD":
+                        rgb = self.convert.uvd_to_rgb( x / 127.5 - 1, inv_y / 127.5 - 1, h / max_val )
+                    if mode == "HSV":
+                        rgb = self.convert.hsv_to_rgb( hue, sat, hsx )
+                    if mode == "HSL":
+                        rgb = self.convert.hsl_to_rgb( hue, sat, hsx )
+                    if mode == "HCY":
+                        rgb = self.convert.hcy_to_rgb( hue, sat, hsx )
+                    if mode == "ARD":
+                        rgb = self.convert.ard_to_rgb( hue, sat, hsx )
+
+                    # Document Modifier
+                    if d_cm == None:
+                        color = rgb
+                    if d_cm == "A":
+                        aaa = self.convert.rgb_to_aaa( rgb[0], rgb[1], rgb[2] )
+                        color = self.Color_Display( d_cm, d_cd, d_cp, vc, aaa )
+                    if d_cm == "RGB":
+                        color = self.Color_Display( d_cm, d_cd, d_cp, vc, rgb )
+                    if d_cm == "CMYK":
+                        cmyk = self.convert.rgb_to_cmyk( rgb[0], rgb[1], rgb[2], None )
+                        color = self.Color_Display( d_cm, d_cd, d_cp, vc, cmyk )
+                    if d_cm == "YUV":
+                        yuv = self.convert.rgb_to_yuv( rgb[0], rgb[1], rgb[2] )
+                        color = self.Color_Display( d_cm, d_cd, d_cp, vc, yuv )
+
+                    # Write Pixels
+                    qimage.setPixelColor( x, y, QColor( int( color[0] * 255 ), int( color[1] * 255 ), int( color[2] * 255 ) ) )
+
+            # Save Image to File
+            qpixmap = QPixmap().fromImage( qimage )
+            filename = mode + "_" + geo + "_" + str( h ).zfill( 3 ) + ".png"
+            location = os.path.join( temporary, filename )
+            qpixmap.save( location )
+
+        if start_from == 0:
+            # Create Zip File
+            basename = os.path.join( directory, zipname )
+            shutil.make_archive( basename, "zip", temporary )
+
+            # Delete all Render Files
+            shutil.rmtree( temporary )
+
+    def API_Image_Analyse( self, qimage ):
+        try:
+            report = True
+            self.Analyse_Pixel( qimage )
+        except:
+            report = False
+        return report
+
+    def Pigmento_Sample_Script( self ):
+        # Import Pigment.O reference object
+        """
+        import krita
+
+        pyid = "pykrita_pigment_o_docker"
+        dockers = Krita.instance().dockers()
+        for i in range( 0, len( dockers ) ):
+            if dockers[i].objectName() == pyid:
+                pigment_o = dockers[i]
+                break
+        """
+
+        # Print Maps
+        """
+        space = [ "HSV", "HSL", "HCY" ]
+        geo = [ "3", "4", "R" ]
+        directory = "C:\\Users\\EyeOd\\Desktop\\pigmento\\Directory" # path to finished zip folder
+        render = "C:\\Users\\EyeOd\\Desktop\\pigmento\\Render" # path to temporary render folder
+        for g in range( 0, len( geo ) ):
+            for s in range( 0, len( space ) ):
+                pigment_o.API_Printer( space[s], geo[g], directory, render, None, None )
+        """
+
+        # Apply Color
+        """
+        pigment_o.API_Input_FG( "RGB", 0.25, 0.50, 0.75, 0 )
+        """
+
+        # View QPixmap on Pigment.S
+        """
+        pyid = "pykrita_pigment_s_docker"
+        dockers = Krita.instance().dockers()
+        for i in range( 0, len( dockers ) ):
+            if dockers[i].objectName() == pyid:
+                pigment_s = dockers[i]
+                break
+        pigment_s.Preview_QPixmap( QPixmap().fromImage( qimage ) )
+        """
+    def Krita_Sample_Script( self ):
+        # Read Color
+        """
+        from krita import *
+
+        color_fg = Krita.instance().activeWindow().activeView().foregroundColor()
+        order_fg = color_fg.componentsOrdered()
+        r = order_fg[0]
+        g = order_fg[1]
+        b = order_fg[2]
+
+        print( "red " + str( r ) )
+        print( "green " + str( g ) )
+        print( "blue " + str( b ) )
+        """
+
+        # Write Color
+        """
+        from krita import *
+
+        d_cm = Krita.instance().activeDocument().colorModel()
+        d_cd = Krita.instance().activeDocument().colorDepth()
+        d_cp = Krita.instance().activeDocument().colorProfile()
+
+        managed_color = ManagedColor( d_cm, d_cd, d_cp )
+        comp = managed_color.components()
+        red   = 0.4
+        green = 0.5
+        blue  = 0.6
+        alpha = 1
+        comp = [blue, green, red, alpha]
+        managed_color.setComponents( comp )
+        Krita.instance().activeWindow().activeView().setForeGroundColor( managed_color )
+        """
 
     #endregion
     #region Pigmento & Krita #######################################################
@@ -3887,35 +4243,36 @@ class PigmentO_Docker( DockWidget ):
                 self.Pigmento_READ( "RGB", kbc_1, kbc_2, kbc_3, 0, b )
     def Read_Only( self ):
         # Variables
-        c1 = 255
-        c2 = 255
-        c3 = 255
+        c1 = krange["rgb_1"]
+        c2 = krange["rgb_2"]
+        c3 = krange["rgb_3"]
 
         # Foreground Color
         color_fg = Krita.instance().activeWindow().activeView().foregroundColor()
         order_fg = color_fg.componentsOrdered()
-        fg_1 = int( order_fg[0] * c1 )
-        fg_2 = int( order_fg[1] * c2 )
-        fg_3 = int( order_fg[2] * c3 )
+        fg_1 = order_fg[0] * c1
+        fg_2 = order_fg[1] * c2
+        fg_3 = order_fg[2] * c3
 
         # Foreground Color
         color_bg = Krita.instance().activeWindow().activeView().backgroundColor()
         order_bg = color_bg.componentsOrdered()
-        bg_1 = int( order_bg[0] * c1 )
-        bg_2 = int( order_bg[1] * c2 )
-        bg_3 = int( order_bg[2] * c3 )
+        bg_1 = order_bg[0] * c1
+        bg_2 = order_bg[1] * c2
+        bg_3 = order_bg[2] * c3
 
         # Print Debug
         try:
-            QtCore.qDebug( "KRITA COLOR----------" )
-            QtCore.qDebug( "fg_1 = " + str( fg_1 ) )
-            QtCore.qDebug( "fg_2 = " + str( fg_2 ) )
-            QtCore.qDebug( "fg_3 = " + str( fg_3 ) )
-            QtCore.qDebug( "" )
-            QtCore.qDebug( "bg_1 = " + str( bg_1 ) )
-            QtCore.qDebug( "bg_2 = " + str( bg_2 ) )
-            QtCore.qDebug( "bg_3 = " + str( bg_3 ) )
-            QtCore.qDebug( "" )
+            QtCore.qDebug( f"KRITA COLOR ( with range )" )
+            QtCore.qDebug( f"" )
+            QtCore.qDebug( f"fg_1 = { fg_1 }" )
+            QtCore.qDebug( f"fg_2 = { fg_2 }" )
+            QtCore.qDebug( f"fg_3 = { fg_3 }" )
+            QtCore.qDebug( f"" )
+            QtCore.qDebug( f"bg_1 = { bg_1 }" )
+            QtCore.qDebug( f"bg_2 = { bg_2 }" )
+            QtCore.qDebug( f"bg_3 = { bg_3 }" )
+            QtCore.qDebug( f"" )
         except:
             pass
 
@@ -3935,253 +4292,6 @@ class PigmentO_Docker( DockWidget ):
     def Pigmento_RELEASE( self ):
         self.widget_press = False
         self.Sync_Elements( True, True, True )
-
-    #endregion
-    #region Scripts ( API ) ########################################################
-
-    def Script_Request_FG( self ):
-        return kac
-    def Script_Request_BG( self ):
-        return kbc
-    def Script_Color_Name( self, hex ):
-        name = self.convert.hex6_to_name( hex, color_names )
-        return name
-    def Script_Convert_Color( self, mode, var_1, var_2, var_3, var_4, color ):
-        convert = self.Color_Convert( mode, var_1, var_2, var_3, var_4, color )
-        return convert
-
-    def Script_Input_Kelvin( self, kelvin ):
-        # range : 1000-12000 neutral : 6500
-        self.Kelvin_Class( kelvin )
-        percent = self.convert.kkk_scale_to_percent( kelvin )
-        self.Pigmento_PRESS( "KKK", percent, kelvin, 0, 0, self.cor )
-        return self.cor
-    def Script_Input_Preview( self, mode, var_1, var_2, var_3, var_4 ):
-        # mode : color space
-        # var : 0-1
-        self.widget_press = True
-        self.Color_Convert( mode, var_1, var_2, var_3, var_4, self.cor )
-        self.Sync_Elements( False, True, False )
-        return self.cor
-    def Script_Input_Apply( self, mode, var_1, var_2, var_3, var_4 ):
-        # mode : color space
-        # var : 0-1
-        self.widget_press = False
-        self.Color_Convert( mode, var_1, var_2, var_3, var_4, self.cor )
-        self.Sync_Elements( True, True, True )
-        return self.cor
-
-    def Script_Printer( self, mode, geo, directory, render, start_from, max_val ):
-        """
-        mode - color space of the map
-        geo - geometric shape of the map
-        directory - location to save zip file
-        render - location to render images. This folder is deleted and recreated after a cycle
-        start_from - start from given given number. Default is zero but if non zero nothing will be deleted.
-        max_val - finish at given number.
-
-        notes - YUV=255 UVD=255 HSV=360 HSL=360 HCY=360 CD_CA=255
-        """
-
-        # Variables
-        size = 256
-        s2 = size * 0.5
-        wtri = 0.5 * math.sqrt( 3 ) * size
-        cda = [ "D", "A" ]
-
-        # Range
-        if start_from == None:
-            start_from = 0
-        if max_val == None:
-            if geo in cda:
-                max_val = 255
-            else:
-                max_val = 360
-
-        # Document Modifier
-        doc = self.Current_Document()
-        d_cm = doc["d_cm"]
-        d_cd = doc["d_cd"]
-        d_cp = doc["d_cp"]
-        vc = doc["vc"]
-
-        # Temporary Folder
-        zipname = f"{ d_cm }_{ mode }_{ geo }"
-        temporary = os.path.join( render, zipname )
-        os.mkdir( temporary, 0o666 )
-
-        # Third Axis Loop
-        for h in range( start_from, max_val+1 ):
-            # Process update
-            QApplication.processEvents()
-
-            # Base Image to Edit
-            qpixmap = QPixmap( size, size )
-            qpixmap.fill( QColor( 0, 0, 0, 255 ) )
-            qimage = qpixmap.toImage()
-
-            # Calculate Pixels
-            for y in range( 0, size ):
-                for x in range( 0, size ):
-                    # Variables
-                    if geo in [ "3", "4", "R" ]:
-                        # Hue
-                        hue = h / max_val
-                        # Hsx
-                        inv_y = size-y
-                        hsx = inv_y / size
-                    if geo in cda:
-                        # Hsx
-                        hsx = h / max_val
-
-                    # Geometry influence
-                    if geo == "3":
-                        if y >= 0 and y <= size * 0.5:
-                            ix, iy = self.geometry.Trig_2D_Points_Lines_Intersection( 0, y, size, y, 1, 0, wtri + 1, size * 0.5 )
-                        elif y > size * 0.5 and y <= size:
-                            ix, iy = self.geometry.Trig_2D_Points_Lines_Intersection( 0, y, size, y, wtri + 1, size * 0.5, 1, size )
-                        sat = self.geometry.Limit_Float( x / ix )
-                    if geo == "4":
-                        sat = x / size
-                    if geo == "R":
-                        if y >= 0 and y <= size * 0.5:
-                            lix, liy = self.geometry.Trig_2D_Points_Lines_Intersection( 0, y, size, y, 0,    size * 0.5, size * 0.5, 0 )
-                            rix, riy = self.geometry.Trig_2D_Points_Lines_Intersection( 0, y, size, y, size, size * 0.5, size * 0.5, 0 )
-                        elif y > size*0.5 and y <= size:
-                            lix, liy = self.geometry.Trig_2D_Points_Lines_Intersection( 0, y, size, y, 0,    size * 0.5, size * 0.5, size )
-                            rix, riy = self.geometry.Trig_2D_Points_Lines_Intersection( 0, y, size, y, size, size * 0.5, size * 0.5, size )
-                        dist = abs( rix - lix )
-                        margin = abs( ( size - dist ) * 0.5 )
-                        dx = x - margin
-                        if ( dx > 0 and dist > 0 ):
-                            sat = self.geometry.Limit_Range( dx / dist, 0, 1 )
-                        else:
-                            sat = 0
-                    if geo in cda:
-                        # Geometry
-                        dist = self.geometry.Trig_2D_Points_Distance( x, y, s2, s2 )
-                        if geo == "D":
-                            angle = self.geometry.Trig_2D_Points_Lines_Angle( 0, s2, s2, s2, x, y ) / 360
-                        if geo == "A":
-                            hhh = self.geometry.Limit_Looper( self.geometry.Trig_2D_Points_Lines_Angle( 0, s2, s2, s2, x, y ) + hue_a, 360 )
-                            angle = self.convert.huea_to_hued( hhh / 360 )
-                        # Values
-                        hue = angle
-                        sat = self.geometry.Limit_Range( dist / s2, 0, 1 )
-
-                    # Color Spaces to RGB
-                    if mode == "YUV":
-                        rgb = self.convert.yuv_to_rgb( h / max_val, x / 255, inv_y / 255 )
-                    if mode == "UVD":
-                        rgb = self.convert.uvd_to_rgb( x / 127.5 - 1, inv_y / 127.5 - 1, h / max_val )
-                    if mode == "HSV":
-                        rgb = self.convert.hsv_to_rgb( hue, sat, hsx )
-                    if mode == "HSL":
-                        rgb = self.convert.hsl_to_rgb( hue, sat, hsx )
-                    if mode == "HCY":
-                        rgb = self.convert.hcy_to_rgb( hue, sat, hsx )
-                    if mode == "ARD":
-                        rgb = self.convert.ard_to_rgb( hue, sat, hsx )
-
-                    # Document Modifier
-                    if d_cm == None:
-                        color = rgb
-                    if d_cm == "A":
-                        aaa = self.convert.rgb_to_aaa( rgb[0], rgb[1], rgb[2] )
-                        color = self.Color_Display( d_cm, d_cd, d_cp, vc, aaa )
-                    if d_cm == "RGB":
-                        color = self.Color_Display( d_cm, d_cd, d_cp, vc, rgb )
-                    if d_cm == "CMYK":
-                        cmyk = self.convert.rgb_to_cmyk( rgb[0], rgb[1], rgb[2], None )
-                        color = self.Color_Display( d_cm, d_cd, d_cp, vc, cmyk )
-                    if d_cm == "YUV":
-                        yuv = self.convert.rgb_to_yuv( rgb[0], rgb[1], rgb[2] )
-                        color = self.Color_Display( d_cm, d_cd, d_cp, vc, yuv )
-
-                    # Write Pixels
-                    qimage.setPixelColor( x, y, QColor( int( color[0] * 255 ), int( color[1] * 255 ), int( color[2] * 255 ) ) )
-
-            # Save Image to File
-            qpixmap = QPixmap().fromImage( qimage )
-            filename = mode + "_" + geo + "_" + str( h ).zfill( 3 ) + ".png"
-            location = os.path.join( temporary, filename )
-            qpixmap.save( location )
-
-        if start_from == 0:
-            # Create Zip File
-            basename = os.path.join( directory, zipname )
-            shutil.make_archive( basename, "zip", temporary )
-
-            # Delete all Render Files
-            shutil.rmtree( temporary )
-
-    def Script_Image_Analyse( self, path ):
-        exists = os.path.exists( path )
-        null = QImage( path ).isNull()
-        if ( exists == True and null == False ):
-            self.Color_Analyse( path )
-
-    def Pigmento_Sample_Script( self ):
-        # Import Pigment.O reference object
-        """
-        import krita
-
-        pigmento_pyid = "pykrita_pigment_o"
-        dockers = Krita.instance().dockers()
-        for i in range( 0, len( dockers ) ):
-            if dockers[i].objectName() == pigmento_pyid:
-                pigment_o = dockers[i]
-        """
-
-        # Print Maps
-        """
-        space = [ "HSV", "HSL", "HCY" ]
-        geo = [ "3", "4", "R" ]
-        directory = "C:\\Users\\EyeOd\\Desktop\\pigmento\\Directory" # path to finished zip folder
-        render = "C:\\Users\\EyeOd\\Desktop\\pigmento\\Render" # path to temporary render folder
-        for g in range( 0, len( geo ) ):
-            for s in range( 0, len( space ) ):
-                pigment_o.Script_Printer( space[s], geo[g], directory, render, None, None )
-        """
-
-        # Apply Color
-        """
-        pigment_o.Script_Input_FG( "RGB", 0.25, 0.50, 0.75, 0 )
-        """
-    def Krita_Sample_Script( self ):
-        # Read Color
-        """
-        from krita import *
-
-        color_fg = Krita.instance().activeWindow().activeView().foregroundColor()
-        order_fg = color_fg.componentsOrdered()
-        r = order_fg[0]
-        g = order_fg[1]
-        b = order_fg[2]
-
-        print( "red " + str( r ) )
-        print( "green " + str( g ) )
-        print( "blue " + str( b ) )
-        """
-
-        # Write Color
-        """
-        from krita import *
-
-        d_cm = Krita.instance().activeDocument().colorModel()
-        d_cd = Krita.instance().activeDocument().colorDepth()
-        d_cp = Krita.instance().activeDocument().colorProfile()
-
-        managed_color = ManagedColor( d_cm, d_cd, d_cp )
-        comp = managed_color.components()
-        red   = 0.4
-        green = 0.5
-        blue  = 0.6
-        alpha = 1
-        comp = [blue, green, red, alpha]
-        managed_color.setComponents( comp )
-        Krita.instance().activeWindow().activeView().setForeGroundColor( managed_color )
-        """
 
     #endregion
     #region Color ##################################################################
@@ -4752,8 +4862,7 @@ class PigmentO_Docker( DockWidget ):
                             self.Sync_Elements( True, True, True )
                             break
         except:
-            try:QtCore.qDebug( "Pigment.O | ERROR Input failed" )
-            except:pass
+            Message_Log( self, "ERROR", "input value" )
 
     def Color_Managed( self, d_cm, d_cd, d_cp, vc, side, color ):
         #region Color Management
@@ -4895,66 +5004,6 @@ class PigmentO_Docker( DockWidget ):
             self.Pigmento_APPLY( "HCY", hue, self.cor["hcy_2"], self.cor["hcy_3"], 0, self.cor )
         if self.wheel_space == "ARD":
             self.Pigmento_APPLY( "ARD", hue, self.cor["ard_2"], self.cor["ard_3"], 0, self.cor )
-
-    def Color_AnalyseDocument( self ):
-        if ( ( self.canvas() is not None ) and ( self.canvas().view() is not None ) ):
-            path = Krita.instance().activeDocument().fileName()
-            self.Color_Analyse( path )
-        else:
-            self.analyse_collection = None
-    def Color_Analyse( self, path ):
-        read = QImageReader( path )
-        if read.canRead() == True:
-            try:
-                # Variables
-                size = 100
-
-                # Construct
-                qimage = QImage( path )
-                width = qimage.width()
-                height = qimage.height()
-                if ( width >= size and height >= size ):
-                    qimage = qimage.scaled( size, size, Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation )
-                    width = qimage.width()
-                    height = qimage.height()
-
-                # Pixel Check
-                p = list()
-                for h in range( 0, height ):
-                    # Progress bar
-                    h1 = ( h + 1 )
-                    if ( h1 % 5 == 0 or h1 == height ):
-                        percent = round( h1 / height, 4 )
-                        self.color_header.Set_Progress( percent )
-                    QApplication.processEvents()
-                    # Rox of Pixels
-                    for w in range( 0, width ):
-                        # RGB
-                        pixel = qimage.pixelColor( w,h )
-                        r = pixel.redF()
-                        g = pixel.greenF()
-                        b = pixel.blueF()
-                        rgb = [ r, g, b ]
-                        if rgb not in p:
-                            p.append( rgb )
-                # Color
-                len_p = len( p )
-                analyse_collection = list()
-                for i in range( 0, len_p ):
-                    c = color_neutral.copy()
-                    color = self.Color_Convert( "RGB", p[i][0], p[i][1], p[i][2], 0, c )
-                    analyse_collection.append( color )
-                self.analyse_collection = analyse_collection
-
-                # UI
-                self.color_header.Set_Progress( 1 )
-                self.Pigmento_RELEASE()
-                # System
-                try:QtCore.qDebug( "Pigment.O | ANALYSE Complete" )
-                except:pass
-            except Exception as e:
-                try:QtCore.qDebug( "Pigment.O | ERROR Analyse failed" )
-                except:pass
 
     #endregion
     #region Syncronization  ########################################################
@@ -5671,12 +5720,10 @@ class PigmentO_Docker( DockWidget ):
     #region Gradients ##############################################################
 
     def Gradient_Style( self, mode, short, stops, left, right ):
-        """
-        mode = color space
-        short = straight ahead or shortest distance
-        stops = amount of divisions
-        left and right = colors in 0-1 format
-        """
+        # mode = color space
+        # short = straight ahead or shortest distance
+        # stops = amount of divisions
+        # left and right = colors in 0-1 format
 
         # Variables
         hue = [ "HSV", "HSL", "HCY", "ARD" ]
@@ -6438,6 +6485,8 @@ class PigmentO_Docker( DockWidget ):
         self.mask_edit = SIGNAL_EDIT
         self.panel_mask.Set_Edit( SIGNAL_EDIT )
         self.Mask_Widget( SIGNAL_EDIT )
+        # Size
+        self.Update_Size()
         # Save
         Krita.instance().writeSetting( "Pigment.O", "mask_edit", str( self.mask_edit ) )
 
@@ -6945,6 +6994,900 @@ class PigmentO_Docker( DockWidget ):
         self.mask_alpha["f3"] = SIGNAL_ALPHA
         self.Update_Panel_Mask()
         Krita.instance().writeSetting( "Pigment.O", "mask_alpha", str( self.mask_alpha ) )
+
+    #endregion
+    #region Panel Samples ##########################################################
+
+    # UI
+    def Sample_Widget( self, boolean ):
+        if boolean == True:
+            maxi = 120
+        else:
+            maxi = 0
+        self.layout.edit_sample.setMinimumWidth( maxi )
+        self.layout.edit_sample.setMaximumWidth( maxi )
+
+    # Menu
+    def Samples_Menu( self, position ):
+        # Menu
+        qmenu = QMenu( self )
+        # Space
+        menu_space = qmenu.addMenu( f"Space [ { self.sample_mode } ]" )
+        action_space_aaa = menu_space.addAction( "A" )
+        action_space_rgb = menu_space.addAction( "RGB" )
+        action_space_cmy = menu_space.addAction( "CMY" )
+        action_space_cmyk = menu_space.addAction( "CMYK" )
+        action_space_ryb = menu_space.addAction( "RYB" )
+        action_space_yuv = menu_space.addAction( "YUV" )
+        action_space_hsv = menu_space.addAction( "HSV" )
+        action_space_hsl = menu_space.addAction( "HSL" )
+        action_space_hcy = menu_space.addAction( "HCY" )
+        action_space_ard = menu_space.addAction( "ARD" )
+        action_space_xyz = menu_space.addAction( "XYZ" )
+        action_space_xyy = menu_space.addAction( "XYY" )
+        action_space_lab = menu_space.addAction( "LAB" )
+        action_space_lch = menu_space.addAction( "LCH" )
+        action_space_aaa.setCheckable( True )
+        action_space_rgb.setCheckable( True )
+        action_space_cmy.setCheckable( True )
+        action_space_cmyk.setCheckable( True )
+        action_space_ryb.setCheckable( True )
+        action_space_yuv.setCheckable( True )
+        action_space_hsv.setCheckable( True )
+        action_space_hsl.setCheckable( True )
+        action_space_hcy.setCheckable( True )
+        action_space_ard.setCheckable( True )
+        action_space_xyz.setCheckable( True )
+        action_space_xyy.setCheckable( True )
+        action_space_lab.setCheckable( True )
+        action_space_lch.setCheckable( True )
+        action_space_aaa.setChecked( self.sample_mode == "A" )
+        action_space_rgb.setChecked( self.sample_mode == "RGB" )
+        action_space_cmy.setChecked( self.sample_mode == "CMY" )
+        action_space_cmyk.setChecked( self.sample_mode == "CMYK" )
+        action_space_ryb.setChecked( self.sample_mode == "RYB" )
+        action_space_yuv.setChecked( self.sample_mode == "YUV" )
+        action_space_hsv.setChecked( self.sample_mode == "HSV" )
+        action_space_hsl.setChecked( self.sample_mode == "HSL" )
+        action_space_hcy.setChecked( self.sample_mode == "HCY" )
+        action_space_ard.setChecked( self.sample_mode == "ARD" )
+        action_space_xyz.setChecked( self.sample_mode == "XYZ" )
+        action_space_xyy.setChecked( self.sample_mode == "XYY" )
+        action_space_lab.setChecked( self.sample_mode == "LAB" )
+        action_space_lch.setChecked( self.sample_mode == "LCH" )
+        # Total Ink Coverage
+        action_tic = qmenu.addAction( f"TIC [ { self.sample_limit }% ]" )
+        # Edit
+        action_edit = qmenu.addAction( "Edit" )
+        action_edit.setCheckable( True )
+        action_edit.setChecked( self.sample_edit )
+        # Generate
+        action_generate = qmenu.addAction( "Generate" )
+        # Trigger
+        action = qmenu.exec_( self.layout.panel_sample.mapToGlobal( position ) )
+        # Action
+        if action == action_space_aaa:
+            self.Sample_Mode( "A" )
+        if action == action_space_rgb:
+            self.Sample_Mode( "RGB" )
+        if action == action_space_cmy:
+            self.Sample_Mode( "CMY" )
+        if action == action_space_cmyk:
+            self.Sample_Mode( "CMYK" )
+        if action == action_space_ryb:
+            self.Sample_Mode( "RYB" )
+        if action == action_space_yuv:
+            self.Sample_Mode( "YUV" )
+        if action == action_space_hsv:
+            self.Sample_Mode( "HSV" )
+        if action == action_space_hsl:
+            self.Sample_Mode( "HSL" )
+        if action == action_space_hcy:
+            self.Sample_Mode( "HCY" )
+        if action == action_space_ard:
+            self.Sample_Mode( "ARD" )
+        if action == action_space_xyz:
+            self.Sample_Mode( "XYZ" )
+        if action == action_space_xyy:
+            self.Sample_Mode( "XYY" )
+        if action == action_space_lab:
+            self.Sample_Mode( "LAB" )
+        if action == action_space_lch:
+            self.Sample_Mode( "LCH" )
+        if action == action_tic:
+            self.Sample_Limit()
+        if action == action_edit:
+            self.sample_edit = not self.sample_edit
+            self.Sample_Edit( self.sample_edit )
+        if action == action_generate:
+            self.Sample_Generate( "CHANNELS" )
+    def Sample_Index( self, sample_index, apply_mask ):
+        # Variables
+        self.sample_index = sample_index
+        data = self.sample_data[sample_index]
+        # Modules
+        self.panel_sample_image.Set_Display( data["render"], data["cor"] )
+        if apply_mask == True:
+            self.Insert_Selection( data["map"], data["dx"], data["dy"], data["dw"], data["dh"] )
+        # update
+        self.update()
+
+    # Options
+    def Sample_Mode( self, sample_mode ):
+        self.sample_mode = sample_mode
+        Krita.instance().writeSetting( "Pigment.O", "sample_mode", str( self.sample_mode ) )
+    def Sample_Limit( self ):
+        sample_limit, ok = QInputDialog.getInt( self, "Input Value", "Total Ink Coverage", self.sample_limit, 0, 400, 1 )
+        if ok == True:
+            self.sample_limit = sample_limit
+            Krita.instance().writeSetting( "Pigment.O", "sample_limit", str( self.sample_limit ) )
+        self.update()
+    def Sample_Edit( self, boolean ):
+        self.sample_edit = boolean
+        self.Sample_Widget( self.sample_edit )
+        self.Update_Size()
+        Krita.instance().writeSetting( "Pigment.O", "sample_edit", str( self.sample_edit ) )
+
+    # Generate
+    def Sample_Generate( self, mode ):
+        if ( ( self.canvas() is not None ) and ( self.canvas().view() is not None ) ):
+            # Variables
+            type_layer = [ "paintlayer", "grouplayer", "clonelayer", "vectorlayer", "filterlayer", "filllayer", "filelayer" ]
+
+            # Document
+            doc = self.Current_Document()
+            ad = doc["ad"]
+            d_cm = doc["d_cm"]
+            d_cd = doc["d_cd"]
+            d_nt = doc["d_nt"]
+
+            # Layer Type
+            cycle = True
+            if ( mode == "COLORS" and d_nt not in type_layer ):
+                self.Message_Warnning( "ERROR", f"Layer Type { d_nt } selected" )
+                cycle = False
+            if cycle == True:
+                # Place Text
+                self.Message_Float( "READ", "Source", "local-selection-inactive" )
+                QApplication.processEvents()
+
+                # Size
+                width = ad.width()
+                height = ad.height()
+
+                # Depth Constants
+                if d_cd == "U16":
+                    depth = 65535
+                elif d_cd == "F16":
+                    depth = 65535
+                elif d_cd == "F32":
+                    depth = 4294836225
+                else:
+                    depth = 255
+                k = 255
+
+                # Source
+                ss = ad.selection()
+                if ss == None:
+                    dx = 0
+                    dy = 0
+                    dw = width
+                    dh = height
+                else:
+                    dx = ss.x()
+                    dy = ss.y()
+                    dw = ss.width()
+                    dh = ss.height()
+
+                # Pixel Data Colors
+                byte_array = ad.pixelData( dx, dy, dw, dh )
+                num_array = self.Bytes_to_Integer( byte_array, d_cd )
+                # Pixel Data Selection
+                if ss == None:
+                    num_ss = [ depth ] * len( num_array )
+                else:
+                    byte_ss = ss.pixelData( dx, dy, dw, dh )
+                    num_ss = self.Bytes_to_Integer( byte_ss, None )
+
+                # Calculation
+                sel_pixels = None
+                draw_pixels = None
+                if mode == "COLORS":
+                    self.Cycle_Colors( d_cm, d_cd, depth, k, dx, dy, dw, dh, num_array, num_ss )
+                if mode == "CHANNELS":
+                    self.Cycle_Channels( d_cm, d_cd, depth, k, dx, dy, dw, dh, num_array, num_ss )
+    # Cycles
+    def Cycle_Colors( self, d_cm, d_cd, depth, k, dx, dy, dw, dh, num_array, num_ss ):
+        # Color
+        cor = self.convert.color_vector( self.sele_mode, self.cor )
+        length = len( cor )
+        if length == 1:
+            c0 = cor[0]
+        if length == 3:
+            c0 = cor[0]
+            c1 = cor[1]
+            c2 = cor[2]
+        if length == 4:
+            c0 = cor[0]
+            c1 = cor[1]
+            c2 = cor[2]
+            c3 = cor[3]
+
+        # Calculation
+        hue_rgb = [ "HSV", "HSL", "HCY", "ARD" ]
+        hue_xyz = [ "LCH" ]
+        index = 0
+        sel_pixels = list()
+        draw_pixels = list()
+        div = int( dh / 100 )
+        for y in range( 0, dh ):
+            # Progress bar
+            y1 = ( y + 1 )
+            if y1 % div == 0:
+                percent = round( y1 / dh, 4 )
+                self.color_header.Set_Progress( percent )
+                QApplication.processEvents()
+
+            # Pixels
+            for x in range( 0, dw ):
+                # Read Bytes
+                num = self.Numbers_on_Pixel( d_cm, d_cd, index, num_array )
+                ssi = num_ss[index]/depth
+
+                # Convert
+                if d_cm == "A":
+                    conv = self.convert.color_convert( d_cm, self.sele_mode, [num[0]/depth] )
+                    alpha = num[1]/depth
+                if ( d_cm == "RGB" or d_cm == None ):
+                    conv = self.convert.color_convert( d_cm, self.sele_mode, [num[0]/depth, num[1]/depth, num[2]/depth] )
+                    alpha = num[3]/depth
+                if d_cm == "CMYK":
+                    conv = self.convert.color_convert( d_cm, self.sele_mode, [num[0]/depth, num[1]/depth, num[2]/depth, num[3]/depth] )
+                    alpha = num[4]/depth
+
+                # Variables
+                occlusion = alpha * ssi
+                if length == 1:
+                    # Parse
+                    n0 = conv[0]
+                    # Selection 0
+                    sel_0 = self.Selector_Linear( n0, c0, sele_1_var["l0"], sele_1_var["l1"], sele_1_var["r1"], sele_1_var["r0"] )
+                    # Factor
+                    sel_factor = sel_0 * occlusion
+                elif length == 3:
+                    # Parse
+                    n0 = conv[0]
+                    n1 = conv[1]
+                    n2 = conv[2]
+                    # Selection 0
+                    if self.sele_mode in hue_rgb:
+                        sel_0 = self.Selector_Circular( n0, c0, sele_1_var["l0"], sele_1_var["l1"], sele_1_var["r1"], sele_1_var["r0"] )
+                    else:
+                        sel_0 = self.Selector_Linear( n0, c0, sele_1_var["l0"], sele_1_var["l1"], sele_1_var["r1"], sele_1_var["r0"] )
+                    # Selection 1
+                    sel_1 = self.Selector_Linear( n1, c1, sele_2_var["l0"], sele_2_var["l1"], sele_2_var["r1"], sele_2_var["r0"] )
+                    # Selection 2
+                    if self.sele_mode in hue_xyz:
+                        sel_2 = self.Selector_Circular( n2, c2, sele_3_var["l0"], sele_3_var["l1"], sele_3_var["r1"], sele_3_var["r0"] )
+                    else:
+                        sel_2 = self.Selector_Linear( n2, c2, sele_3_var["l0"], sele_3_var["l1"], sele_3_var["r1"], sele_3_var["r0"] )
+                    # Factor
+                    sel_factor = sel_0 * sel_1 * sel_2 * occlusion
+                elif length == 4:
+                    # Parse
+                    n0 = conv[0]
+                    n1 = conv[1]
+                    n2 = conv[2]
+                    n3 = conv[3]
+                    # Selection
+                    sel_0 = self.Selector_Linear( n0, c0, sele_1_var["l0"], sele_1_var["l1"], sele_1_var["r1"], sele_1_var["r0"] )
+                    sel_1 = self.Selector_Linear( n1, c1, sele_2_var["l0"], sele_2_var["l1"], sele_2_var["r1"], sele_2_var["r0"] )
+                    sel_2 = self.Selector_Linear( n2, c2, sele_3_var["l0"], sele_3_var["l1"], sele_3_var["r1"], sele_3_var["r0"] )
+                    sel_3 = self.Selector_Linear( n3, c3, sele_4_var["l0"], sele_4_var["l1"], sele_4_var["r1"], sele_4_var["r0"] )
+                    # Factor
+                    sel_factor = sel_0 * sel_1 * sel_2 * sel_3 * occlusion
+
+                # Lists
+                s = int( sel_factor * k )
+                sel_pixels.append( s )
+                v = int( sel_factor * 255 )
+                o = int( occlusion * 255 )
+                draw_pixels.extend( [ v, v, v, o ] )
+
+                # Cycle
+                index += 1
+
+        # Progress bar
+        self.color_header.Set_Progress( 1 )
+
+        # Selection Mask
+        if len( sel_pixels ) > 0:
+            # Preview
+            qpixmap = QPixmap().fromImage( QImage( bytes( draw_pixels ), dw, dh, QImage.Format_RGBA8888 ) )
+            self.panel_sample_image.Set_Display( qpixmap, False )
+            # Selection
+            self.Insert_Selection( sel_pixels, dx, dy, dw, dh )
+        else:
+            self.Message_Warnning( "ERROR", f"Model {d_cm} and/or Depth {d_cd} used" )
+    def Cycle_Channels( self, d_cm, d_cd, depth, k, dx, dy, dw, dh, num_array, num_ss ):
+        # Variables
+        index = 0
+        c0 = 0.75
+        c1 = 0.25
+        c2 = 0.25
+        cor = False
+        hue_rgb = [ "HSV", "HSL", "HCY", "ARD" ]
+        hue_xyz = [ "LCH" ]
+
+        # Channels
+        if self.sample_mode == "A":
+            channels = 1
+            extra = 2
+        elif self.sample_mode == "CMYK":
+            channels = 4
+            extra = 2
+        else:
+            channels = 3
+            extra = 2
+        # Item Selection
+        try:
+            previous = self.geometry.Limit_Range( self.layout.sample_list.currentRow(), 0, channels + extra - 1 )
+        except:
+            previous = 0
+        # Channel names
+        chan_0, chan_1, chan_2, chan_3 = self.Text_Index( self.sample_mode )
+
+        # Lists Render
+        byte_0_r = []
+        byte_1_r = []
+        byte_2_r = []
+        byte_3_r = []
+        byte_t_r = []
+        byte_a_r = []
+        # Lists Maps
+        byte_0_m = []
+        byte_1_m = []
+        byte_2_m = []
+        byte_3_m = []
+        byte_t_m = []
+        byte_a_m = []
+
+        # Progress bar
+        self.color_header.Set_Progress( 0 )
+        QApplication.processEvents()
+
+        # Document
+        div = int( dh / 100 )
+        for y in range( 0, dh ):
+            # Progress Bar
+            y1 = y + 1
+            if ( y1 % div ) == 0:
+                self.color_header.Set_Progress( y1 / dh )
+                QApplication.processEvents()
+
+            # Pixel
+            for x in range( 0, dw ):
+                # Read Byte
+                num = self.Numbers_on_Pixel( d_cm, d_cd, index, num_array )
+                ssi = num_ss[index] / depth
+
+                # Convert
+                if d_cm == "A":
+                    # Variables
+                    n0 = num[0] / depth
+                    na = num[1] / depth
+                    # Convert
+                    conv = self.convert.color_convert( d_cm, self.sample_mode, [ n0 ] )
+                    # Variables
+                    cmyk = self.convert.rgb_to_cmyk( n0, n0, n0, None )
+                    bw = 1 - cmyk[3]
+                elif ( d_cm == "RGB" or d_cm == None ):
+                    # Variables
+                    n0 = num[0] / depth
+                    n1 = num[1] / depth
+                    n2 = num[2] / depth
+                    na = num[3] / depth
+                    # Convert
+                    conv = self.convert.color_convert( d_cm, self.sample_mode, [ n0, n1, n2 ] )
+                    # Variables
+                    cmyk = self.convert.rgb_to_cmyk( n0, n1, n2, None )
+                    bw = 1 - cmyk[3]
+                elif d_cm == "CMYK":
+                    # Variables
+                    n0 = num[0] / depth
+                    n1 = num[1] / depth
+                    n2 = num[2] / depth
+                    n3 = num[3] / depth
+                    na = num[4] / depth
+                    # Convert
+                    conv = self.convert.color_convert( d_cm, self.sample_mode, [ n0, n1, n2, n3 ] )
+                    # Variables
+                    cmyk = [ n0, n1, n2, n3 ]
+                    bw = 1 - n3
+
+                # Length
+                length = len( conv )
+
+                # Channels
+                occ = na * ssi
+                if length == 1:
+                    s0 = int( self.geometry.Limit_Float( conv[0] ) * occ * k )
+                elif length == 3:
+                    if self.sample_mode in hue_rgb:
+                        hrgb = self.convert.hue_to_rgb( conv[0] )
+                        hue0 = int( hrgb[0] * occ * k )
+                        hue1 = int( hrgb[1] * occ * k )
+                        hue2 = int( hrgb[2] * occ * k )
+                    if self.sample_mode in hue_xyz:
+                        rgb = self.convert.lch_to_rgb( conv[0], conv[1], conv[2] )
+                        hhh = self.convert.rgb_to_hue( rgb[0], rgb[1], rgb[2] )
+                        hrgb = self.convert.hue_to_rgb( hhh )
+                        hue0 = int( hrgb[0] * occ * k )
+                        hue1 = int( hrgb[1] * occ * k )
+                        hue2 = int( hrgb[2] * occ * k )
+                    s0 = int( self.geometry.Limit_Float( conv[0] ) * occ * k )
+                    s1 = int( self.geometry.Limit_Float( conv[1] ) * occ * k )
+                    s2 = int( self.geometry.Limit_Float( conv[2] ) * occ * k )
+                elif length == 4:
+                    s0 = int( self.geometry.Limit_Float( conv[0] ) * occ * k )
+                    s1 = int( self.geometry.Limit_Float( conv[1] ) * occ * k )
+                    s2 = int( self.geometry.Limit_Float( conv[2] ) * occ * k )
+                    if self.invert_cmyk == True:
+                        s3 = int( self.geometry.Limit_Float( 1 - conv[3] ) * occ * k )
+                    else:
+                        s3 = int( self.geometry.Limit_Float( conv[3] ) * occ * k )
+                # Total Ink Cove_rage
+                tic = self.convert.cmyk_to_tic( cmyk[0], cmyk[1], cmyk[2], cmyk[3] )
+                t0, t1, t2, tw, cor = self.Total_Ink_Coverage( tic, self.sample_limit, c0, c1, c2, bw, cor )
+                t0 = int( t0 * occ * k )
+                t1 = int( t1 * occ * k )
+                t2 = int( t2 * occ * k )
+                tw = int( tw * occ * k )
+                # Alpha
+                na = int( na * occ * k )
+
+                # Images
+                if length == 1:
+                    byte_0_r.extend( [ s0, s0, s0, na ] )
+                elif length == 3:
+                    if self.sample_mode in hue_rgb:
+                        byte_0_r.extend( [ hue0, hue1, hue2, na ] )
+                    else:
+                        byte_0_r.extend( [ s0, s0, s0, na ] )
+                    byte_1_r.extend( [ s1, s1, s1, na ] )
+                    if self.sample_mode in hue_xyz:
+                        byte_2_r.extend( [ hue0, hue1, hue2, na ] )
+                    else:
+                        byte_2_r.extend( [ s2, s2, s2, na ] )
+                elif length == 4:
+                    byte_0_r.extend( [ s0, s0, s0, na ] )
+                    byte_1_r.extend( [ s1, s1, s1, na ] )
+                    byte_2_r.extend( [ s2, s2, s2, na ] )
+                    byte_3_r.extend( [ s3, s3, s3, na ] )
+                byte_t_r.extend( [ t0, t1, t2, na ] )
+                byte_a_r.extend( [ na, na, na, k ] )
+
+                # Maps
+                if length == 1:
+                    byte_0_m.append( s0 )
+                elif length == 3:
+                    byte_0_m.append( s0 )
+                    byte_1_m.append( s1 )
+                    byte_2_m.append( s2 )
+                elif length == 4:
+                    byte_0_m.append( s0 )
+                    byte_1_m.append( s1 )
+                    byte_2_m.append( s2 )
+                    byte_3_m.append( s3 )
+                byte_t_m.append( tw )
+                byte_a_m.append( na )
+
+                # Cycle
+                index += 1
+
+        # Check
+        if len( byte_0_m ) > 0:
+            # QPixmap
+            if length >= 1:
+                pix_0_r = QPixmap().fromImage( QImage( bytes( byte_0_r ), dw, dh, QImage.Format_RGBA8888 ) )
+            if length >= 3:
+                pix_1_r = QPixmap().fromImage( QImage( bytes( byte_1_r ), dw, dh, QImage.Format_RGBA8888 ) )
+                pix_2_r = QPixmap().fromImage( QImage( bytes( byte_2_r ), dw, dh, QImage.Format_RGBA8888 ) )
+            if length == 4:
+                pix_3_r = QPixmap().fromImage( QImage( bytes( byte_3_r ), dw, dh, QImage.Format_RGBA8888 ) )
+            pix_t_r = QPixmap().fromImage( QImage( bytes( byte_t_r ), dw, dh, QImage.Format_RGBA8888 ) )
+            pix_a_r = QPixmap().fromImage( QImage( bytes( byte_a_r ), dw, dh, QImage.Format_RGBA8888 ) )
+
+            # Data
+            self.sample_data = []
+            if length >= 1:
+                self.sample_data.append( { "render":pix_0_r, "map":byte_0_m, "dx":dx, "dy":dy, "dw":dw, "dh":dh, "text":chan_0, "cor":False } )
+            if length >= 3:
+                self.sample_data.append( { "render":pix_1_r, "map":byte_1_m, "dx":dx, "dy":dy, "dw":dw, "dh":dh, "text":chan_1, "cor":False } )
+                self.sample_data.append( { "render":pix_2_r, "map":byte_2_m, "dx":dx, "dy":dy, "dw":dw, "dh":dh, "text":chan_2, "cor":False } )
+            if length == 4:
+                self.sample_data.append( { "render":pix_3_r, "map":byte_3_m, "dx":dx, "dy":dy, "dw":dw, "dh":dh, "text":chan_3, "cor":False } )
+            self.sample_data.append( { "render":pix_t_r, "map":byte_t_m, "dx":dx, "dy":dy, "dw":dw, "dh":dh, "text":"TIC", "cor" : cor } )
+            self.sample_data.append( { "render":pix_a_r, "map":byte_a_m, "dx":dx, "dy":dy, "dw":dw, "dh":dh, "text":"Alpha", "cor" : False } )
+
+            # List
+            item = self.sample_data[previous]
+            self.panel_sample_image.Set_Display( item["render"], item["cor"] )
+            self.panel_sample_list.Set_Display( self.sample_data )
+        else:
+            self.Message_Warnning( "ERROR", f"Model {d_cm} and/or Depth {d_cd} not supported" )
+
+        # Progress bar
+        self.color_header.Set_Progress( 1 )
+    # Bytes
+    def Bytes_to_Integer( self, byte_array, d_cd ):
+        # converts byte data to numerical data
+        # byte_data - information read from a document
+        # d_cd - document color depth
+
+        # Byte Order
+        byte_order = sys.byteorder
+        # Bit Depth
+        num_array = []
+        if ( d_cd == "U8" or d_cd == None ):
+            for i in range( 0, len( byte_array ) ):
+                byte = byte_array.at( i )
+                num = int.from_bytes( byte, byte_order )
+                num_array.append( num )
+        elif ( d_cd == "U16" or d_cd == "F16" ):
+            for i in range( 0, len( byte_array ), 2 ):
+                b1 = byte_array.at( i )
+                b2 = byte_array.at( i+1 )
+                byte = b1 + b2
+                num = int.from_bytes( byte, byte_order )
+                num_array.append( num )
+        elif d_cd == "F32":
+            for i in range( 0, len( byte_array ), 4 ):
+                b1 = byte_array.at( i )
+                b2 = byte_array.at( i+1 )
+                b3 = byte_array.at( i+2 )
+                b4 = byte_array.at( i+3 )
+                byte = b1 + b2 + b3 + b4
+                num = int.from_bytes( byte, byte_order )
+                num_array.append( num )
+        # Return
+        return num_array
+    def Integer_to_Bytes( self, num_array, d_cd ):
+        # converts numbers to byte data
+        # num_data - information previously calculated
+        # d_cd - document color depth
+
+        # Byte Order
+        byte_order = sys.byteorder
+        # Bit Depth
+        if d_cd == "U8":
+            k = 1
+        elif ( d_cd == "U16" or d_cd == "F16" ):
+            k = 2
+        elif d_cd == "F32":
+            k = 4
+
+        # Conversion to Bytes
+        byte_array = bytearray( num_array )
+        return byte_array
+    # Pixels
+    def Numbers_on_Pixel( self, d_cm, d_cd, index, num_array ):
+        # reads the numerical data from a pixel with a given index
+
+        # Variables
+        if d_cd == "U8": # BGR
+            k = 255
+        elif d_cd == "U16":
+            k = 65535
+        elif d_cd == "F16":
+            # k = 65535
+            k = 15360
+        elif d_cd == "F32":
+            # k = 4294836225
+            k = 1065353216
+        # Color Model and Depth
+        byte_list = []
+        if d_cm == "A":
+            pixel = index * 2
+            if d_cd == "U8":
+                n0 = num_array[pixel + 0] # Gray
+                n1 = num_array[pixel + 1] # Alpha
+            if d_cd == "U16":
+                n0 = num_array[pixel + 0] # Gray
+                n1 = num_array[pixel + 1] # Alpha
+            if d_cd == "F16":
+                pass
+            if d_cd == "F32":
+                pass
+            byte_list = [n0, n1]
+        elif ( d_cm == "RGB" or d_cm == None ):
+            pixel = index * 4
+            if d_cd == "U8": # BGR
+                n0 = num_array[pixel + 2] # Red
+                n1 = num_array[pixel + 1] # Green
+                n2 = num_array[pixel + 0] # Blue
+                n3 = num_array[pixel + 3] # Alpha
+            if d_cd == "U16": # BGR
+                n0 = num_array[pixel + 2] # Red
+                n1 = num_array[pixel + 1] # Green
+                n2 = num_array[pixel + 0] # Blue
+                n3 = num_array[pixel + 3] # Alpha
+            if d_cd == "F16":
+                pass
+            if d_cd == "F32":
+                pass
+            byte_list = [n0, n1, n2, n3]
+        elif d_cm == "CMYK":
+            pixel = index * 5
+            if d_cd == "U8":
+                n0 = num_array[pixel + 0] # Cyan
+                n1 = num_array[pixel + 1] # Magenta
+                n2 = num_array[pixel + 2] # Yellow
+                n3 = num_array[pixel + 3] # Key
+                n4 = num_array[pixel + 4] # Alpha
+            if d_cd == "U16":
+                n0 = num_array[pixel + 0] # Cyan
+                n1 = num_array[pixel + 1] # Magenta
+                n2 = num_array[pixel + 2] # Yellow
+                n3 = num_array[pixel + 3] # Key
+                n4 = num_array[pixel + 4] # Alpha
+            if d_cd == "F32":
+                pass
+            byte_list = [n0, n1, n2, n3, n4]
+        elif d_cm == "YUV":
+            pixel = index * 4
+            if d_cd == "U8":
+                n0 = num_array[pixel + 0] # Luma
+                n1 = num_array[pixel + 1] # Cb
+                n2 = num_array[pixel + 2] # Cr
+                n3 = num_array[pixel + 3] # Alpha
+            if d_cd == "U16":
+                n0 = num_array[pixel + 0] # Luma
+                n1 = num_array[pixel + 1] # Cb
+                n2 = num_array[pixel + 2] # Cr
+                n3 = num_array[pixel + 3] # Alpha
+            if d_cd == "F32":
+                pass
+            byte_list = [n0, n1, n2, n3]
+        elif d_cm == "XYZ":
+            pixel = index * 4
+            if d_cd == "U8":
+                n0 = num_array[pixel + 0] # X
+                n1 = num_array[pixel + 1] # Y
+                n2 = num_array[pixel + 2] # Z
+                n3 = num_array[pixel + 3] # Alpha
+            if d_cd == "U16":
+                n0 = num_array[pixel + 0] # X
+                n1 = num_array[pixel + 1] # Y
+                n2 = num_array[pixel + 2] # Z
+                n3 = num_array[pixel + 3] # Alpha
+            if d_cd == "F16":
+                pass
+            if d_cd == "F32":
+                pass
+            byte_list = [n0, n1, n2, n3]
+        elif d_cm == "LAB":
+            pixel = index * 4
+            if d_cd == "U8":
+                n0 = num_array[pixel + 0] # Lightness*
+                n1 = num_array[pixel + 1] # A*
+                n2 = num_array[pixel + 2] # 1*
+                n3 = num_array[pixel + 3] # Alpha
+            if d_cd == "U16":
+                n0 = num_array[pixel + 0] # Lightness*
+                n1 = num_array[pixel + 1] # A*
+                n2 = num_array[pixel + 2] # 1*
+                n3 = num_array[pixel + 3] # Alpha
+            if d_cd == "F32":
+                pass
+            byte_list = [n0, n1, n2, n3]
+        return byte_list
+    # Selector
+    def Selector_Linear( self, num, cor, l0, l1, r1, r0 ):
+        # Distances
+        cnl0 = cor - l0
+        cnl1 = cor - l1
+        cnr1 = cor + r1
+        cnr0 = cor + r0
+
+        # Intervals
+        i1 = num >= cnl1 and num <= cnr1
+        ia = num >= cnl0 and num < cnl1
+        ib = num <= cnr0 and num > cnr1
+        # Logic
+        if i1 == True:
+            select = 1
+        elif ia == True:
+            dt = abs( cnl1 - cnl0 )
+            da = abs( num - cnl0 )
+            if da > 0:
+                select = da / dt
+            else:
+                select = 0
+        elif ib == True:
+            dt = abs( cnr1 - cnr0 )
+            db = abs( num - cnr0 )
+            if db > 0:
+                select = db / dt
+            else:
+                select = 0
+        else:
+            select = 0
+        # Return
+        return select
+    def Selector_Circular( self, num, cor, l0, l1, r1, r0 ):
+        # Distances
+        cnl0 = cor - l0
+        cnl1 = cor - l1
+        cnr1 = cor + r1
+        cnr0 = cor + r0
+        cal0 = cnl0 - 1
+        cal1 = cnl1 - 1
+        car1 = cnr1 - 1
+        car0 = cnr0 - 1
+        cbl0 = cnl0 + 1
+        cbl1 = cnl1 + 1
+        cbr1 = cnr1 + 1
+        cbr0 = cnr0 + 1
+
+        # Intervals
+        i1n = num >= cnl1 and num <= cnr1
+        i1a = num >= cal1 and num <= car1
+        i1b = num >= cbl1 and num <= cbr1
+        i2n = num >= cnl0 and num < cnl1
+        i2b = num >= cbl0 and num < cbl1
+        i3n = num <= cnr0 and num > cnr1
+        i3a = num <= car0 and num > car1
+
+        # Logic
+        if ( i1n == True or i1a == True or i1b == True ):
+            select = 1
+        elif ( i2n == True or i2b == True ):
+            if i2n == True:
+                dt = abs( cnl1 - cnl0 )
+                db = abs( num - cnl0 )
+            if i2b == True:
+                dt = abs( cbl1 - cbl0 )
+                db = abs( num - cbl0 )
+            if dt == 0:
+                select = 1
+            elif db == 0:
+                select = 0
+            else:
+                select = db / dt
+        elif ( i3n == True or i3a == True ):
+            if i3n == True:
+                dt = abs( cnr1 - cnr0 )
+                db = abs( num - cnr0 )
+            if i3a == True:
+                dt = abs( car1 - car0 )
+                db = abs( num - car0 )
+            if dt == 0:
+                select = 1
+            elif db == 0:
+                select = 0
+            else:
+                select = db / dt
+        else:
+            select = 0
+
+        # Return
+        return select
+    # Total Ink Coverage
+    def Total_Ink_Coverage( self, tic, limit, c0, c1, c2, bw, cor ):
+        if tic > limit:
+            value = ( tic - limit ) / ( 400 - limit )
+            cor = True
+            t0 = c0
+            t1 = c1
+            t2 = c2
+            tw = value
+        else:
+            t0 = bw
+            t1 = bw
+            t2 = bw
+            tw = 0
+        return t0, t1, t2, tw, cor
+    # Krita Selection
+    def Insert_Selection( self, num_array, px, py, width, height ):
+        # num_array - list of integer numbers, represents each pixels channels. RGB U8 > [ B,G,R,A, B,G,R,A, B,G,R,A, ... ]
+        if ( ( self.canvas() is not None ) and ( self.canvas().view() is not None ) ):
+            # Variables
+            ki = Krita.instance()
+            ad = ki.activeDocument()
+            nt = ad.activeNode().type()
+
+            # Place selection on good parent node
+            if nt in [ "paintlayer", "grouplayer" ]:
+                # Deselect all
+                ki.action( "deselect" ).trigger()
+
+                # Place Text
+                self.Message_Float( "INSERT", "Selection", "local-selection-active" )
+
+                # Selection
+                sel = Selection()
+                sel.setPixelData( bytes( num_array ), px, py, width, height )
+                ad.setSelection( sel )
+
+                # Document Response Time
+                ad.waitForDone()
+                ad.refreshProjection()
+
+                # Make Selection
+                ki.action( "add_new_selection_mask" ).trigger()
+                ki.action( "invert_selection" ).trigger()
+                ki.action( "invert_selection" ).trigger()
+            else:
+                self.Message_Warnning( "ERROR", f"Please select valid layer for selection mask" )
+
+    # Selection into Alpha
+    def Select_Alpha( self ):
+        qimage = None
+        if ( self.canvas() is not None ) and ( self.canvas().view() is not None ):
+            # Variables
+            ad = Krita.instance().activeDocument()
+            d_cd = ad.colorDepth()
+            if d_cd == "U8":
+                k = 255
+            elif d_cd == "U16":
+                k = 65535
+            elif d_cd == "F16":
+                # k = 65535
+                k = 15360
+            elif d_cd == "F32":
+                # k = 4294836225
+                k = 1065353216
+
+            # Source
+            ss = ad.selection()
+            if ss == None:
+                dx = int( 0 )
+                dy = int( 0 )
+                dw = int( ad.width() )
+                dh = int( ad.height() )
+            else:
+                dx = int( ss.x() )
+                dy = int( ss.y() )
+                dw = int( ss.width() )
+                dh = int( ss.height() )
+
+            # QImage
+            qimage = ad.projection( dx, dy, dw, dh )
+
+            # Selection into Alpha
+            if ss != None:
+                # Selection
+                pds = ss.pixelData( dx, dy, dw, dh )
+                num_array = self.Bytes_to_Integer( pds, d_cd )
+
+                # Clip
+                counter = 0
+                for h in range( 0, dh ):
+                    for w in range( 0, dw ):
+                        # Variables
+                        s = num_array[counter] / k
+                        # Read
+                        qcolor = qimage.pixelColor( w, h )
+                        a = qcolor.alphaF()
+                        # Logic
+                        var = a * s
+                        # Write
+                        qcolor.setAlphaF( var )
+                        qimage.setPixelColor( w, h, qcolor )
+                        # Cycle
+                        counter += 1
+        return qimage
+    # Send Preview to Imagine Board
+    def Imagine_Preview( self, qpixmap ):
+        # self.Imagine_Preview( qpixmap )
+        # self.Imagine_Preview( QPixmap().fromImage( qimage ) )
+        pyid = "pykrita_imagine_board_docker"
+        dockers = Krita.instance().dockers()
+        for imagine_board in dockers:
+            if imagine_board.objectName() == pyid:
+                imagine_board.API_Preview_QPixmap( qpixmap )
+                break
 
     #endregion
     #region Channel Sliders ########################################################
@@ -7718,236 +8661,63 @@ class PigmentO_Docker( DockWidget ):
         sele_4_var["r0"] = value / 100
         self.update()
 
-    def Selection_APPLY( self ):
-        if ( ( self.canvas() is not None ) and ( self.canvas().view() is not None ) ):
+    #endregion
+    #region Analyse ################################################################
+
+    def Analyse_Document( self ):
+        qimage = Select_Alpha( self )
+        if qimage != None:
+            self.Analyse_Pixel( qimage )
+        else:
+            self.analyse_collection = None
+    def Analyse_Pixel( self, qimage ):
+        if qimage.isNull() == False:
+            # Display Preview
+            # Imagine_Preview( self, QPixmap().fromImage( qimage ) )
+
+            # Scale
+            size = 200
+            qimage = qimage.scaled( size, size, Qt.KeepAspectRatio, Qt.FastTransformation )
+
             # Variables
-            type_layer = ["paintlayer", "grouplayer", "clonelayer", "vectorlayer", "filterlayer", "filllayer", "filelayer"]
+            width = qimage.width()
+            height = qimage.height()
 
-            # Document
-            doc = self.Current_Document()
-            d_cm = doc["d_cm"]
-            d_cd = doc["d_cd"]
-            ad = doc["ad"]
-            d_nt = ad.activeNode().type()
-
-            if d_nt in type_layer:
-                # Place Text
-                Krita.instance().activeWindow().activeView().showFloatingMessage( "Pigment.O Read | Source", Krita.instance().icon( "local-selection-active" ), 5000, 0 )
-                Krita.instance().activeDocument().waitForDone()
-
-                # Size
-                width = ad.width()
-                height = ad.height()
-
-                # Depth Constants
-                if d_cd == "U16":
-                    depth = 65535
-                elif d_cd == "F16":
-                    depth = 65535
-                elif d_cd == "F32":
-                    depth = 4294836225
-                else:
-                    depth = 255
-                k = 255
-
-                # Source
-                ss = ad.selection()
-                if ss == None:
-                    dx = 0
-                    dy = 0
-                    dw = width
-                    dh = height
-                else:
-                    dx = ss.x()
-                    dy = ss.y()
-                    dw = ss.width()
-                    dh = ss.height()
-
-                # Color
-                cor = self.convert.color_vector( self.sele_mode, self.cor )
-                length = len( cor )
-                if length == 1:
-                    c0 = cor[0]
-                if length == 3:
-                    c0 = cor[0]
-                    c1 = cor[1]
-                    c2 = cor[2]
-                if length == 4:
-                    c0 = cor[0]
-                    c1 = cor[1]
-                    c2 = cor[2]
-                    c3 = cor[3]
-
-                # Pixel DAta
-                byte_array = ad.pixelData( dx, dy, dw, dh )
-                num_array = Bytes_to_Integer( self, byte_array, d_cd )
-
-                # Calculation
-                hue_rgb = [ "HSV", "HSL", "HCY", "ARD" ]
-                hue_xyz = [ "LCH" ]
-                index = 0
-                sel_pixels = []
-                for y in range( 0, dh ):
-                    # Progress bar
-                    y1 = ( y + 1 )
-                    if ( y1 % 5 == 0 or y1 == dh ):
-                        percent = round( y1 / dh, 4 )
-                        self.color_header.Set_Progress( percent )
+            # Pixel Check
+            p = list()
+            for h in range( 0, height ):
+                # Progress bar
+                h1 = ( h + 1 )
+                if ( h1 % 5 == 0 or h1 == height ):
+                    percent = round( h1 / height, 4 )
+                    self.color_header.Set_Progress( percent )
                     QApplication.processEvents()
-                    # Pixels
-                    for x in range( 0, dw ):
-                        # Read Bytes
-                        num = Numbers_on_Pixel( self, d_cm, d_cd, index, num_array )
+                # Rox of Pixels
+                for w in range( 0, width ):
+                    # RGB
+                    qcolor = qimage.pixelColor( w, h )
+                    r = qcolor.redF()
+                    g = qcolor.greenF()
+                    b = qcolor.blueF()
+                    a = qcolor.alphaF()
+                    rgb = [ r, g, b ]
+                    # Logic
+                    if ( a > 0 and rgb not in p ):
+                        p.append( rgb )
+            # Color
+            len_p = len( p )
+            analyse_collection = list()
+            for i in range( 0, len_p ):
+                c = color_neutral.copy()
+                color = self.Color_Convert( "RGB", p[i][0], p[i][1], p[i][2], 0, c )
+                analyse_collection.append( color )
+            self.analyse_collection = analyse_collection
 
-                        # Convert
-                        if d_cm == "A":
-                            conv = self.convert.color_convert( d_cm, self.sele_mode, [num[0]/depth] )
-                        if ( d_cm == "RGB" or d_cm == None ):
-                            conv = self.convert.color_convert( d_cm, self.sele_mode, [num[0]/depth, num[1]/depth, num[2]/depth] )
-                        if d_cm == "CMYK":
-                            conv = self.convert.color_convert( d_cm, self.sele_mode, [num[0]/depth, num[1]/depth, num[2]/depth, num[3]/depth] )
-
-                        # Variables
-                        if length == 1:
-                            # Parse
-                            n0 = conv[0]
-                            # Variables
-                            sel_0 = self.Selector_Linear( n0, c0, sele_1_var["l0"], sele_1_var["l1"], sele_1_var["r1"], sele_1_var["r0"] )
-                            # Selection
-                            sel_factor = sel_0
-                        elif length == 3:
-                            # Parse
-                            n0 = conv[0]
-                            n1 = conv[1]
-                            n2 = conv[2]
-                            # Variables
-                            if self.sele_mode in hue_rgb: sel_0 = self.Selector_Circular( n0, c0, sele_1_var["l0"], sele_1_var["l1"], sele_1_var["r1"], sele_1_var["r0"] )
-                            else:                         sel_0 = self.Selector_Linear( n0, c0, sele_1_var["l0"], sele_1_var["l1"], sele_1_var["r1"], sele_1_var["r0"] )
-                            sel_1 = self.Selector_Linear( n1, c1, sele_2_var["l0"], sele_2_var["l1"], sele_2_var["r1"], sele_2_var["r0"] )
-                            if self.sele_mode in hue_xyz: sel_2 = self.Selector_Circular( n2, c2, sele_3_var["l0"], sele_3_var["l1"], sele_3_var["r1"], sele_3_var["r0"] )
-                            else:                         sel_2 = self.Selector_Linear( n2, c2, sele_3_var["l0"], sele_3_var["l1"], sele_3_var["r1"], sele_3_var["r0"] )
-                            # Selection
-                            sel_factor = sel_0 * sel_1 * sel_2
-                            # sel_factor = ( sel_0 + sel_1 + sel_2 ) / 3
-                        elif length == 4:
-                            # Parse
-                            n0 = conv[0]
-                            n1 = conv[1]
-                            n2 = conv[2]
-                            n3 = conv[3]
-                            # Variables
-                            sel_0 = self.Selector_Linear( n0, c0, sele_1_var["l0"], sele_1_var["l1"], sele_1_var["r1"], sele_1_var["r0"] )
-                            sel_1 = self.Selector_Linear( n1, c1, sele_2_var["l0"], sele_2_var["l1"], sele_2_var["r1"], sele_2_var["r0"] )
-                            sel_2 = self.Selector_Linear( n2, c2, sele_3_var["l0"], sele_3_var["l1"], sele_3_var["r1"], sele_3_var["r0"] )
-                            sel_3 = self.Selector_Linear( n3, c3, sele_4_var["l0"], sele_4_var["l1"], sele_4_var["r1"], sele_4_var["r0"] )
-                            # Selection
-                            sel_factor = sel_0 * sel_1 * sel_2 * sel_3
-
-                        # Apply Selection
-                        sel_pixels.append( int( sel_factor * k ) )
-                        # Cycle
-                        index += 1
-
-                # UI
-                self.color_header.Set_Progress( 1 )
-
-                # Selection
-                if len( sel_pixels ) > 0:
-                    Insert_Selection( self, sel_pixels, dx, dy, dw, dh )
-                else:
-                    self.Warn_Message( f"Pigment.O ERROR | Model {d_cm} and/or Depth {d_cd} not supported" )
-            else:
-                self.Warn_Message( f"Pigment.O ERROR | Layer Type {d_nt} not supported" )
-    def Selector_Circular( self, num, cor, l0, l1, r1, r0 ):
-        # Distances
-        cnl0 = cor - l0
-        cnl1 = cor - l1
-        cnr1 = cor + r1
-        cnr0 = cor + r0
-        cal0 = cnl0 - 1
-        cal1 = cnl1 - 1
-        car1 = cnr1 - 1
-        car0 = cnr0 - 1
-        cbl0 = cnl0 + 1
-        cbl1 = cnl1 + 1
-        cbr1 = cnr1 + 1
-        cbr0 = cnr0 + 1
-
-        # Intervals
-        i1n = num >= cnl1 and num <= cnr1
-        i1a = num >= cal1 and num <= car1
-        i1b = num >= cbl1 and num <= cbr1
-        i2n = num >= cnl0 and num < cnl1
-        i2b = num >= cbl0 and num < cbl1
-        i3n = num <= cnr0 and num > cnr1
-        i3a = num <= car0 and num > car1
-
-        # Logic
-        if ( i1n == True or i1a == True or i1b == True ):
-            select = 1
-        elif ( i2n == True or i2b == True ):
-            if i2n == True:
-                dt = abs( cnl1 - cnl0 )
-                db = abs( num - cnl0 )
-            if i2b == True:
-                dt = abs( cbl1 - cbl0 )
-                db = abs( num - cbl0 )
-            if dt == 0:
-                select = 1
-            elif db == 0:
-                select = 0
-            else:
-                select = db / dt
-        elif ( i3n == True or i3a == True ):
-            if i3n == True:
-                dt = abs( cnr1 - cnr0 )
-                db = abs( num - cnr0 )
-            if i3a == True:
-                dt = abs( car1 - car0 )
-                db = abs( num - car0 )
-            if dt == 0:
-                select = 1
-            elif db == 0:
-                select = 0
-            else:
-                select = db / dt
-        else:
-            select = 0
-
-        # Return
-        return select
-    def Selector_Linear( self, num, cor, l0, l1, r1, r0 ):
-        # Distances
-        cnl0 = cor - l0
-        cnl1 = cor - l1
-        cnr1 = cor + r1
-        cnr0 = cor + r0
-
-        # Intervals
-        i1 = num >= cnl1 and num <= cnr1
-        ia = num >= cnl0 and num < cnl1
-        ib = num <= cnr0 and num > cnr1
-        # Logic
-        if i1 == True:
-            select = 1
-        elif ia == True:
-            dt = abs( cnl1 - cnl0 )
-            da = abs( num - cnl0 )
-            if da > 0:
-                select = da / dt
-            else:
-                select = 0
-        elif ib == True:
-            dt = abs( cnr1 - cnr0 )
-            db = abs( num - cnr0 )
-            if db > 0:
-                select = db / dt
-            else:
-                select = 0
-        else:
-            select = 0
-        # Return
-        return select
+            # UI
+            self.color_header.Set_Progress( 1 )
+            self.Pigmento_RELEASE()
+            # System
+            Message_Log( self, "ANALYSE", "Complete" )
 
     #endregion
     #region HEX Codes ##############################################################
@@ -8189,154 +8959,6 @@ class PigmentO_Docker( DockWidget ):
                 self.layout.kkk_1_label.setChecked( True )
 
     #endregion
-    #region Annotations ############################################################
-
-    # Autosave
-    def AutoSave_KRA( self, boolean ):
-        self.annotation_kra = boolean
-        Krita.instance().writeSetting( "Pigment.O", "annotation_kra", str( self.annotation_kra ) )
-    def AutoSave_File( self, boolean ):
-        self.annotation_file = boolean
-        Krita.instance().writeSetting( "Pigment.O", "annotation_file", str( self.annotation_file ) )
-    # LOAD
-    def Annotation_KRA_Load( self ):
-        if ( ( self.canvas() is not None ) and ( self.canvas().view() is not None ) ):
-            try:
-                # Active Document
-                self.doc = self.Current_Document()
-
-                # Annotations
-                annotation = self.doc["ad"].annotation( "Pigment.O" )
-                an_string = str( annotation )
-                an_replace = an_string[:-3].replace( "b\"", "" )
-                an_split = an_replace.split( "\\n" )
-                self.Variables_Load( an_split )
-            except:
-                pass
-    def Annotation_FILE_Load( self ):
-        file_dialog = QFileDialog( QWidget( self ) )
-        file_dialog.setFileMode( QFileDialog.AnyFile )
-        directory_path = file_dialog.getOpenFileName( self, "Select *.pigment_o.eo File", "", str( "*.pigment_o.eo" ) )
-        directory_path = directory_path[0]
-        if ( directory_path != "" and directory_path != "." ):
-            # Read
-            note = open( directory_path, "r" )
-            data = note.readlines()
-            self.Variables_Load( data )
-    def Variables_Load( self, lista ):
-        # lista = [str, str, str, ...]
-
-        try:
-            plugin = str( lista[0] ).replace( "\n", "", 1 )
-            if plugin  == "pigment_o":
-                # Read
-                for i in range( 1, len( lista ) ):
-                    lista_i = lista[i]
-                    # Colors
-                    if lista_i.startswith( "krange=" ) == True:
-                        self.Dict_Copy( krange, eval( str( lista_i ).replace( "krange=", "", 1 ) ) )
-                    if lista_i.startswith( "kac=" ) == True:
-                        self.Dict_Copy( kac, eval( str( lista_i ).replace( "kac=", "", 1 ) ) )
-                    if lista_i.startswith( "kbc=" ) == True:
-                        self.Dict_Copy( kbc, eval( str( lista_i ).replace( "kbc=", "", 1 ) ) )
-                    # Harmony
-                    if lista_i.startswith( "har_01=" ) == True:
-                        self.Dict_Copy( har_01, eval( str( lista_i ).replace( "har_01=", "", 1 ) ) )
-                    if lista_i.startswith( "har_02=" ) == True:
-                        self.Dict_Copy( har_02, eval( str( lista_i ).replace( "har_02=", "", 1 ) ) )
-                    if lista_i.startswith( "har_03=" ) == True:
-                        self.Dict_Copy( har_03, eval( str( lista_i ).replace( "har_03=", "", 1 ) ) )
-                    if lista_i.startswith( "har_04=" ) == True:
-                        self.Dict_Copy( har_04, eval( str( lista_i ).replace( "har_04=", "", 1 ) ) )
-                    if lista_i.startswith( "har_05=" ) == True:
-                        self.Dict_Copy( har_05, eval( str( lista_i ).replace( "har_05=", "", 1 ) ) )
-                    # Pin
-                    if lista_i.startswith( "pin_00=" ) == True:
-                        self.Dict_Copy( pin_00, eval( str( lista_i ).replace( "pin_00=", "", 1 ) ) )
-                    if lista_i.startswith( "pin_01=" ) == True:
-                        self.Dict_Copy( pin_01, eval( str( lista_i ).replace( "pin_01=", "", 1 ) ) )
-                    if lista_i.startswith( "pin_02=" ) == True:
-                        self.Dict_Copy( pin_02, eval( str( lista_i ).replace( "pin_02=", "", 1 ) ) )
-                    if lista_i.startswith( "pin_03=" ) == True:
-                        self.Dict_Copy( pin_03, eval( str( lista_i ).replace( "pin_03=", "", 1 ) ) )
-                    if lista_i.startswith( "pin_04=" ) == True:
-                        self.Dict_Copy( pin_04, eval( str( lista_i ).replace( "pin_04=", "", 1 ) ) )
-                    if lista_i.startswith( "pin_05=" ) == True:
-                        self.Dict_Copy( pin_05, eval( str( lista_i ).replace( "pin_05=", "", 1 ) ) )
-                    if lista_i.startswith( "pin_06=" ) == True:
-                        self.Dict_Copy( pin_06, eval( str( lista_i ).replace( "pin_06=", "", 1 ) ) )
-                    if lista_i.startswith( "pin_07=" ) == True:
-                        self.Dict_Copy( pin_07, eval( str( lista_i ).replace( "pin_07=", "", 1 ) ) )
-                    if lista_i.startswith( "pin_08=" ) == True:
-                        self.Dict_Copy( pin_08, eval( str( lista_i ).replace( "pin_08=", "", 1 ) ) )
-                    if lista_i.startswith( "pin_09=" ) == True:
-                        self.Dict_Copy( pin_09, eval( str( lista_i ).replace( "pin_09=", "", 1 ) ) )
-                    if lista_i.startswith( "pin_10=" ) == True:
-                        self.Dict_Copy( pin_10, eval( str( lista_i ).replace( "pin_10=", "", 1 ) ) )
-                # Write
-                self.Pin_LOAD()
-                self.Sync_Elements( True, True, True )
-        except:
-            pass
-    # SAVE
-    def Annotation_Save( self ):
-        if ( ( self.canvas() is not None ) and ( self.canvas().view() is not None ) ):
-            try:
-                # Document
-                self.doc = self.Current_Document()
-
-                # Data to be Saved
-                data = ( 
-                    # Plugin
-                    f"pigment_o\n"+
-                    # Colors
-                    f"krange={ krange }\n"+
-                    f"kac={ kac }\n"+
-                    f"kbc={ kbc }\n"+
-                    # Harmony
-                    f"har_01={ har_01 }\n"+
-                    f"har_02={ har_02 }\n"+
-                    f"har_03={ har_03 }\n"+
-                    f"har_04={ har_04 }\n"+
-                    f"har_05={ har_05 }\n"+
-                    # Pin
-                    f"pin_00={ pin_00 }\n"+
-                    f"pin_01={ pin_01 }\n"+
-                    f"pin_02={ pin_02 }\n"+
-                    f"pin_03={ pin_03 }\n"+
-                    f"pin_04={ pin_04 }\n"+
-                    f"pin_05={ pin_05 }\n"+
-                    f"pin_06={ pin_06 }\n"+
-                    f"pin_07={ pin_07 }\n"+
-                    f"pin_08={ pin_08 }\n"+
-                    f"pin_09={ pin_09 }\n"+
-                    f"pin_10={ pin_10 }\n"+
-                    # Other
-                    ""
-                    )
-
-                # Save Method
-                if self.doc["ad"] != None:
-                    if self.annotation_kra == True:
-                        # Save to active Document
-                        self.doc["ad"].setAnnotation( "Pigment.O", "Document", QByteArray( data.encode() ) )
-                    if self.annotation_file == True:
-                        # Variables
-                        file_path = self.doc["ad"].fileName()
-                        base_name = os.path.basename( file_path )
-                        extension = os.path.splitext( file_path )[1]
-                        directory = file_path[:-len( base_name )]
-                        name = base_name[:-len( extension )]
-                        save_path = directory + name + ".pigment_o.eo"
-
-                        # Save to TXT file
-                        if ( file_path != "" and file_path != "." ):
-                            with open( save_path, "w" ) as note:
-                                note.write( data )
-            except:
-                pass
-
-    #endregion
     #region Notifier ###############################################################
 
     def Application_Closing( self ):
@@ -8373,13 +8995,18 @@ class PigmentO_Docker( DockWidget ):
         pass
     def Theme_Changed( self ):
         # Krita Theme
-        theme_value = QApplication.palette().color( QPalette.Window ).value()
-        # Calculations
-        rgb = self.convert.hsv_to_rgb( 0, 0, theme_value )
-        hex6 = self.convert.rgb_to_hex6( rgb[0], rgb[1], rgb[2] )
-        # Update Pigmento
-        self.panel_huecircle.Set_Theme( hex6 )
-        self.panel_gamut.Set_Theme( hex6 )
+        color_theme = QApplication.palette().color( QPalette.Window )
+        if color_theme.value() > 128:
+            self.color_1 = QColor( "#191919" )
+            self.color_2 = QColor( "#e5e5e5" )
+        else:
+            self.color_1 = QColor( "#e5e5e5" )
+            self.color_2 = QColor( "#191919" )
+        # Panels
+        self.panel_huecircle.Set_Theme( self.color_1, self.color_2, color_theme )
+        self.panel_gamut.Set_Theme( self.color_1, self.color_2, color_theme )
+        self.panel_luma.Set_Theme( self.color_1, self.color_2, color_theme )
+        self.panel_sample_image.Set_Theme( self.color_1, self.color_2 )
     def Window_Closed( self ):
         pass
 
@@ -8391,6 +9018,7 @@ class PigmentO_Docker( DockWidget ):
         self.Update_Size()
         # Window
         self.Window_Connect()
+        self.Theme_Changed()
         # QTimer
         if check_timer >= 30:
             self.timer_pulse.start( check_timer )
@@ -8418,20 +9046,18 @@ class PigmentO_Docker( DockWidget ):
         if self.hex_copy_paste == True:
             self.HEX_Copy()
         # Save
-        self.Annotation_Save()
         self.Mask_Write()
     def closeEvent( self, event ):
         # QTimer
         self.timer_pulse.stop()
-        # Save
-        self.Annotation_Save()
 
     def eventFilter( self, source, event ):
         # Panels
         panels = [
             self.layout.panel_set,
-            self.layout.edit_dot,
-            self.layout.edit_mask,
+            self.layout.panel_dot,
+            self.layout.panel_mask,
+            self.layout.panel_sample,
 
             self.layout.aaa_slider,
             self.layout.rgb_slider,
@@ -8468,8 +9094,6 @@ class PigmentO_Docker( DockWidget ):
             self.Menu_Mode_Wheel( event )
             return True
 
-
-
         return super().eventFilter( source, event )
 
     #endregion
@@ -8495,1081 +9119,9 @@ class PigmentO_Docker( DockWidget ):
     QtCore.qCritical( "message" )
 
     # qimage = QImage( byte_array, width, height, QImage.Format_RGBA8888 )
-
-    # convert QPixmap to bytes
-    ba = QtCore.QByteArray()
-    buff = QtCore.QBuffer(ba)
-    buff.open(QtCore.QIODevice.WriteOnly) 
-    ok = pixmap.save(buff, "PNG")
-    assert ok
-    pixmap_bytes = ba.data()
-    print(type(pixmap_bytes))
-
-    # convert bytes to QPixmap
-    ba = QtCore.QByteArray(pixmap_bytes)
-    pixmap = QtGui.QPixmap()
-    ok = pixmap.loadFromData(ba, "PNG")
-    assert ok
-    print(type(pixmap))
     """
 
     #endregion
-
-
-class PigmentS_Docker( DockWidget ):
-    """
-    Color Samples
-    """
-
-    #region Initialize #############################################################
-
-    def __init__( self ):
-        super( PigmentS_Docker, self ).__init__()
-        # Construct
-        self.Variables()
-        self.User_Interface()
-        self.Connections()
-        self.Modules()
-        self.Style()
-        self.Settings()
-        self.Loader()
-
-
-    def User_Interface( self ):
-        # Window
-        self.setWindowTitle( DOCKER_NAME_2 )
-
-        # Operating System
-        self.OS = str( QSysInfo.kernelType() ) # WINDOWS=winnt & LINUX=linux
-
-        # Path Name
-        self.directory_plugin = str( os.path.dirname( os.path.realpath( __file__ ) ) )
-
-        # Widget Docker
-        self.layout = uic.loadUi( os.path.join( self.directory_plugin, "pigment_s_docker.ui" ), QWidget( self ) )
-        self.setWidget( self.layout )
-    def Variables( self ):
-        # Sample
-        self.sample_mode = "RGB"
-        self.sample_limit = 300
-        self.sample_index = None
-        self.sample_data = []
-
-        # Samples
-        self.invert_cmyk = False
-
-        # Profile File
-        self.profile_file = None
-        self.black_point_file = None
-        self.white_point_file = None
-        # Profile Krita
-        self.profile_krita = None
-        self.black_point_krita = None
-        self.white_point_krita = None
-
-        # Colors
-        self.color_alpha = QColor( 0, 0, 0, 0 )
-    def Connections( self ):
-        # Lists
-        self.layout.sample_list.itemClicked.connect( self.Sample_Display )
-        self.layout.sample_list.itemDoubleClicked.connect( self.Sample_Insert )
-        self.layout.split_sample.splitterMoved.connect( self.Update_Size )
-
-        # Buttons
-        self.layout.sample_mode.currentTextChanged.connect( self.Sample_Mode )
-        self.layout.sample_generate.clicked.connect( self.Sample_Generate )
-        self.layout.sample_value.valueChanged.connect( self.Sample_Limit )
-
-        # Profile
-        # self.layout.profile_file.clicked.connect( self.Profile_File )
-        # self.layout.profile_krita.clicked.connect( self.Profile_Krita )
-        # self.layout.profile_tint.clicked.connect( self.Profile_Tint )
-    def Modules( self ):
-        #region Geometry
-
-        self.geometry = Geometry()
-
-        #endregion
-        #region Conversions
-
-        self.convert = Convert()
-        self.convert.Set_Document( "RGB", "U8", "sRGB-elle-V2-srgtrc.icc" )
-        self.convert.Set_Hue( zero )
-        self.convert.Set_Luminosity( "ITU-R BT.709" )
-        self.convert.Set_Gamma( gamma_y, gamma_l )
-        self.convert.Set_Matrix( "sRGB", "D65" )
-
-        #endregion
-        #region Notifier
-
-        self.notifier = Krita.instance().notifier()
-        self.notifier.applicationClosing.connect( self.Application_Closing )
-        self.notifier.configurationChanged.connect( self.Configuration_Changed )
-        self.notifier.imageClosed.connect( self.Image_Closed )
-        self.notifier.imageCreated.connect( self.Image_Created )
-        self.notifier.imageSaved.connect( self.Image_Saved )
-        self.notifier.viewClosed.connect( self.View_Closed )
-        self.notifier.viewCreated.connect( self.View_Created )
-        self.notifier.windowCreated.connect( self.Window_Created )
-        self.notifier.windowIsBeingCreated.connect( self.Window_IsBeingCreated )
-
-        #endregion
-        #region Sample
-
-        self.sample_display = Sample_Map( self.layout.sample_display )
-        self.sample_display.SIGNAL_INDEX.connect( self.Sample_Insert )
-
-        #endregion
-    def Style( self ):
-        # Icon
-        qicon_gen = Krita.instance().icon( "all-layers" )
-        # Widgets
-        self.layout.sample_generate.setIcon( qicon_gen )
-        # Style Sheet
-        self.layout.progress_bar.setStyleSheet( "#progress_bar{background-color: rgba( 0, 0, 0, 50 );}" )
-    def Settings( self ):
-        self.sample_mode = self.Set_Read( "STR", "sample_mode", self.sample_mode )
-        self.sample_limit = self.Set_Read( "INT", "sample_limit", self.sample_limit )
-        try:
-            self.Loader()
-        except Exception as e:
-            QMessageBox.information( QWidget(), i18n( "Warnning" ), i18n( f"Pigment.S | ERROR Load failed\nReason : {e}" ) )
-            self.Variables()
-            self.Loader()
-
-    def Loader( self ):
-        self.Sample_Block( True )
-        self.layout.sample_mode.setCurrentText( self.sample_mode )
-        self.layout.sample_value.setValue( self.sample_limit )
-        self.Sample_Block( False )
-    def Set_Read( self, mode, entry, default ):
-        setting = Krita.instance().readSetting( "Pigment.O", entry, "" )
-        if setting == "":
-            read = default
-        else:
-            try:
-                if mode == "EVAL":
-                    read = eval( setting )
-                elif mode == "STR":
-                    read = str( setting )
-                elif mode == "INT":
-                    read = int( setting )
-            except:
-                read = default
-        Krita.instance().writeSetting( "Pigment.O", entry, str( read ) )
-        return read
-
-    #endregion
-    #region Menu ###################################################################
-
-    def Sample_Mode( self, sample_mode ):
-        self.sample_mode = sample_mode
-        Krita.instance().writeSetting( "Pigment.O", "sample_mode", str( self.sample_mode ) )
-    def Sample_Limit( self, sample_limit ):
-        self.sample_limit = sample_limit
-        Krita.instance().writeSetting( "Pigment.O", "sample_limit", str( self.sample_limit ) )
-
-    #endregion
-    #region Management #############################################################
-
-    def Update_Size( self ):
-        self.sample_display.Set_Size( self.layout.sample_display.width(), self.layout.sample_display.height() )
-        self.update()
-    def Sample_Block( self, boolean ):
-        self.layout.sample_mode.blockSignals( boolean )
-        self.layout.sample_value.blockSignals( boolean )
-    def Clear_Focus( self ):
-        self.layout.sample_value.clearFocus()
-
-    def Text_Index( self, mode ):
-        # Variables
-        chan_0 = ""
-        chan_1 = ""
-        chan_2 = ""
-        chan_3 = ""
-
-        # Parsing
-        if mode == "A":
-            chan_0 = "Gray"
-        if mode == "RGB":
-            chan_0 = "Red"
-            chan_1 = "Green"
-            chan_2 = "Blue"
-        if mode == "CMY":
-            chan_0 = "Cyan"
-            chan_1 = "Magenta"
-            chan_2 = "Yellow"
-        if mode == "CMYK":
-            chan_0 = "Cyan"
-            chan_1 = "Magenta"
-            chan_2 = "Yellow"
-            chan_3 = "Key"
-        if mode == "RYB":
-            chan_0 = "Red"
-            chan_1 = "Yellow"
-            chan_2 = "Blue"
-        if mode == "YUV":
-            chan_0 = "Luma"
-            chan_1 = "Comp Blue"
-            chan_2 = "Comp Red"
-        if mode == "HSV":
-            chan_0 = "Hue"
-            chan_1 = "Saturation"
-            chan_2 = "Value"
-        if mode == "HSL":
-            chan_0 = "Hue"
-            chan_1 = "Saturation"
-            chan_2 = "Lightness"
-        if mode == "HCY":
-            chan_0 = "Hue"
-            chan_1 = "Chroma"
-            chan_2 = "Luma"
-        if mode == "ARD":
-            chan_0 = "Angle"
-            chan_1 = "Ratio"
-            chan_2 = "Depth"
-        if mode == "XYZ":
-            chan_0 = "XYZ X"
-            chan_1 = "XYZ Y"
-            chan_2 = "XYZ Z"
-        if mode == "XYY":
-            chan_0 = "xyY x"
-            chan_1 = "xyY y"
-            chan_2 = "xyY Y"
-        if mode == "LAB":
-            chan_0 = "LAB L*"
-            chan_1 = "LAB A*"
-            chan_2 = "LAB B*"
-        if mode == "LCH":
-            chan_0 = "Luminosity"
-            chan_1 = "Chroma"
-            chan_2 = "Hue"
-
-        # Return
-        return chan_0, chan_1, chan_2, chan_3
-
-    #endregion
-    #region Samples ################################################################
-
-    def Sample_Generate( self ):
-        if ( ( self.canvas() is not None ) and ( self.canvas().view() is not None ) ):
-            # Instance
-            ad = Krita.instance().activeDocument()
-            # document color
-            d_cm = ad.colorModel()
-            d_cd = ad.colorDepth()
-            # Color Model
-            if ( d_cm == "A" or d_cm == "GRAYA" ):
-                d_cm = "A"
-            elif ( d_cm == "RGBA" or d_cm == None ):
-                d_cm = "RGB"
-            elif d_cm == "CMYKA":
-                d_cm = "CMYK"
-            elif d_cm == "YCbCr":
-                d_cm = "YUV"
-            elif d_cm == "XYZA":
-                d_cm = "XYZ"
-            elif d_cm == "LABA":
-                d_cm = "LAB"
-            # Depth Constants
-            if d_cd == "U16":
-                depth = 65535
-            elif d_cd == "F16":
-                depth = 65535
-            elif d_cd == "F32":
-                depth = 4294836225
-            else:
-                depth = 255
-            k = 255
-
-            # Variables
-            index = 0
-            c0 = 0.75
-            c1 = 0.25
-            c2 = 0.25
-            cor = False
-            hue_rgb = [ "HSV", "HSL", "HCY", "ARD" ]
-            hue_xyz = [ "LCH" ]
-
-            # Document
-            width = ad.width()
-            height = ad.height()
-
-            # Channels
-            if self.sample_mode == "A":
-                channels = 1
-                extra = 2
-            elif self.sample_mode == "CMYK":
-                channels = 4
-                extra = 2
-            else:
-                channels = 3
-                extra = 2
-            # Item Selection
-            try:
-                previous = self.geometry.Limit_Range( self.layout.sample_list.currentRow(), 0, channels + extra - 1 )
-            except:
-                previous = 0
-            # Channel names
-            chan_0, chan_1, chan_2, chan_3 = self.Text_Index( self.sample_mode )
-
-            # Source
-            ss = ad.selection()
-            if ss == None:
-                dx = 0
-                dy = 0
-                dw = width
-                dh = height
-            else:
-                dx = ss.x()
-                dy = ss.y()
-                dw = ss.width()
-                dh = ss.height()
-
-            # Bytes Selection
-            byte_array = ad.pixelData( dx, dy, dw, dh )
-
-            # Convert to Number List
-            num_array = Bytes_to_Integer( self, byte_array, d_cd )
-
-            # Progress bar
-            self.layout.progress_bar.setMaximum( height )
-            self.layout.progress_bar.setValue( 0 )
-
-            # Lists
-            byte_0_r = []
-            byte_1_r = []
-            byte_2_r = []
-            byte_3_r = []
-            byte_t_r = []
-            byte_a_r = []
-
-            byte_0_m = []
-            byte_1_m = []
-            byte_2_m = []
-            byte_3_m = []
-            byte_t_m = []
-            byte_a_m = []
-
-            # Document
-            for y in range( 0, dh ):
-                y1 = y + 1
-                if ( y1 % 5 ) == 0:
-                    self.layout.progress_bar.setValue( y1 )
-                QApplication.processEvents()
-                for x in range( 0, dw ):
-                    # Read Byte
-                    num = Numbers_on_Pixel( self, d_cm, d_cd, index, num_array )
-
-                    # Convert
-                    if d_cm == "A":
-                        # Variables
-                        n0 = num[0] / depth
-                        na = num[1] / depth
-                        # Convert
-                        conv = self.convert.color_convert( d_cm, self.sample_mode, [ n0 ] )
-                        # Variables
-                        cmyk = self.convert.rgb_to_cmyk( n0, n0, n0, None )
-                        bw = 1 - cmyk[3]
-                    elif ( d_cm == "RGB" or d_cm == None ):
-                        # Variables
-                        n0 = num[0] / depth
-                        n1 = num[1] / depth
-                        n2 = num[2] / depth
-                        na = num[3] / depth
-                        # Convert
-                        conv = self.convert.color_convert( d_cm, self.sample_mode, [ n0, n1, n2 ] )
-                        # Variables
-                        cmyk = self.convert.rgb_to_cmyk( n0, n1, n2, None )
-                        bw = 1 - cmyk[3]
-                    elif d_cm == "CMYK":
-                        # Variables
-                        n0 = num[0] / depth
-                        n1 = num[1] / depth
-                        n2 = num[2] / depth
-                        n3 = num[3] / depth
-                        na = num[4] / depth
-                        # Convert
-                        conv = self.convert.color_convert( d_cm, self.sample_mode, [ n0, n1, n2, n3 ] )
-                        # Variables
-                        cmyk = [ n0, n1, n2, n3 ]
-                        bw = 1 - n3
-
-                    # Length
-                    length = len( conv )
-
-                    # Channels
-                    if length == 1:
-                        s0 = int( self.geometry.Limit_Float( conv[0] ) * k )
-                    elif length == 3:
-                        if self.sample_mode in hue_rgb:
-                            hrgb = self.convert.hue_to_rgb( conv[0] )
-                            hue0 = int( hrgb[0] * k )
-                            hue1 = int( hrgb[1] * k )
-                            hue2 = int( hrgb[2] * k )
-                        if self.sample_mode in hue_xyz:
-                            rgb = self.convert.lch_to_rgb( conv[0], conv[1], conv[2] )
-                            hhh = self.convert.rgb_to_hue( rgb[0], rgb[1], rgb[2] )
-                            hrgb = self.convert.hue_to_rgb( hhh )
-                            hue0 = int( hrgb[0] * k )
-                            hue1 = int( hrgb[1] * k )
-                            hue2 = int( hrgb[2] * k )
-                        s0 = int( self.geometry.Limit_Float( conv[0] ) * k )
-                        s1 = int( self.geometry.Limit_Float( conv[1] ) * k )
-                        s2 = int( self.geometry.Limit_Float( conv[2] ) * k )
-                    elif length == 4:
-                        if self.invert_cmyk == True:
-                            s0 = int( self.geometry.Limit_Float( 1 - conv[0] ) * k )
-                            s1 = int( self.geometry.Limit_Float( 1 - conv[1] ) * k )
-                            s2 = int( self.geometry.Limit_Float( 1 - conv[2] ) * k )
-                            s3 = int( self.geometry.Limit_Float( 1 - conv[3] ) * k )
-                        else:
-                            s0 = int( self.geometry.Limit_Float( conv[0] ) * k )
-                            s1 = int( self.geometry.Limit_Float( conv[1] ) * k )
-                            s2 = int( self.geometry.Limit_Float( conv[2] ) * k )
-                            s3 = int( self.geometry.Limit_Float( conv[3] ) * k )
-                    # Alpha
-                    na = int( na * k )
-                    # Total Ink Cove_rage
-                    tic = self.convert.cmyk_to_tic( cmyk[0], cmyk[1], cmyk[2], cmyk[3] )
-                    t0, t1, t2, tw, cor = self.Total_Ink_Coverage( tic, self.sample_limit, c0, c1, c2, bw, cor )
-                    t0 = int( t0 * k )
-                    t1 = int( t1 * k )
-                    t2 = int( t2 * k )
-                    tw = int( tw * k )
-
-                    # Images
-                    if length == 1:
-                        byte_0_r.extend( [ s0, s0, s0, na ] )
-                    elif length == 3:
-                        if self.sample_mode in hue_rgb:
-                            byte_0_r.extend( [ hue0, hue1, hue2, na ] )
-                        else:
-                            byte_0_r.extend( [ s0, s0, s0, na ] )
-                        byte_1_r.extend( [ s1, s1, s1, na ] )
-                        if self.sample_mode in hue_xyz:
-                            byte_2_r.extend( [ hue0, hue1, hue2, na ] )
-                        else:
-                            byte_2_r.extend( [ s2, s2, s2, na ] )
-                    elif length == 4:
-                        byte_0_r.extend( [ s0, s0, s0, na ] )
-                        byte_1_r.extend( [ s1, s1, s1, na ] )
-                        byte_2_r.extend( [ s2, s2, s2, na ] )
-                        byte_3_r.extend( [ s3, s3, s3, na ] )
-                    byte_a_r.extend( [ na, na, na, k ] )
-                    byte_t_r.extend( [ t0, t1, t2, na ] )
-
-                    # Maps
-                    if length == 1:
-                        byte_0_m.append( s0 )
-                    elif length == 3:
-                        byte_0_m.append( s0 )
-                        byte_1_m.append( s1 )
-                        byte_2_m.append( s2 )
-                    elif length == 4:
-                        byte_0_m.append( s0 )
-                        byte_1_m.append( s1 )
-                        byte_2_m.append( s2 )
-                        byte_3_m.append( s3 )
-                    byte_a_m.append( na )
-                    byte_t_m.append( tw )
-
-                    # Cycle
-                    index += 1
-
-            # Check
-            if len( byte_0_m ) > 0:
-                # Render
-                self.sample_data = []
-                if length >= 1:
-                    self.sample_data.append( { "index" : 0, "render" : byte_0_r, "map" : byte_0_m, "dx" : dx, "dy" : dy, "dw" : dw, "dh" : dh, "text" : chan_0, "cor" : False } )
-                if length >= 3:
-                    self.sample_data.append( { "index" : 1, "render" : byte_1_r, "map" : byte_1_m, "dx" : dx, "dy" : dy, "dw" : dw, "dh" : dh, "text" : chan_1, "cor" : False } )
-                    self.sample_data.append( { "index" : 2, "render" : byte_2_r, "map" : byte_2_m, "dx" : dx, "dy" : dy, "dw" : dw, "dh" : dh, "text" : chan_2, "cor" : False } )
-                if length == 4:
-                    self.sample_data.append( { "index" : 3, "render" : byte_3_r, "map" : byte_3_m, "dx" : dx, "dy" : dy, "dw" : dw, "dh" : dh, "text" : chan_3, "cor" : False } )
-                self.sample_data.append( { "index" : "Alpha", "render" : byte_a_r, "map" : byte_a_m, "dx" : dx, "dy" : dy, "dw" : dw, "dh" : dh, "text" : "Alpha", "cor" : False } )
-                self.sample_data.append( { "index" : "TIC", "render" : byte_t_r, "map" : byte_t_m, "dx" : dx, "dy" : dy, "dw" : dw, "dh" : dh, "text" : "TIC", "cor" : cor } )
-
-                # Select Previous
-                item = self.sample_data[previous]
-                qimage = QImage( bytes( item["render"] ), dw, dh, QImage.Format_RGBA8888 )
-                qpixmap = QPixmap().fromImage( qimage )
-                self.sample_display.Set_Sample( item["index"], qpixmap, item["cor"] )
-
-                # Create List
-                self.layout.sample_list.clear()
-                for i in range( 0, len( self.sample_data ) ):
-                    # item
-                    item = QListWidgetItem()
-                    size = 100
-                    # Thumbnail
-                    bg = QPixmap( size, size )
-                    bg.fill( self.color_alpha )
-                    sd = self.sample_data[i]
-                    img = QImage( bytes( sd["render"] ), sd["dw"], sd["dh"], QImage.Format_RGBA8888 )
-                    pix = QPixmap().fromImage( img )
-                    pix = pix.scaled( size, size, Qt.KeepAspectRatio, Qt.SmoothTransformation )
-                    # Variables
-                    w = pix.width()
-                    h = pix.height()
-                    px = int( ( size * 0.5 ) - ( w * 0.5 ) )
-                    py = int( ( size * 0.5 ) - ( h * 0.5 ) )
-                    # Composed Image
-                    painter = QPainter( bg )
-                    painter.drawPixmap( px, py, pix )
-                    painter.end()
-                    # Item
-                    qicon = QIcon( bg )
-                    item.setIcon( qicon )
-                    item.setToolTip( self.sample_data[i]["text"] )
-                    self.layout.sample_list.addItem( item )
-                self.layout.sample_list.setCurrentRow( previous )
-            else:
-                self.Sample_Clean()
-                self.Warn_Message( f"Pigment.O ERROR | Model {d_cm} and/or Depth {d_cd} not supported" )
-
-            # Progress bar
-            self.layout.progress_bar.setMaximum( 1 )
-            self.layout.progress_bar.setValue( 0 )
-    def Total_Ink_Coverage( self, tic, limit, c0, c1, c2, bw, cor ):
-        if tic > limit:
-            value = ( tic - limit ) / ( 400 - limit )
-            cor = True
-            t0 = c0
-            t1 = c1
-            t2 = c2
-            tw = value
-        else:
-            t0 = bw
-            t1 = bw
-            t2 = bw
-            tw = 0
-        return t0, t1, t2, tw, cor
-
-    def Sample_Display( self ):
-        # Variables
-        index = self.layout.sample_list.currentRow()
-        item = self.sample_data[index]
-        # Render
-        qimage = QImage( bytes( item["render"] ), item["dw"], item["dh"], QImage.Format_RGBA8888 )
-        qpixmap = QPixmap().fromImage( qimage )
-        self.sample_display.Set_Sample( index, qpixmap, item["cor"] )
-    def Sample_Insert( self, index ):
-        # Variables
-        index = self.layout.sample_list.currentRow()
-        item = self.sample_data[index]
-        # Selection
-        Insert_Selection( self, item["map"], item["dx"], item["dy"], item["dw"], item["dh"] )
-    def Sample_Clean( self ):
-        self.sample_data = []
-        self.layout.sample_list.clear()
-        self.sample_display.Set_Sample( None, None, False )
-        self.update()
-
-    #endregion
-    #region Profiles ###############################################################
-
-    def Profile_Run( self ):
-        try:
-            self.Profile_File()
-            self.Profile_Krita()
-            self.Profile_Tint()
-        except:
-            pass
-
-    def Profile_File( self ):
-        # Path
-        path_source = "C:\\Users\\EyeOd\\Desktop\\SOURCE\\s.jpg"
-        path_destination = "C:\\Users\\EyeOd\\Desktop\\SOURCE\\destination.jpg"
-
-        # Drive
-        qimage = QImage( path_source )
-        depth = 255
-
-        if qimage.isNull() == False:
-            self.profile_file, self.black_point_file, self.white_point_file = self.Profile_Generate( qimage, depth )
-            for i in range( 0, len( self.profile_file ) ):
-                QtCore.qDebug( f"source {i} = { self.profile_file[i] }" )
-    def Profile_Krita( self ):
-        # Krita Document
-        if ( ( self.canvas() is not None ) and ( self.canvas().view() is not None ) ):
-            # Instance
-            ad = Krita.instance().activeDocument()
-            # document color
-            d_cm = ad.colorModel()
-            d_cd = ad.colorDepth()
-            # Depth Constants
-            if d_cd == "U16":
-                depth = 65535
-            elif d_cd == "F16":
-                depth = 65535
-            elif d_cd == "F32":
-                depth = 4294836225
-            else:
-                depth = 256
-            # QImage
-            qimage = ad.thumbnail( ad.width(), ad.height() )
-            if qimage.isNull() == False:
-                self.profile_krita, self.black_point_krita, self.white_point_krita = self.Profile_Generate( qimage, depth )
-                for i in range( 0, len( self.profile_krita ) ):
-                    QtCore.qDebug( f"destination {i} = { self.profile_krita[i] }" )
-    def Profile_Tint( self ):
-        if ( self.profile_file != None and self.profile_krita != None ):
-            if ( ( self.canvas() is not None ) and ( self.canvas().view() is not None ) ):
-                # Instance
-                ad = Krita.instance().activeDocument()
-                width = ad.width()
-                height = ad.height()
-                # document color
-                d_cm = ad.colorModel()
-                d_cd = ad.colorDepth()
-                # Depth Constants
-                if d_cd == "U16":
-                    depth = 65535
-                elif d_cd == "F16":
-                    depth = 65535
-                elif d_cd == "F32":
-                    depth = 4294836225
-                else:
-                    depth = 256
-                k = 255
-
-                # QImage
-                qimage = ad.thumbnail( width, height )
-                if qimage.isNull() == False:
-                    # Progress bar
-                    self.layout.progress_bar.setMaximum( height )
-                    self.layout.progress_bar.setValue( 0 )
-
-                    # Pixels
-                    percent = []
-                    num_array = []
-                    for h in range( 0, height ):
-                        if ( ( h + 1 ) % 5 ) == 0:self.layout.progress_bar.setValue( h + 1 )
-                        QApplication.processEvents()
-                        for w in range( 0, width ):
-                            # RGB
-                            pixel = qimage.pixelColor( w, h )
-                            r = pixel.redF()
-                            g = pixel.greenF()
-                            b = pixel.blueF()
-                            alpha = pixel.alphaF()
-                            # UVD
-                            uvd = self.convert.rgb_to_uvd( r, g, b )
-                            u = uvd[0]
-                            v = uvd[1]
-                            d = uvd[2]
-                            # ARD
-                            # ard = self.convert.rgb_to_ard( r, g, b )
-                            # a = ard[0]
-                            # r = ard[1]
-                            # d = ard[2]
-                            # depth
-                            d_depth = int( d * k )
-
-                            # Profile
-                            krita_lim = self.profile_krita[d_depth]
-                            min_ku = krita_lim[0]
-                            max_ku = krita_lim[1]
-                            min_kv = krita_lim[2]
-                            max_kv = krita_lim[3]
-                            # Percent
-                            du = max_ku - min_ku
-                            dv = max_kv - min_kv
-                            if du == 0: pu = 0 
-                            else:       pu = ( u - min_ku ) / ( du )
-                            if dv == 0: pv = 0
-                            else:       pv = ( v - min_kv ) / ( dv )
-                            percent.append( [ pu, pv, d ] )
-
-                            # Depth Point
-                            per_d = ( d_depth - self.black_point_krita ) / ( self.white_point_krita - self.black_point_krita )
-                            lerp = self.geometry.Lerp_1D( per_d, self.black_point_file, self.white_point_file )
-                            new_d = int( self.geometry.Limit_Range( lerp, 0, k ) )
-
-                            # File
-                            file_lim = self.profile_file[ d_depth ]
-                            # file_lim = self.profile_file[ new_d ]
-                            min_fu = file_lim[0]
-                            max_fu = file_lim[1]
-                            min_fv = file_lim[2]
-                            max_fv = file_lim[3]
-                            new_u = self.geometry.Lerp_1D( pu, min_fu, max_fu )
-                            new_v = self.geometry.Lerp_1D( pv, min_fv, max_fv )
-
-                            new_rgb = self.convert.uvd_to_rgb( new_u, new_v, d )
-                            # uvd_rgb = self.convert.uvd_to_rgb( new_u, new_v, d )
-                            # angle = self.convert.rgb_to_hue( uvd_rgb[0], uvd_rgb[1], uvd_rgb[2] )
-                            # new_rgb = self.convert.ard_to_rgb( angle, r, d )
-
-                            r = int( self.geometry.Limit_Float( new_rgb[0] ) * k )
-                            g = int( self.geometry.Limit_Float( new_rgb[1] ) * k )
-                            b = int( self.geometry.Limit_Float( new_rgb[2] ) * k )
-                            a = int( alpha * k )
-
-                            # Number Array
-                            num_array.extend( [ b, g, r, a ] )
-
-                    # Byte Conversion
-                    byte_array = Integer_to_Bytes( self, num_array, d_cd )
-
-                    # Node
-                    self.Wait( ad )
-                    # New Node
-                    node = ad.activeNode()
-                    name = "Pigment.S Tint"
-                    new_node = ad.createNode( name, "paintLayer" )
-                    ad.activeNode().parentNode().addChildNode( new_node, node )
-                    ad.setActiveNode( new_node )
-                    self.Wait( ad )
-                    # Paste
-                    px = 0
-                    py = 0
-                    pw = width
-                    ph = height
-                    new_node.setPixelData( byte_array, px, py, pw, ph )
-                    self.Wait( ad )
-
-                    # Progress bar
-                    self.layout.progress_bar.setMaximum( 1 )
-                    self.layout.progress_bar.setValue( 0 )
-
-    def Profile_Generate( self, qimage, depth ):
-        # QImage
-        size = 100
-        # Image
-        img_scale = qimage.scaled( size, size, Qt.KeepAspectRatio, Qt.FastTransformation ) #Qt.SmoothTransformation
-        img_width = img_scale.width()
-        img_height = img_scale.height()
-
-        # Progress bar
-        self.layout.progress_bar.setMaximum( img_height )
-        self.layout.progress_bar.setValue( 0 )
-        # RGB Pixels
-        rgb_col = []
-        for h in range( 0, img_height ):
-            if ( ( h + 1 ) % 5 ) == 0:self.layout.progress_bar.setValue( h + 1 )
-            QApplication.processEvents()
-            for w in range( 0, img_width ):
-                pixel_s = img_scale.pixelColor( w, h )
-                r = pixel_s.redF()
-                g = pixel_s.greenF()
-                b = pixel_s.blueF()
-                rgb = [ r, g, b ]
-                if rgb not in rgb_col:
-                    rgb_col.append( rgb )
-        # Progress bar
-        self.layout.progress_bar.setMaximum( 1 )
-        self.layout.progress_bar.setValue( 0 )
-
-        # UVD Dictionary
-        uvd_col = {}
-        for i in range( 0, depth ):
-            uvd_col[i] = []
-        len_rgb = len( rgb_col )
-        if len_rgb > 0:
-            for i in range( 0, len_rgb ):
-                rgb = rgb_col[i]
-                uvd = self.convert.rgb_to_uvd( rgb[0], rgb[1], rgb[2] )
-                di = int( uvd[2] * depth )
-                uvd_col[di].append( uvd )
-
-        # Profile
-        len_uvd = len( uvd_col )
-        if len_uvd > 0:
-            # Black Point
-            for i in range( 0, len_uvd ):
-                if len( uvd_col[i] ) > 0:
-                    black_point = i
-                    break
-            # White Point
-            for i in range( len_uvd, 0, -1 ):
-                index = i - 1
-                if len( uvd_col[index] ) > 0:
-                    white_point = index
-                    break
-
-            # Profile
-            profile = []
-            for i in range( 0, len_uvd ):
-                px = []
-                py = []
-                for d in range( 0, len( uvd_col[i] ) ):
-                    px.append( uvd_col[i][d][0] )
-                    py.append( uvd_col[i][d][1] )
-                if ( len( px ) > 0 and len( py ) > 0 ):
-                    mini_u = min( px )
-                    maxi_u = max( px )
-                    mini_v = min( py )
-                    maxi_v = max( py )
-                    profile.append( [ mini_u, maxi_u, mini_v, maxi_v ] )
-                else:
-                    profile.append( None )
-            # Caps
-            if profile[0] == None:
-                profile[0] = [ 0, 0, 0, 0 ]
-            if profile[depth-1] == None:
-                profile[depth-1] = [ 0, 0, 0, 0 ]
-            # Correction
-            for i in range( 0, len( profile ) ):
-                item = profile[i]
-                if item == None:
-                    # Left
-                    for l in range( 0, depth ):
-                        index_left = i-l
-                        left = profile[index_left]
-                        if left != None:
-                            break
-                    # Right
-                    for r in range( 0, depth ):
-                        index_right = i+r
-                        right = profile[index_right]
-                        if right != None:
-                            break
-                    # Percentage
-                    percent = ( i - index_left ) / ( index_right - index_left )
-                    # Lerp
-                    lerp = self.geometry.Lerp_List( percent, left, right )
-                    profile[i] = lerp
-            # Return
-            return profile, black_point, white_point
-
-    def Wait( self, active_document ):
-        active_document.waitForDone()
-        active_document.refreshProjection()
-
-    #endregion
-    #region Notifier ###############################################################
-
-    def Application_Closing( self ):
-        pass
-    def Configuration_Changed( self ):
-        pass
-    def Image_Closed( self ):
-        pass
-    def Image_Created( self ):
-        pass
-    def Image_Saved( self ):
-        pass
-    def View_Closed( self ):
-        self.Sample_Clean()
-    def View_Created( self ):
-        pass
-    def Window_Created( self ):
-        pass
-    def Window_IsBeingCreated( self ):
-        pass
-
-    #endregion
-    #region Widget Events ##########################################################
-
-    def showEvent( self, event ):
-        # UI
-        self.layout.split_sample.moveSplitter( int( self.layout.display_body.width() * 0.5 ), 1 )
-        self.Update_Size()
-    def resizeEvent( self, event ):
-        self.Update_Size()
-    def enterEvent( self, event ):
-        pass
-    def leaveEvent( self, event ):
-        self.Clear_Focus()
-    def closeEvent( self, event ):
-        pass
-
-    #endregion
-    #region Canvas #################################################################
-
-    def canvasChanged( self, canvas ):
-        pass
-
-    #endregion
-
-
-# Bytes
-def Bytes_to_Integer( self, byte_array, d_cd ):
-    # converts byte data to numerical data
-    # byte_data - information read from a document
-    # d_cd - document color depth
-
-    # Byte Order
-    byte_order = sys.byteorder
-    # Bit Depth
-    if d_cd == "U8":
-        k = 1
-    elif ( d_cd == "U16" or d_cd == "F16" ):
-        k = 2
-    elif d_cd == "F32":
-        k = 4
-    # Conversion to INTEGER
-    num_array = []
-    for i in range( 0, len( byte_array ), k ):
-        byte = byte_array[ i : i+k ]
-        num = int.from_bytes( byte, byte_order )
-        num_array.append( num )
-    return num_array
-def Integer_to_Bytes( self, num_array, d_cd ):
-    # converts numbers to byte data
-    # num_data - information previously calculated
-    # d_cd - document color depth
-
-    # Byte Order
-    byte_order = sys.byteorder
-    # Bit Depth
-    if d_cd == "U8":
-        k = 1
-    elif ( d_cd == "U16" or d_cd == "F16" ):
-        k = 2
-    elif d_cd == "F32":
-        k = 4
-
-    # Conversion to Bytes
-    byte_array = bytearray( num_array )
-    return byte_array
-# Pixels
-def Numbers_on_Pixel( self, d_cm, d_cd, index, num_array ):
-    # reads the numerical data from a pixel with a given index
-
-    # Variables
-    if d_cd == "U8": # BGR
-        k = 255
-    elif d_cd == "U16":
-        k = 65535
-    elif d_cd == "F16":
-        # k = 65535
-        k = 15360
-    elif d_cd == "F32":
-        # k = 4294836225
-        k = 1065353216
-    # Color Model and Depth
-    byte_list = []
-    if d_cm == "A":
-        pixel = index * 2
-        if d_cd == "U8":
-            n0 = num_array[pixel + 0] # Gray
-            n1 = num_array[pixel + 1] # Alpha
-        if d_cd == "U16":
-            n0 = num_array[pixel + 0] # Gray
-            n1 = num_array[pixel + 1] # Alpha
-        if d_cd == "F16":
-            pass
-        if d_cd == "F32":
-            pass
-        byte_list = [n0, n1]
-    elif ( d_cm == "RGB" or d_cm == None ):
-        pixel = index * 4
-        if d_cd == "U8": # BGR
-            n0 = num_array[pixel + 2] # Red
-            n1 = num_array[pixel + 1] # Green
-            n2 = num_array[pixel + 0] # Blue
-            n3 = num_array[pixel + 3] # Alpha
-        if d_cd == "U16": # BGR
-            n0 = num_array[pixel + 2] # Red
-            n1 = num_array[pixel + 1] # Green
-            n2 = num_array[pixel + 0] # Blue
-            n3 = num_array[pixel + 3] # Alpha
-        if d_cd == "F16":
-            pass
-        if d_cd == "F32":
-            pass
-        byte_list = [n0, n1, n2, n3]
-    elif d_cm == "CMYK":
-        pixel = index * 5
-        if d_cd == "U8":
-            n0 = num_array[pixel + 0] # Cyan
-            n1 = num_array[pixel + 1] # Magenta
-            n2 = num_array[pixel + 2] # Yellow
-            n3 = num_array[pixel + 3] # Key
-            n4 = num_array[pixel + 4] # Alpha
-        if d_cd == "U16":
-            n0 = num_array[pixel + 0] # Cyan
-            n1 = num_array[pixel + 1] # Magenta
-            n2 = num_array[pixel + 2] # Yellow
-            n3 = num_array[pixel + 3] # Key
-            n4 = num_array[pixel + 4] # Alpha
-        if d_cd == "F32":
-            pass
-        byte_list = [n0, n1, n2, n3, n4]
-    elif d_cm == "YUV":
-        pixel = index * 4
-        if d_cd == "U8":
-            n0 = num_array[pixel + 0] # Luma
-            n1 = num_array[pixel + 1] # Cb
-            n2 = num_array[pixel + 2] # Cr
-            n3 = num_array[pixel + 3] # Alpha
-        if d_cd == "U16":
-            n0 = num_array[pixel + 0] # Luma
-            n1 = num_array[pixel + 1] # Cb
-            n2 = num_array[pixel + 2] # Cr
-            n3 = num_array[pixel + 3] # Alpha
-        if d_cd == "F32":
-            pass
-        byte_list = [n0, n1, n2, n3]
-    elif d_cm == "XYZ":
-        pixel = index * 4
-        if d_cd == "U8":
-            n0 = num_array[pixel + 0] # X
-            n1 = num_array[pixel + 1] # Y
-            n2 = num_array[pixel + 2] # Z
-            n3 = num_array[pixel + 3] # Alpha
-        if d_cd == "U16":
-            n0 = num_array[pixel + 0] # X
-            n1 = num_array[pixel + 1] # Y
-            n2 = num_array[pixel + 2] # Z
-            n3 = num_array[pixel + 3] # Alpha
-        if d_cd == "F16":
-            pass
-        if d_cd == "F32":
-            pass
-        byte_list = [n0, n1, n2, n3]
-    elif d_cm == "LAB":
-        pixel = index * 4
-        if d_cd == "U8":
-            n0 = num_array[pixel + 0] # Lightness*
-            n1 = num_array[pixel + 1] # A*
-            n2 = num_array[pixel + 2] # 1*
-            n3 = num_array[pixel + 3] # Alpha
-        if d_cd == "U16":
-            n0 = num_array[pixel + 0] # Lightness*
-            n1 = num_array[pixel + 1] # A*
-            n2 = num_array[pixel + 2] # 1*
-            n3 = num_array[pixel + 3] # Alpha
-        if d_cd == "F32":
-            pass
-        byte_list = [n0, n1, n2, n3]
-    return byte_list
-# Selection
-def Insert_Selection( self, num_array, px, py, width, height ):
-    # num_array - list of integer numbers, represents each pixels channels. RGB U8 > [ B,G,R,A, B,G,R,A, B,G,R,A, ... ]
-    if ( ( self.canvas() is not None ) and ( self.canvas().view() is not None ) ):
-        # Variables
-        ki = Krita.instance()
-        ad = ki.activeDocument()
-        nt = ad.activeNode().type()
-
-        # Place selection on good parent node
-        if nt in ["paintlayer", "grouplayer"]:
-            # Deselect all
-            ki.action( "deselect" ).trigger()
-
-            # Place Text
-            ki.activeWindow().activeView().showFloatingMessage( "Pigment.O Insert | Selection", Krita.instance().icon( "local-selection-active" ), 5000, 0 )
-
-            # Selection
-            sel = Selection()
-            sel.setPixelData( bytes( num_array ), px, py, width, height )
-            ad.setSelection( sel )
-
-            # Document Response Time
-            ad.waitForDone()
-            ad.refreshProjection()
-
-            # Make Selection
-            ki.action( "add_new_selection_mask" ).trigger()
-            ki.action( "invert_selection" ).trigger()
-            ki.action( "invert_selection" ).trigger()
-        else:
-            QMessageBox.information( QWidget(), i18n( "Warnning" ), i18n( f"Pigment.O ERROR | Please select valid layer for selection mask" ) )
 
 
 """
@@ -9589,20 +9141,5 @@ Investigate Krita
 
 Idea :
 Color Picking outside Krita
-
-cursor = QCursor()
-position = cursor.pos()
-QtCore.qDebug( f"position = { position }" )
-
-window = QWindow()
-name = window.screen().name()
-model = window.screen().model()
-serialNumber = window.screen().serialNumber()
-QtCore.qDebug( f"name = { name }" )
-QtCore.qDebug( f"model = { model }" )
-QtCore.qDebug( f"serialNumber = { serialNumber }" )
-
-wid = widget.windid()
-qpixmap = window.screen().grabWindow( WId window = 0, int x = 0, int y = 0, int width = -1, int height = -1 )
 
 """

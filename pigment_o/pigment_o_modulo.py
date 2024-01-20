@@ -60,18 +60,6 @@ def Read_Zip( self, location, tan_range, space, shape ):
         try:QtCore.qDebug( f"Pigment.O | ERROR Zip failed" )
         except:pass
 
-# Colors
-def krita_theme( self ):
-    theme = QApplication.palette().color( QPalette.Window ).value()
-    if theme > 128:
-        self.color_1 = QColor( "#191919" ) # Dark
-        self.color_2 = QColor( "#e5e5e5" ) # Light
-    else:
-        self.color_1 = QColor( "#e5e5e5" ) # Light
-        self.color_2 = QColor( "#191919" ) # Dark
-    self.color_black = QColor( "#000000" )
-    self.color_white = QColor( "#ffffff" )
-    self.color_alpha = QColor( 0, 0, 0, 50 )
 # Region
 def Circles( self, painter ):
     # Circle 0 ( Everything )
@@ -104,51 +92,51 @@ def Cursor_Normal( self, painter, size ):
     # Mask
     mask = QPainterPath()
     mask.addEllipse( 
-        int( self.event_x - size ),
-        int( self.event_y - size ),
+        int( self.ex - size ),
+        int( self.ey - size ),
         int( size * 2 ),
         int( size * 2 ),
         )
     mask.addEllipse( 
-        int( self.event_x - size + w * 2 ),
-        int( self.event_y - size + w * 2 ),
+        int( self.ex - size + w * 2 ),
+        int( self.ey - size + w * 2 ),
         int( size * 2 - w * 4 ),
         int( size * 2 - w * 4 ),
         )
     painter.setClipPath( mask )
     # Black Circle
     painter.setPen( QtCore.Qt.NoPen )
-    painter.setBrush( QBrush( self.color_black ) )
+    painter.setBrush( QBrush( QColor( "#000000" ) ) )
     painter.drawEllipse( 
-        int( self.event_x - size ),
-        int( self.event_y - size ),
+        int( self.ex - size ),
+        int( self.ey - size ),
         int( size * 2 ),
         int( size * 2 ),
         )
     # White Circle
     painter.setPen( QtCore.Qt.NoPen )
-    painter.setBrush( QBrush( self.color_white ) )
+    painter.setBrush( QBrush( QColor( "#ffffff" ) ) )
     painter.drawEllipse( 
-        int( self.event_x - size + w ),
-        int( self.event_y - size + w ),
+        int( self.ex - size + w ),
+        int( self.ey - size + w ),
         int( size * 2 - w * 2 ),
         int( size * 2 - w * 2 ),
         )
 def Cursor_Zoom( self, painter, zoom_size, margin_size ):
     # Border
     painter.setPen( QtCore.Qt.NoPen )
-    painter.setBrush( QBrush( self.color_black ) )
+    painter.setBrush( QBrush( QColor( "#000000" ) ) )
     painter.drawEllipse( 
-        int( self.event_x - zoom_size ),
-        int( self.event_y - zoom_size ),
+        int( self.ex - zoom_size ),
+        int( self.ey - zoom_size ),
         int( zoom_size * 2 ),
         int( zoom_size * 2 ),
         )
     # Hex Color
     painter.setBrush( QBrush( self.hex_color ) )
     painter.drawEllipse( 
-        int( self.event_x - zoom_size + margin_size ),
-        int( self.event_y - zoom_size + margin_size ),
+        int( self.ex - zoom_size + margin_size ),
+        int( self.ey - zoom_size + margin_size ),
         int( zoom_size * 2 - margin_size * 2 ),
         int( zoom_size * 2 - margin_size * 2 ),
         )
@@ -161,18 +149,17 @@ class Color_Header( QWidget ):
     SIGNAL_SHIFT = QtCore.pyqtSignal( bool )
     SIGNAL_RANDOM = QtCore.pyqtSignal( int )
     SIGNAL_COMP = QtCore.pyqtSignal( int )
-    SIGNAL_ANALYSE = QtCore.pyqtSignal( int )
 
     # Init
     def __init__( self, parent ):
         super( Color_Header, self ).__init__( parent )
-        self.Init_Variables()
+        self.Variables()
     def sizeHint( self ):
         return QtCore.QSize( render_width, 100 )
-    def Init_Variables( self ):
+    def Variables( self ):
         # Widget
-        self.widget_width = 100
-        self.widget_height = 40
+        self.ww = 100
+        self.hh = 40
 
         # Variables
         self.mode_ab = True
@@ -182,7 +169,7 @@ class Color_Header( QWidget ):
         self.other_show = False
         self.ui_k = 80
         self.other_a = self.ui_k
-        self.other_b = self.widget_width - self.ui_k
+        self.other_b = self.ww - self.ui_k
 
         # Colors HEX
         self.kac_1 = QColor( '#000000' )
@@ -197,19 +184,19 @@ class Color_Header( QWidget ):
     def Set_Mode_AB( self, mode_ab ):
         self.mode_ab = mode_ab
         self.update()
-    def Set_Size( self, widget_width, widget_height ):
+    def Set_Size( self, ww, hh ):
         # widget
-        self.widget_width = widget_width
-        self.widget_height = widget_height
+        self.ww = ww
+        self.hh = hh
         # Limits
-        if widget_width <= 200:
-            self.other_a = widget_width * 0.4
-            self.other_b = widget_width * 0.7
+        if ww <= 200:
+            self.other_a = ww * 0.4
+            self.other_b = ww * 0.7
         else:
             self.other_a = self.ui_k
-            self.other_b = widget_width - self.ui_k
+            self.other_b = ww - self.ui_k
         # Update
-        self.update()
+        self.resize( ww, hh )
     def Set_Color_A1( self, kac_1 ):
         self.kac_1 = QColor( kac_1 )
         self.update()
@@ -244,27 +231,24 @@ class Color_Header( QWidget ):
 
         # Menu
         if event.modifiers() == QtCore.Qt.NoModifier:
-            cmenu = QMenu( self )
+            qmenu = QMenu( self )
             # Actions
-            cmenu_swap = cmenu.addAction( "FG-BG Swap" )
-            cmenu_active = cmenu.addAction( side + " Active" )
-            cmenu_random = cmenu.addAction( "Random" )
-            cmenu_complementary = cmenu.addAction( "Complementary" )
-            cmenu_analyse = cmenu.addAction( "Analyse" )
+            qmenu_swap = qmenu.addAction( "FG-BG Swap" )
+            qmenu_active = qmenu.addAction( side + " Active" )
+            qmenu_random = qmenu.addAction( "Random" )
+            qmenu_complementary = qmenu.addAction( "Complementary" )
             # Map
-            action = cmenu.exec_( self.mapToGlobal( event.pos() ) )
+            action = qmenu.exec_( self.mapToGlobal( event.pos() ) )
             # Triggers
-            if action == cmenu_swap:
+            if action == qmenu_swap:
                 self.SIGNAL_SWAP.emit( 0 )
-            if action == cmenu_active:
+            if action == qmenu_active:
                 self.mode_ab = not self.mode_ab
                 self.SIGNAL_SHIFT.emit( self.mode_ab )
-            if action == cmenu_random:
+            if action == qmenu_random:
                 self.SIGNAL_RANDOM.emit( 0 )
-            if action == cmenu_complementary:
+            if action == qmenu_complementary:
                 self.SIGNAL_COMP.emit( 0 )
-            if action == cmenu_analyse:
-                self.SIGNAL_ANALYSE.emit( 0 )
 
     # Interaction
     def enterEvent( self, event ):
@@ -276,49 +260,47 @@ class Color_Header( QWidget ):
 
     # Paint Style
     def paintEvent( self, event ):
-        # Theme
-        krita_theme( self )
         # Start Painter
         painter = QPainter( self )
         painter.setRenderHint( QtGui.QPainter.Antialiasing, True )
         painter.setPen( QtCore.Qt.NoPen )
 
         # Variable
-        w1 = self.widget_width + 1
+        w1 = self.ww + 1
         w2 = int( w1 * 0.5 )
 
         # Progress Bar Mask
         mask = QPainterPath()
-        mask.addRect( int( 0 ), int( 0 ), int( self.widget_width * self.progress_bar ), int( self.widget_height ) )
+        mask.addRect( int( 0 ), int( 0 ), int( self.ww * self.progress_bar ), int( self.hh ) )
         painter.setClipPath( mask )
 
         # Mode FG
         if self.mode_ab == True:
             # FG Active
             painter.setBrush( QBrush( self.kac_1 ) )
-            painter.drawRect( int( 0 ), int( 0 ), int( w2 ), int( self.widget_height ) )
+            painter.drawRect( int( 0 ), int( 0 ), int( w2 ), int( self.hh ) )
             # FG Previous
             painter.setBrush( QBrush( self.kac_2 ) )
-            painter.drawRect( int( w2 ), int( 0 ), int( w2 ), int( self.widget_height ) )
+            painter.drawRect( int( w2 ), int( 0 ), int( w2 ), int( self.hh ) )
 
             # BG over FG
             painter.setBrush( QBrush( self.kbc_1 ) )
             if self.other_show == True:
                 point = w1 - self.other_a
-                painter.drawRect( int( point ), int( 0 ), int( self.other_a ), int( self.widget_height ) )
+                painter.drawRect( int( point ), int( 0 ), int( self.other_a ), int( self.hh ) )
         # Mode BG
         if self.mode_ab == False:
             # BG Active
             painter.setBrush( QBrush( self.kbc_1 ) )
-            painter.drawRect( int( 0 ), int( 0 ), int( w2 ), int( self.widget_height ) )
+            painter.drawRect( int( 0 ), int( 0 ), int( w2 ), int( self.hh ) )
             # BG Previous
             painter.setBrush( QBrush( self.kbc_2 ) )
-            painter.drawRect( int( w2 ), int( 0 ), int( w2 ), int( self.widget_height ) )
+            painter.drawRect( int( w2 ), int( 0 ), int( w2 ), int( self.hh ) )
 
             # FG over BG
             painter.setBrush( QBrush( self.kac_1 ) )
             if self.other_show == True:
-                painter.drawRect( int( 0 ), int( 0 ), int( self.other_a ), int( self.widget_height ) )
+                painter.drawRect( int( 0 ), int( 0 ), int( self.other_a ), int( self.hh ) )
 
 class Harmony_Swatch( QWidget ):
     SIGNAL_RULE = QtCore.pyqtSignal( str )
@@ -328,28 +310,30 @@ class Harmony_Swatch( QWidget ):
     # Init
     def __init__( self, parent ):
         super( Harmony_Swatch, self ).__init__( parent )
-        self.Init_Variables()
+        self.Variables()
     def sizeHint( self ):
         return QtCore.QSize( render_width, 100 )
-    def Init_Variables( self ):
+    def Variables( self ):
         # Widget
-        self.widget_width = 0
-        self.widget_height = 0
+        self.ww = 0
+        self.hh = 0
         # Index
         self.harmony_rule = "Analogous" # "Monochromatic" "Complementary" "Analogous" "Triadic" "Tetradic"
         self.harmony_edit = False
         self.harmony_index = 0
         self.harmony_parts = 5
         self.harmony_color = [ "#000000", "#000000", "#000000", "#000000", "#000000" ]
-
         # Modules
         self.geometry = Geometry()
+        # Colors
+        self.color_1 = QColor( "#e5e5e5" )
+        self.color_2 = QColor( "#191919" )
 
     # Relay
-    def Set_Size( self, widget_width, widget_height ):
-        self.widget_width = widget_width
-        self.widget_height = widget_height
-        self.update()
+    def Set_Size( self, ww, hh ):
+        self.ww = ww
+        self.hh = hh
+        self.resize( ww, hh )
     def Set_Harmony_Rule( self, harmony_rule ):
         self.harmony_rule = harmony_rule
         self.update()
@@ -387,8 +371,8 @@ class Harmony_Swatch( QWidget ):
 
     # Signals
     def Index_Signal( self, event ):
-        self.event_x = self.geometry.Limit_Range( event.x(), 0, self.widget_width )
-        percentage = self.event_x / self.widget_width
+        self.ex = self.geometry.Limit_Range( event.x(), 0, self.ww )
+        percentage = self.ex / self.ww
         self.harmony_index = self.geometry.Limit_Range( int( percentage * self.harmony_parts ), 0, self.harmony_parts - 1 ) + 1
         self.SIGNAL_INDEX.emit( self.harmony_index )
         self.update()
@@ -396,56 +380,54 @@ class Harmony_Swatch( QWidget ):
     # Context
     def contextMenuEvent( self, event ):
         # Menu
-        cmenu = QMenu( self )
+        qmenu = QMenu( self )
 
         # Actions Harmony Rule
-        cmenu_rule = cmenu.addMenu( "Harmony Rule" )
-        cmenu_rule_m = cmenu_rule.addAction( "Monochromatic" )
-        cmenu_rule_c = cmenu_rule.addAction( "Complementary" )
-        cmenu_rule_a = cmenu_rule.addAction( "Analogous" )
-        cmenu_rule_tri = cmenu_rule.addAction( "Triadic" )
-        cmenu_rule_tet = cmenu_rule.addAction( "Tetradic" )
-        cmenu_rule_m.setCheckable( True )
-        cmenu_rule_c.setCheckable( True )
-        cmenu_rule_a.setCheckable( True )
-        cmenu_rule_tri.setCheckable( True )
-        cmenu_rule_tet.setCheckable( True )
-        cmenu_rule_m.setChecked( self.harmony_rule == "Monochromatic" )
-        cmenu_rule_c.setChecked( self.harmony_rule == "Complementary" )
-        cmenu_rule_a.setChecked( self.harmony_rule == "Analogous" )
-        cmenu_rule_tri.setChecked( self.harmony_rule == "Triadic" )
-        cmenu_rule_tet.setChecked( self.harmony_rule == "Tetradic" )
+        qmenu_rule = qmenu.addMenu( "Harmony Rule" )
+        qmenu_rule_m = qmenu_rule.addAction( "Monochromatic" )
+        qmenu_rule_c = qmenu_rule.addAction( "Complementary" )
+        qmenu_rule_a = qmenu_rule.addAction( "Analogous" )
+        qmenu_rule_tri = qmenu_rule.addAction( "Triadic" )
+        qmenu_rule_tet = qmenu_rule.addAction( "Tetradic" )
+        qmenu_rule_m.setCheckable( True )
+        qmenu_rule_c.setCheckable( True )
+        qmenu_rule_a.setCheckable( True )
+        qmenu_rule_tri.setCheckable( True )
+        qmenu_rule_tet.setCheckable( True )
+        qmenu_rule_m.setChecked( self.harmony_rule == "Monochromatic" )
+        qmenu_rule_c.setChecked( self.harmony_rule == "Complementary" )
+        qmenu_rule_a.setChecked( self.harmony_rule == "Analogous" )
+        qmenu_rule_tri.setChecked( self.harmony_rule == "Triadic" )
+        qmenu_rule_tet.setChecked( self.harmony_rule == "Tetradic" )
         # Actions Edit
-        cmenu_edit = cmenu.addAction( "Edit" )
-        cmenu_edit.setCheckable( True )
-        cmenu_edit.setChecked( self.harmony_edit )
+        qmenu_edit = qmenu.addAction( "Edit" )
+        qmenu_edit.setCheckable( True )
+        qmenu_edit.setChecked( self.harmony_edit )
 
-        action = cmenu.exec_( self.mapToGlobal( event.pos() ) )
+        action = qmenu.exec_( self.mapToGlobal( event.pos() ) )
 
         # Triggers
-        if action == cmenu_rule_m:
+        if action == qmenu_rule_m:
             self.harmony_rule = "Monochromatic"
             self.SIGNAL_RULE.emit( self.harmony_rule )
-        if action == cmenu_rule_c:
+        if action == qmenu_rule_c:
             self.harmony_rule = "Complementary"
             self.SIGNAL_RULE.emit( self.harmony_rule )
-        if action == cmenu_rule_a:
+        if action == qmenu_rule_a:
             self.harmony_rule = "Analogous"
             self.SIGNAL_RULE.emit( self.harmony_rule )
-        if action == cmenu_rule_tri:
+        if action == qmenu_rule_tri:
             self.harmony_rule = "Triadic"
             self.SIGNAL_RULE.emit( self.harmony_rule )
-        if action == cmenu_rule_tet:
+        if action == qmenu_rule_tet:
             self.harmony_rule = "Tetradic"
             self.SIGNAL_RULE.emit( self.harmony_rule )
-        if action == cmenu_edit:
+        if action == qmenu_edit:
             self.harmony_edit = not self.harmony_edit
             self.SIGNAL_EDIT.emit( self.harmony_edit )
 
     # Paint
     def paintEvent( self, event ):
-        # Theme
-        krita_theme( self )
         # Start Qpainter
         painter = QPainter( self )
         painter.setRenderHint( QtGui.QPainter.Antialiasing, True )
@@ -456,30 +438,29 @@ class Harmony_Swatch( QWidget ):
 
         # Swatch
         points = []
-        factor = 0.7
         painter.setPen( QtCore.Qt.NoPen )
-        width = int( self.widget_width / self.harmony_parts + 1 )
-        height = int( self.widget_height*( 1-factor ) )
+        width = int( self.ww / self.harmony_parts + 1 )
         for i in range( 0, self.harmony_parts ):
             # Variables
-            px = int( ( self.widget_width / self.harmony_parts ) * i )
-            py = int( self.widget_height * factor )
+            px = ( self.ww / self.harmony_parts ) * i
             # Color
             painter.setBrush( QBrush( QColor( self.harmony_color[i] ) ) )
-            painter.drawRect( int( px ), int( 0 ), int( width ), int( self.widget_height ) )
+            painter.drawRect( int( px ), int( 0 ), int( width ), int( self.hh ) )
             # Stops
             points.append( px )
-        points.append( self.widget_width )
+        points.append( self.ww )
 
         # Index Cursor
         if self.harmony_index != 0:
+            height = 8
             px = points[ self.harmony_index - 1 ]
+            py = self.hh - height
             pw = points[ self.harmony_index ]
             width = pw - px
             painter.setBrush( QBrush( self.color_2 ) )
-            painter.drawRect( int( px ), int( py ), int( width ), int( height + 1 ) )
+            painter.drawRect( int( px ), int( py ), int( width ), int( height ) )
             painter.setBrush( QBrush( self.color_1 ) )
-            painter.drawRect( int( px + 1 ), int( py + 1 ), int( width - 2 ), int( height - 1 ) )
+            painter.drawRect( int( px + 1 ), int( py + 1 ), int( width - 2 ), int( height - 2 ) )
 class Harmony_Spread( QWidget ):
     SIGNAL_SPAN = QtCore.pyqtSignal( float )
     SIGNAL_RELEASE = QtCore.pyqtSignal( int )
@@ -487,13 +468,13 @@ class Harmony_Spread( QWidget ):
     # Init
     def __init__( self, parent ):
         super( Harmony_Spread, self ).__init__( parent )
-        self.Init_Variables()
+        self.Variables()
     def sizeHint( self ):
         return QtCore.QSize( render_width, 100 )
-    def Init_Variables( self ):
+    def Variables( self ):
         # Widget
-        self.widget_width = 0
-        self.widget_height = 0
+        self.ww = 0
+        self.hh = 0
         self.w2 = 0
         # Range
         self.harmony_span = 0.2
@@ -501,13 +482,17 @@ class Harmony_Spread( QWidget ):
         self.no_span = ["Monochromatic", "Complementary"] # Have no span
         # Modules
         self.geometry = Geometry()
+        # Colors
+        self.color_1 = QColor( "#e5e5e5" )
+        self.color_2 = QColor( "#191919" )
+        self.color_alpha = QColor( 0, 0, 0, 50 )
 
     # Relay
-    def Set_Size( self, widget_width, widget_height ):
-        self.widget_width = widget_width
-        self.widget_height = widget_height
-        self.w2 = int( widget_width * 0.5 )
-        self.update()
+    def Set_Size( self, ww, hh ):
+        self.ww = ww
+        self.hh = hh
+        self.w2 = int( ww * 0.5 )
+        self.resize( ww, hh )
     def Set_Rule( self, rule ):
         self.harmony_rule = rule
         self.update()
@@ -546,30 +531,30 @@ class Harmony_Spread( QWidget ):
         # Read
         event_x = event.x()
         # Consider Widget Size
-        value = self.geometry.Limit_Range( event_x, 0, self.widget_width )
+        value = self.geometry.Limit_Range( event_x, 0, self.ww )
         # Sides
         if value >= self.w2:
             span_right = value
-            span_left = self.widget_width - value
+            span_left = self.ww - value
         else:
             span_left = value
-            span_right = self.widget_width - value
+            span_right = self.ww - value
         # Normalize Values
         delta = span_right - span_left
-        if self.widget_width == 0:
+        if self.ww == 0:
             self.harmony_span = 0
         else:
-            self.harmony_span = delta / self.widget_width
+            self.harmony_span = delta / self.ww
         self.SIGNAL_SPAN.emit( self.harmony_span )
         self.update()
     def Range_Pin( self, event ):
         # Read
         event_x = event.x()
         # Consider Widget Size
-        value = self.geometry.Limit_Range( event_x, 0, self.widget_width )
+        value = self.geometry.Limit_Range( event_x, 0, self.ww )
         # Pin
         stops = 72
-        unit = self.widget_width / stops
+        unit = self.ww / stops
         distances = []
         for i in range( 0, stops+1 ):
             dist = self.geometry.Trig_2D_Points_Distance( value, 0, ( unit * i ), 0 )
@@ -577,43 +562,51 @@ class Harmony_Spread( QWidget ):
         value_min = min( distances )
         index = distances.index( value_min )
         value = unit * index
-        percent = value / self.widget_width
+        percent = value / self.ww
         # Sides
         if value >= self.w2:
             span_right = value
-            span_left = self.widget_width - value
+            span_left = self.ww - value
         else:
             span_left = value
-            span_right = self.widget_width - value
+            span_right = self.ww - value
         # Normalize Values
         delta = span_right - span_left
-        if self.widget_width == 0:
+        if self.ww == 0:
             self.harmony_span = 0
         else:
-            self.harmony_span = delta / self.widget_width
+            self.harmony_span = delta / self.ww
         self.SIGNAL_SPAN.emit( self.harmony_span )
         self.update()
 
     # Paint
     def paintEvent( self, event ):
-        # Theme
-        krita_theme( self )
         # Start Qpainter
         painter = QPainter( self )
         painter.setRenderHint( QtGui.QPainter.Antialiasing, True )
 
-        # Harmony Angle
+        # Background Hover
         painter.setPen( QtCore.Qt.NoPen )
-        painter.setBrush( QBrush( self.color_1 ) )
+        painter.setBrush( QBrush( self.color_alpha ) )
+        painter.drawRect( 0, 0, self.ww, self.hh )
+
+        # Variables
         if self.harmony_rule in self.no_span:
             px = int( self.w2 )
             width = 1
         else:
-            px = int( self.w2 - ( self.harmony_span * self.widget_width * 0.5 ) )
-            width = int( self.widget_width * self.harmony_span )
+            px = int( self.w2 - ( self.harmony_span * self.ww * 0.5 ) )
+            width = int( self.ww * self.harmony_span )
             if width <= 1:
                 width = 1
-        painter.drawRect( int( px ), int( 2 ), int( width ), int( self.widget_height - 4 ) )
+
+        # Harmony Angle
+        painter.setPen( QtCore.Qt.NoPen )
+        painter.setBrush( QBrush( self.color_2 ) )
+        painter.drawRect( int( px ), int( 1 ), int( width ), int( 8 ) )
+        painter.setPen( QtCore.Qt.NoPen )
+        painter.setBrush( QBrush( self.color_1 ) )
+        painter.drawRect( int( px + 1 ), int( 2 ), int( width - 2 ), int( 6 ) )
 
 #endregion
 #region Panels #####################################################################
@@ -623,21 +616,21 @@ class Panel_Fill( QWidget ):
     # Init
     def __init__( self, parent ):
         super( Panel_Fill, self ).__init__( parent )
-        self.Init_Variables()
+        self.Variables()
     def sizeHint( self ):
         return QtCore.QSize( render_width, render_height )
-    def Init_Variables( self ):
+    def Variables( self ):
         # Widget
-        self.widget_width = 0
-        self.widget_height = 0
+        self.ww = 0
+        self.hh = 0
         # Display
         self.hex_color = QColor( "#000000" )
 
     # Set
-    def Set_Size( self, widget_width, widget_height ):
-        self.widget_width = widget_width
-        self.widget_height = widget_height
-        self.update()
+    def Set_Size( self, ww, hh ):
+        self.ww = ww
+        self.hh = hh
+        self.resize( ww, hh )
 
     # Updates
     def Update_Panel( self, color ):
@@ -646,8 +639,6 @@ class Panel_Fill( QWidget ):
 
     # Paint
     def paintEvent( self, event ):
-        # Theme
-        krita_theme( self )
         # Painter
         painter = QPainter( self )
         painter.setRenderHint( QtGui.QPainter.Antialiasing, True )
@@ -655,7 +646,7 @@ class Panel_Fill( QWidget ):
         # Draw Pixmaps
         painter.setPen( QtCore.Qt.NoPen )
         painter.setBrush( QBrush( self.hex_color ) )
-        painter.drawRect( int( 0 ), int( 0 ), int( self.widget_width ), int( self.widget_height ) )
+        painter.drawRect( int( 0 ), int( 0 ), int( self.ww ), int( self.hh ) )
 
 class Panel_Square( QWidget ):
     SIGNAL_VALUE = QtCore.pyqtSignal( dict )
@@ -667,18 +658,18 @@ class Panel_Square( QWidget ):
     # Init
     def __init__( self, parent ):
         super( Panel_Square, self ).__init__( parent )
-        self.Init_Variables()
+        self.Variables()
     def sizeHint( self ):
         return QtCore.QSize( render_width, render_height )
-    def Init_Variables( self ):
+    def Variables( self ):
         # Widget
-        self.widget_width = 0
-        self.widget_height = 0
+        self.ww = 0
+        self.hh = 0
         self.origin_x = 0
         self.origin_y = 0
         self.origin_tan_axis = 0
-        self.event_x = 0
-        self.event_y = 0
+        self.ex = 0
+        self.ey = 0
         self.press = False
         self.pressure = 0
         self.input_pressure = 0.5
@@ -698,8 +689,11 @@ class Panel_Square( QWidget ):
         self.wheel_space = None # "HSV" "HSL" "HCY" "ARD"
 
         # Colors
-        self.hex_color = QColor( "#000000" )
         self.color = None
+        self.hex_color = QColor( "#000000" )
+        self.color_1 = QColor( "#e5e5e5" )
+        self.color_2 = QColor( "#191919" )
+        self.color_theme = QColor( "#31363b" )
         # Harmony Colors
         self.harmony_rule = None
         self.harmony_index = None
@@ -751,18 +745,18 @@ class Panel_Square( QWidget ):
                 cx = self.color["hsl_2"]
                 cy = 1 - self.color["hsl_3"]
                 inter = self.Triangle_Inter( cy, 1, 1 )
-                self.event_x = self.geometry.Limit_Range( cx * inter * self.widget_width, 0, self.widget_width )
-                self.event_y = self.geometry.Limit_Range( cy * self.widget_height, 0, self.widget_height )
+                self.ex = self.geometry.Limit_Range( cx * inter * self.ww, 0, self.ww )
+                self.ey = self.geometry.Limit_Range( cy * self.hh, 0, self.hh )
             if self.shape == "4":
-                self.event_x = self.geometry.Limit_Range( self.color[f"{self.chan}_2"] * self.widget_width, 0, self.widget_width )
-                self.event_y = self.geometry.Limit_Range( self.color[f"{self.chan}_3"] * self.widget_height, 0, self.widget_height )
+                self.ex = self.geometry.Limit_Range( self.color[f"{self.chan}_2"] * self.ww, 0, self.ww )
+                self.ey = self.geometry.Limit_Range( self.color[f"{self.chan}_3"] * self.hh, 0, self.hh )
             if self.shape == "R":
                 cx = self.color["hsl_2"]
                 cy = 1 - self.color["hsl_3"]
                 mini, maxi, delta = self.Diamond_Inter( cy, 1, 1 )
                 value = mini + cx * delta
-                self.event_x = self.geometry.Limit_Range( value * self.widget_width, mini * self.widget_width, maxi * self.widget_width )
-                self.event_y = self.geometry.Limit_Range( cy * self.widget_height, 0, self.widget_height )
+                self.ex = self.geometry.Limit_Range( value * self.ww, mini * self.ww, maxi * self.ww )
+                self.ey = self.geometry.Limit_Range( cy * self.hh, 0, self.hh )
         # Primaries
         if self.wheel_space == "YUV":
             self.CR = self.convert.rgb_to_yuv( 1, 0, 0 )
@@ -779,39 +773,44 @@ class Panel_Square( QWidget ):
 
         # Update
         self.update()
-    def Set_Size( self, widget_width, widget_height ):
+    def Set_Theme( self, color_1, color_2, color_theme ):
+        self.color_1 = color_1
+        self.color_2 = color_2
+        self.color_theme = color_theme
+        self.update()
+    def Set_Size( self, ww, hh ):
         # Variables
-        self.widget_width = widget_width
-        self.widget_height = widget_height
+        self.ww = ww
+        self.hh = hh
         # Mask ( slightly bigger than color display )
         if self.shape == "3":
             polygon = QPolygon( [
                 QPoint( int( -1 ), int( -1 ) ),
-                QPoint( int( self.widget_width + 1 ), int( self.widget_height * 0.5 ) ),
-                QPoint( int( -1 ), int( self.widget_height + 1 ) ),
+                QPoint( int( self.ww + 1 ), int( self.hh * 0.5 ) ),
+                QPoint( int( -1 ), int( self.hh + 1 ) ),
                 ] )
             triangle = QRegion( polygon, Qt.OddEvenFill )
             self.setMask( triangle )
         if self.shape == "4":
             polygon = QPolygon( [
                 QPoint( int( -1 ), int( -1 ) ),
-                QPoint( int( self.widget_width + 1 ), int( -1 ) ),
-                QPoint( int( self.widget_width + 1 ), int( self.widget_height + 1 ) ),
-                QPoint( int( -1 ), int( self.widget_height + 1 ) ),
+                QPoint( int( self.ww + 1 ), int( -1 ) ),
+                QPoint( int( self.ww + 1 ), int( self.hh + 1 ) ),
+                QPoint( int( -1 ), int( self.hh + 1 ) ),
                 ] )
             square = QRegion( polygon, Qt.OddEvenFill )
             self.setMask( square )
         if self.shape == "R":
             polygon = QPolygon( [
-                QPoint( int( self.widget_width * 0.5 ), int( -1 ) ),
-                QPoint( int( self.widget_width + 1 ), int( self.widget_height * 0.5 ) ),
-                QPoint( int( self.widget_width * 0.5 ), int( self.widget_height + 1 ) ),
-                QPoint( int( -1 ), int( self.widget_height * 0.5 ) ),
+                QPoint( int( self.ww * 0.5 ), int( -1 ) ),
+                QPoint( int( self.ww + 1 ), int( self.hh * 0.5 ) ),
+                QPoint( int( self.ww * 0.5 ), int( self.hh + 1 ) ),
+                QPoint( int( -1 ), int( self.hh * 0.5 ) ),
                 ] )
             diamond = QRegion( polygon, Qt.OddEvenFill )
             self.setMask( diamond )
         # Update
-        self.update()
+        self.resize( ww, hh )
     def Set_Zoom( self, boolean ):
         self.press = boolean
         self.zoom = boolean
@@ -830,13 +829,13 @@ class Panel_Square( QWidget ):
             inter = self.Triangle_Inter( cy, 1, 1 )
             # Values
             self.tan_axis = color["hsl_1"]
-            self.event_x = self.geometry.Limit_Range( cx * inter * self.widget_width, 0, self.widget_width )
-            self.event_y = self.geometry.Limit_Range( cy * self.widget_height, 0, self.widget_height )
+            self.ex = self.geometry.Limit_Range( cx * inter * self.ww, 0, self.ww )
+            self.ey = self.geometry.Limit_Range( cy * self.hh, 0, self.hh )
         if self.shape == "4":
             # Values
             self.tan_axis = color[f"{self.chan}_1"]
-            self.event_x = color[f"{self.chan}_2"] * self.widget_width
-            self.event_y = ( 1 - color[f"{self.chan}_3"] ) * self.widget_height
+            self.ex = color[f"{self.chan}_2"] * self.ww
+            self.ey = ( 1 - color[f"{self.chan}_3"] ) * self.hh
         if self.shape == "R":
             # Variables
             cx = color["hsl_2"]
@@ -845,8 +844,8 @@ class Panel_Square( QWidget ):
             value = mini + cx * delta
             # Values
             self.tan_axis = color["hsl_1"]
-            self.event_x = self.geometry.Limit_Range( value * self.widget_width, mini * self.widget_width, maxi * self.widget_width )
-            self.event_y = self.geometry.Limit_Range( cy * self.widget_height, 0, self.widget_height )
+            self.ex = self.geometry.Limit_Range( value * self.ww, mini * self.ww, maxi * self.ww )
+            self.ey = self.geometry.Limit_Range( cy * self.hh, 0, self.hh )
 
         # Update
         self.update()
@@ -1007,51 +1006,51 @@ class Panel_Square( QWidget ):
     # Mouse Event
     def Cursor_Position( self, ex, ey ):
         # Variables
-        ww = self.widget_width
-        wh = self.widget_height
+        ww = self.ww
+        wh = self.hh
 
         # Input
         if self.shape == "3":
             # Cursor
             inter = self.Triangle_Inter( ey, ww, wh )
-            self.event_x = self.geometry.Limit_Range( ex, 0, inter )
-            self.event_y = self.geometry.Limit_Range( ey, 0, self.widget_height )
+            self.ex = self.geometry.Limit_Range( ex, 0, inter )
+            self.ey = self.geometry.Limit_Range( ey, 0, self.hh )
             # Color
             if inter == 0:px = 0
-            else:px = self.event_x / inter
-            py = ( wh - self.event_y ) / wh
+            else:px = self.ex / inter
+            py = ( wh - self.ey ) / wh
         if self.shape == "4":
             # Cursor
-            self.event_x = self.geometry.Limit_Range( ex, 0, ww )
-            self.event_y = self.geometry.Limit_Range( ey, 0, wh )
+            self.ex = self.geometry.Limit_Range( ex, 0, ww )
+            self.ey = self.geometry.Limit_Range( ey, 0, wh )
             # Color
-            px =  self.event_x / ww
-            py = ( wh - self.event_y ) / wh
+            px =  self.ex / ww
+            py = ( wh - self.ey ) / wh
         if self.shape == "R":
             # Cursor
             mini, maxi, delta = self.Diamond_Inter( ey, ww, wh )
-            self.event_x = self.geometry.Limit_Range( ex, mini, maxi )
-            self.event_y = self.geometry.Limit_Range( ey, 0, self.widget_height )
+            self.ex = self.geometry.Limit_Range( ex, mini, maxi )
+            self.ey = self.geometry.Limit_Range( ey, 0, self.hh )
             # Color
             if delta == 0:px = 0
-            else:px = ( self.event_x - mini ) / delta
-            py = ( wh - self.event_y ) / wh
+            else:px = ( self.ex - mini ) / delta
+            py = ( wh - self.ey ) / wh
 
         # Variables
         if self.shape == "3":
             mode = "HSL"
-            inter = self.Triangle_Inter( ey, self.widget_width, self.widget_height )
+            inter = self.Triangle_Inter( ey, self.ww, self.hh )
             if inter == 0:c2 = 0
             else:c2 = ex / inter
         if self.shape == "4":
             mode = self.wheel_space
-            c2 = ex / self.widget_width
+            c2 = ex / self.ww
         if self.shape == "R":
             mode = "HSL"
-            mini, maxi, delta = self.Diamond_Inter( ey, self.widget_width, self.widget_height )
+            mini, maxi, delta = self.Diamond_Inter( ey, self.ww, self.hh )
             if delta == 0:c2 = 0
             else:c2 = ( ex - mini ) / delta
-        c3 = ( self.widget_height - ey ) / self.widget_height
+        c3 = ( self.hh - ey ) / self.hh
 
         # Limit
         c2 = self.geometry.Limit_Float( c2 )
@@ -1064,7 +1063,7 @@ class Panel_Square( QWidget ):
             self.SIGNAL_PIN_EDIT.emit( dictionary )
     def Cursor_Tangent( self, ex ):
         # Hue
-        delta_hue = ( ( ex - self.origin_x ) / self.widget_width )
+        delta_hue = ( ( ex - self.origin_x ) / self.ww )
         angle = self.origin_tan_axis + delta_hue
         if self.wheel_space == "YUV":
             self.tan_axis = self.geometry.Limit_Float( angle )
@@ -1077,8 +1076,8 @@ class Panel_Square( QWidget ):
             distance = []
             for i in range( 0, len( self.pin_list ) ):
                 if self.pin_list[i]["active"] == True:
-                    px = self.pin_list[i][f"{self.chan}_2"] * self.widget_width
-                    py = ( 1 - self.pin_list[i][f"{self.chan}_3"] ) * self.widget_height
+                    px = self.pin_list[i][f"{self.chan}_2"] * self.ww
+                    py = ( 1 - self.pin_list[i][f"{self.chan}_3"] ) * self.hh
                     dist = self.geometry.Trig_2D_Points_Distance( ex, ey, px, py )
                     distance.append( ( dist, i ) )
             if len( distance ) > 0:
@@ -1095,8 +1094,6 @@ class Panel_Square( QWidget ):
 
     # Paint
     def paintEvent( self, event ):
-        # Theme
-        krita_theme( self )
         # Painter
         painter = QPainter( self )
         painter.setRenderHint( QtGui.QPainter.Antialiasing, True )
@@ -1108,15 +1105,15 @@ class Panel_Square( QWidget ):
                 if self.shape == "3":
                     triangle = QPainterPath()
                     triangle.moveTo( int( 0 ), int( 1 ) )
-                    triangle.lineTo( int( self.widget_width ), int( self.widget_height * 0.5 ) )
-                    triangle.lineTo( int( 0 ), int( self.widget_height ) )
+                    triangle.lineTo( int( self.ww ), int( self.hh * 0.5 ) )
+                    triangle.lineTo( int( 0 ), int( self.hh ) )
                     painter.setClipPath( triangle )
                 if self.shape == "R":
                     diamond = QPainterPath()
-                    diamond.moveTo( int( self.widget_width * 0.5 ), int( 0 ) )
-                    diamond.lineTo( int( self.widget_width ), int( self.widget_height * 0.5 ) )
-                    diamond.lineTo( int( self.widget_width * 0.5 ), int( self.widget_height ) )
-                    diamond.lineTo( int( 0 ), int( self.widget_height * 0.5 ) )
+                    diamond.moveTo( int( self.ww * 0.5 ), int( 0 ) )
+                    diamond.lineTo( int( self.ww ), int( self.hh * 0.5 ) )
+                    diamond.lineTo( int( self.ww * 0.5 ), int( self.hh ) )
+                    diamond.lineTo( int( 0 ), int( self.hh * 0.5 ) )
                     painter.setClipPath( diamond )
 
                 # Draw Pixmaps
@@ -1125,7 +1122,7 @@ class Panel_Square( QWidget ):
                 index = int( self.tan_axis * self.tan_range )
                 qpixmap = self.qpixmap_list[index]
                 if qpixmap.isNull() == False:
-                    render = qpixmap.scaled( self.widget_width, self.widget_height, Qt.IgnoreAspectRatio, Qt.FastTransformation )
+                    render = qpixmap.scaled( self.ww, self.hh, Qt.IgnoreAspectRatio, Qt.FastTransformation )
                 else:
                     render = qpixmap
                 painter.drawPixmap( int( 0 ), int( 0 ), render )
@@ -1136,12 +1133,12 @@ class Panel_Square( QWidget ):
         if self.wheel_space == "YUV":
             # Variables
             line_size = 2
-            w1 = int( self.widget_width )
-            h1 = int( self.widget_height )
+            w1 = int( self.ww )
+            h1 = int( self.hh )
             w2 = int( w1 * 0.5 )
             h2 = int( h1 * 0.5 )
             # Painter
-            painter.setPen( QPen( self.color_1, line_size, Qt.SolidLine, Qt.SquareCap, Qt.MiterJoin ) )
+            painter.setPen( QPen( self.color_theme, line_size, Qt.SolidLine, Qt.SquareCap, Qt.MiterJoin ) )
             painter.setBrush( QtCore.Qt.NoBrush )
             # Draw Cross
             painter.drawLine( int( w2 ), int( 0 ), int( w2 ), int( h1 ) )
@@ -1167,8 +1164,8 @@ class Panel_Square( QWidget ):
             for i in range( 0, length ):
                 color = self.analyse[i]
                 if int( self.tan_axis * 360 ) == int( color[f"{self.chan}_1"] * 360 ):
-                    px = color[f"{self.chan}_2"] * self.widget_width
-                    py = ( 1 - color[f"{self.chan}_3"] ) * self.widget_height
+                    px = color[f"{self.chan}_2"] * self.ww
+                    py = ( 1 - color[f"{self.chan}_3"] ) * self.hh
                     painter.drawEllipse( int( px - dot ), int( py - dot ), int( dot * 2 ), int( dot * 2 ) )
 
         # Pinned Colors
@@ -1188,15 +1185,15 @@ class Panel_Square( QWidget ):
                         cy = ( 1 - self.pin_list[i]["hsl_3"] )
                         inter = self.Triangle_Inter( cy, 1, 1 )
                         painter.drawEllipse( 
-                            int( ( cx * inter * self.widget_width ) - pin_size ),
-                            int( ( cy * self.widget_height ) - pin_size ),
+                            int( ( cx * inter * self.ww ) - pin_size ),
+                            int( ( cy * self.hh ) - pin_size ),
                             int( pin_size * 2 ),
                             int( pin_size * 2 )
                             )
                     if self.shape == "4":
                         painter.drawEllipse( 
-                            int( ( self.pin_list[i][f"{self.chan}_2"] * self.widget_width ) - pin_size ),
-                            int( ( ( 1-self.pin_list[i][f"{self.chan}_3"] ) * self.widget_height ) - pin_size ),
+                            int( ( self.pin_list[i][f"{self.chan}_2"] * self.ww ) - pin_size ),
+                            int( ( ( 1-self.pin_list[i][f"{self.chan}_3"] ) * self.hh ) - pin_size ),
                             int( pin_size * 2 ),
                             int( pin_size * 2 )
                             )
@@ -1206,8 +1203,8 @@ class Panel_Square( QWidget ):
                         mini, maxi, delta = self.Diamond_Inter( cy, 1, 1 )
                         value = mini + cx * delta
                         painter.drawEllipse( 
-                            int( ( value * self.widget_width ) - pin_size ),
-                            int( ( cy * self.widget_height ) - pin_size ),
+                            int( ( value * self.ww ) - pin_size ),
+                            int( ( cy * self.hh ) - pin_size ),
                             int( pin_size * 2 ),
                             int( pin_size * 2 )
                             )
@@ -1225,19 +1222,19 @@ class Panel_Square( QWidget ):
                     cx = self.harmony_list[i]["hsl_2"]
                     cy = ( 1 - self.harmony_list[i]["hsl_3"] )
                     inter = self.Triangle_Inter( cy, 1, 1 )
-                    har_x = cx * inter * self.widget_width
-                    har_y = cy * self.widget_height
+                    har_x = cx * inter * self.ww
+                    har_y = cy * self.hh
                 if self.shape == "4":
                     chan = self.wheel_space.lower()
-                    har_x = self.harmony_list[i][f"{chan}_2"] * self.widget_width
-                    har_y = ( 1 - self.harmony_list[i][f"{chan}_3"] ) * self.widget_height
+                    har_x = self.harmony_list[i][f"{chan}_2"] * self.ww
+                    har_y = ( 1 - self.harmony_list[i][f"{chan}_3"] ) * self.hh
                 if self.shape == "R":
                     cx = self.harmony_list[i]["hsl_2"]
                     cy = ( 1 - self.harmony_list[i]["hsl_3"] )
                     mini, maxi, delta = self.Diamond_Inter( cy, 1, 1 )
                     value = mini + cx * delta
-                    har_x = value * self.widget_width
-                    har_y = cy * self.widget_height
+                    har_x = value * self.ww
+                    har_y = cy * self.hh
                 points.append( ( har_x, har_y ) )
             length = len( points )
 
@@ -1275,14 +1272,14 @@ class Panel_HueCircle( QWidget ):
     # Init
     def __init__( self, parent ):
         super( Panel_HueCircle, self ).__init__( parent )
-        self.Init_Variables()
+        self.Variables()
     def sizeHint( self ):
         return QtCore.QSize( render_width, render_height )
-    def Init_Variables( self ):
+    def Variables( self ):
         # Widget
         self.press = False
-        self.widget_width = 0
-        self.widget_height = 0
+        self.ww = 0
+        self.hh = 0
         self.w2 = 0
         self.h2 = 0
         self.px = 0
@@ -1296,7 +1293,6 @@ class Panel_HueCircle( QWidget ):
         # Color
         self.color = None
         self.hex_color = QColor( "#000000" )
-        self.theme_value = QColor( "#31363b" )
         self.colors = [
             [1, 0, 0],   # Index = 0 > red
             [1, 0.5, 0], # Index = 1 > orange
@@ -1306,6 +1302,9 @@ class Panel_HueCircle( QWidget ):
             [0, 0, 1],   # Index = 5 > blue
             [1, 0, 1],   # Index = 6 > magenta
             ]
+        self.color_1 = QColor( "#e5e5e5" )
+        self.color_2 = QColor( "#191919" )
+        self.color_theme = QColor( "#31363b" )
 
         # Hue
         self.digital = [ 0, 60, 120, 180, 240, 300, 360 ]
@@ -1334,85 +1333,82 @@ class Panel_HueCircle( QWidget ):
     def Set_Shape( self, huecircle_shape ):
         self.huecircle_shape = huecircle_shape
         self.update()
-    def Set_Size( self, widget_width, widget_height, subpanel_shape ):
+    def Set_Size( self, ww, hh, subpanel_shape ):
         # Widget
-        self.widget_width = widget_width
-        self.widget_height = widget_height
-        self.w2 = widget_width * 0.5
-        self.h2 = widget_height * 0.5
+        self.ww = ww
+        self.hh = hh
+        self.w2 = ww * 0.5
+        self.h2 = hh * 0.5
         # Frame
-        if self.widget_width >= self.widget_height:
-            self.side = self.widget_height
+        if self.ww >= self.hh:
+            self.side = self.hh
             self.px = self.w2 - ( self.side * 0.5 )
             self.py = 0
         else:
-            self.side = self.widget_width
+            self.side = self.ww
             self.px = 0
             self.py = self.h2 - ( self.side * 0.5 )
 
         # Variables
-        m1 = 2
-        m2 = 2 * m1
-        m3 = 0.13
-        m4 = 1 - ( 2 * m3 )
+        pad = 5
         # Regions
-        circle_outter = QRegion(
-            int( self.px - m1 ),
-            int( self.py - m1 ),
-            int( self.side + m2 ),
-            int( self.side + m2 ),
-            QRegion.Ellipse
-            )
-        circle_inner =  QRegion(
-            int( self.px + self.side * m3 ),
-            int( self.py + self.side * m3 ),
-            int( self.side * m4 ),
-            int( self.side * m4 ),
-            QRegion.Ellipse
+        widget_square = QRegion(
+            int( 0 ),
+            int( 0 ),
+            int( self.ww ),
+            int( self.hh ),
+            QRegion.Rectangle
             )
         if subpanel_shape == "None":
-            region = circle_inner
+            mask_region = widget_square
         if subpanel_shape == "Triangle":
             x = 0.28
             y = 0.13
             k = 0.07
             t = 1 - k - x
             polygon = QPolygon( [
-                    QPoint( int( self.px + x * self.side ), int( self.py + y * self.side ) ),
-                    QPoint( int( self.px + self.side - k * self.side ), int( self.h2 ) ),
-                    QPoint( int( self.px + x * self.side ), int( self.py + self.side - y * self.side ) ),
-                    ] )
+                # Top
+                QPoint( int( self.px + x * self.side - pad ),       int( self.py + y * self.side ) ),
+                QPoint( int( self.px + x * self.side ),             int( self.py + y * self.side - pad ) ),
+                # Right
+                QPoint( int( self.px + self.side - k * self.side ), int( self.h2 - pad ) ),
+                QPoint( int( self.px + self.side - k * self.side ), int( self.h2 + pad ) ),
+                # Bot
+                QPoint( int( self.px + x * self.side ),             int( self.py + self.side - y * self.side + pad ) ),
+                QPoint( int( self.px + x * self.side - pad ),       int( self.py + self.side - y * self.side ) ),
+                ] )
             triangle = QRegion( polygon, Qt.OddEvenFill )
-            region = triangle.united( circle_inner )
+            mask_region = widget_square.subtracted( triangle )
         if subpanel_shape == "Square":
             k = 0.2
             square = QRegion(
-                int( self.px + self.side * k ),
-                int( self.py + self.side * k ),
-                int( self.side - ( 2 * k * self.side ) ),
-                int( self.side - ( 2 * k * self.side ) ),
+                int( self.px + self.side * k - pad ),
+                int( self.py + self.side * k - pad ),
+                int( self.side - ( 2 * k * self.side ) + ( 2 * pad ) ),
+                int( self.side - ( 2 * k * self.side ) + ( 2 * pad ) ),
                 QRegion.Rectangle
                 )
-            region = square.united( circle_inner )
+            mask_region = widget_square.subtracted( square )
         if subpanel_shape == "Diamond":
             k = 0.07
             kk = ( 1 - k * 2 ) / 2
             polygon = QPolygon( [
-                    QPoint( int( self.w2 ), int( self.h2 - self.side * kk ) ),
-                    QPoint( int( self.w2 + self.side * kk ), int( self.h2 ) ),
-                    QPoint( int( self.w2 ), int( self.h2 + self.side * kk ) ),
-                    QPoint( int( self.w2 - self.side * kk ), int( self.h2 ) ),
+                    QPoint( int( self.w2 ),                         int( self.h2 - self.side * kk - pad ) ),
+                    QPoint( int( self.w2 + self.side * kk + pad ),  int( self.h2 ) ),
+                    QPoint( int( self.w2 ),                         int( self.h2 + self.side * kk + pad ) ),
+                    QPoint( int( self.w2 - self.side * kk - pad ),  int( self.h2 ) ),
                     ] )
             diamond = QRegion( polygon, Qt.OddEvenFill )
-            region = diamond.united( circle_inner )
+            mask_region = widget_square.subtracted( diamond )
         # Mask
-        mask_region = circle_outter.subtracted( region )
         self.setMask( mask_region )
 
         # Update
-        self.update()
-    def Set_Theme( self, theme_value ):
-        self.theme_value = QColor( theme_value )
+        self.resize( ww, hh )
+    def Set_Theme( self, color_1, color_2, color_theme ):
+        self.color_1 = color_1
+        self.color_2 = color_2
+        self.color_theme = color_theme
         self.update()
 
     # Update
@@ -1473,7 +1469,7 @@ class Panel_HueCircle( QWidget ):
     def Cursor_Angle( self, event ):
         # Variables
         ex = event.x()
-        ey = self.widget_height - event.y()
+        ey = self.hh - event.y()
         # Angle Measure
         if self.wheel_mode == "DIGITAL":
             angle = self.geometry.Trig_2D_Points_Lines_Angle( ex, ey, self.w2, self.h2, 0, self.h2 )
@@ -1498,41 +1494,39 @@ class Panel_HueCircle( QWidget ):
     def Context_Menu( self, event ):
         if self.press == False:
             # Menu
-            cmenu = QMenu( self )
+            qmenu = QMenu( self )
 
             # Action 
-            cmenu_sn = cmenu.addAction( "None" )
-            cmenu_st = cmenu.addAction( "Triangle" )
-            cmenu_ss = cmenu.addAction( "Square" )
-            cmenu_sd = cmenu.addAction( "Diamond" )
-            cmenu_sn.setCheckable( True )
-            cmenu_st.setCheckable( True )
-            cmenu_ss.setCheckable( True )
-            cmenu_sd.setCheckable( True )
-            cmenu_sn.setChecked( self.huecircle_shape == "None" )
-            cmenu_st.setChecked( self.huecircle_shape == "Triangle" )
-            cmenu_ss.setChecked( self.huecircle_shape == "Square" )
-            cmenu_sd.setChecked( self.huecircle_shape == "Diamond" )
+            qmenu_sn = qmenu.addAction( "None" )
+            qmenu_st = qmenu.addAction( "Triangle" )
+            qmenu_ss = qmenu.addAction( "Square" )
+            qmenu_sd = qmenu.addAction( "Diamond" )
+            qmenu_sn.setCheckable( True )
+            qmenu_st.setCheckable( True )
+            qmenu_ss.setCheckable( True )
+            qmenu_sd.setCheckable( True )
+            qmenu_sn.setChecked( self.huecircle_shape == "None" )
+            qmenu_st.setChecked( self.huecircle_shape == "Triangle" )
+            qmenu_ss.setChecked( self.huecircle_shape == "Square" )
+            qmenu_sd.setChecked( self.huecircle_shape == "Diamond" )
 
-            action = cmenu.exec_( self.mapToGlobal( event.pos() ) )
+            action = qmenu.exec_( self.mapToGlobal( event.pos() ) )
             # Triggers
-            if action == cmenu_sn:
+            if action == qmenu_sn:
                 self.huecircle_shape = "None"
                 self.SIGNAL_SUBPANEL.emit( self.huecircle_shape )
-            if action == cmenu_st:
+            if action == qmenu_st:
                 self.huecircle_shape = "Triangle"
                 self.SIGNAL_SUBPANEL.emit( self.huecircle_shape )
-            if action == cmenu_ss:
+            if action == qmenu_ss:
                 self.huecircle_shape = "Square"
                 self.SIGNAL_SUBPANEL.emit( self.huecircle_shape )
-            if action == cmenu_sd:
+            if action == qmenu_sd:
                 self.huecircle_shape = "Diamond"
                 self.SIGNAL_SUBPANEL.emit( self.huecircle_shape )
 
     # Paint
     def paintEvent( self, event ):
-        # Theme
-        krita_theme( self )
         # Painter
         painter = QPainter( self )
         painter.setRenderHint( QtGui.QPainter.Antialiasing, True )
@@ -1577,17 +1571,11 @@ class Panel_HueCircle( QWidget ):
 
         # Dark Border
         painter.setPen( QtCore.Qt.NoPen )
-        painter.setBrush( QBrush( self.theme_value ) )
+        painter.setBrush( QBrush( self.color_theme ) )
         circle_02 = circle_0.subtracted( circle_2 )
         painter.drawPath( circle_02 )
-
-        # Dark Border
-        painter.setPen( QtCore.Qt.NoPen )
-        painter.setBrush( QBrush( self.theme_value ) )
-        circle_02 = circle_0.subtracted( circle_2 )
-        painter.drawPath( circle_02 )
-        # Dark Lines
-        painter.setPen( QPen( self.theme_value, line_width, Qt.SolidLine, Qt.SquareCap, Qt.MiterJoin ) )
+        # Dark Lines Color Reference
+        painter.setPen( QPen( self.color_theme, line_width, Qt.SolidLine, Qt.SquareCap, Qt.MiterJoin ) )
         painter.setBrush( QtCore.Qt.NoBrush )
         s1 = self.side
         s2 = self.side * 0.5
@@ -1598,7 +1586,7 @@ class Panel_HueCircle( QWidget ):
             for i in range( 0, len( self.analog ) ):
                 painter.drawLine( int( div[i][0] ), int( div[i][1] ), int( self.w2 ), int( self.h2 ) )
 
-        # Line Gray
+        # Light Line
         painter.setPen( QPen( self.color_1, line_width, Qt.SolidLine, Qt.SquareCap, Qt.MiterJoin ) )
         painter.setBrush( QtCore.Qt.NoBrush )
         circle_13 = circle_1.subtracted( circle_3 )
@@ -1639,8 +1627,8 @@ class Panel_HueCircle( QWidget ):
         circle_01 = circle_0.subtracted( circle_1 )
         painter.setClipPath( circle_01 )
         painter.drawRect( int( self.px ), int( self.py ), int( self.side ), int( self.side ) )
-        # Line Dark over Hue
-        painter.setPen( QPen( self.theme_value, line_width, Qt.SolidLine, Qt.SquareCap, Qt.MiterJoin ) )
+        # Dark Line over Hue
+        painter.setPen( QPen( self.color_theme, line_width, Qt.SolidLine, Qt.SquareCap, Qt.MiterJoin ) )
         painter.setBrush( QtCore.Qt.NoBrush )
         circle_01 = circle_0.subtracted( circle_1 )
         painter.setClipPath( circle_01 )
@@ -1659,18 +1647,18 @@ class Panel_Gamut( QWidget ):
     # Init
     def __init__( self, parent ):
         super( Panel_Gamut, self ).__init__( parent )
-        self.Init_Variables()
+        self.Variables()
     def sizeHint( self ):
         return QtCore.QSize( render_width, render_height )
-    def Init_Variables( self ):
+    def Variables( self ):
         # Widget
         self.press = False
-        self.widget_width = 0
-        self.widget_height = 0
+        self.ww = 0
+        self.hh = 0
         self.w2 = 0
         self.h2 = 0
-        self.event_x = 0
-        self.event_y = 0
+        self.ex = 0
+        self.ey = 0
         self.origin_x = 0
         self.origin_y = 0
         self.origin_tan_axis = 0
@@ -1708,7 +1696,9 @@ class Panel_Gamut( QWidget ):
         # Color
         self.color = None
         self.hex_color = QColor( "#000000" )
-        self.theme_value = QColor( "#31363b" )
+        self.color_1 = QColor( "#e5e5e5" )
+        self.color_2 = QColor( "#191919" )
+        self.color_theme = QColor( "#31363b" )
         # Harmony Colors
         self.harmony_index = None
         self.harmony_list = None
@@ -1779,7 +1769,7 @@ class Panel_Gamut( QWidget ):
 
         # Cursor
         if self.color != None:
-            self.event_x, self.event_y = self.Update_Cursor( self.color )
+            self.ex, self.ey = self.Update_Cursor( self.color )
 
         # Read Zip File
         location = os.path.join( self.directory, panel )
@@ -1788,19 +1778,22 @@ class Panel_Gamut( QWidget ):
 
         # Update
         self.update()
-    def Set_Size( self, widget_width, widget_height ):
+    def Set_Theme( self, color_1, color_2 ):
+        self.color_1 = color_1
+        self.color_2 = color_2
+    def Set_Size( self, ww, hh ):
         # Widget
-        self.widget_width = widget_width
-        self.widget_height = widget_height
-        self.w2 = widget_width * 0.5
-        self.h2 = widget_height * 0.5
+        self.ww = ww
+        self.hh = hh
+        self.w2 = ww * 0.5
+        self.h2 = hh * 0.5
         # Frame
-        if self.widget_width >= self.widget_height:
-            self.side = self.widget_height
+        if self.ww >= self.hh:
+            self.side = self.hh
             self.px = self.w2 - ( self.side * 0.5 )
             self.py = 0
         else:
-            self.side = self.widget_width
+            self.side = self.ww
             self.px = 0
             self.py = self.h2 - ( self.side * 0.5 )
         # Disk Coordinates
@@ -1809,9 +1802,11 @@ class Panel_Gamut( QWidget ):
         self.disk_side = ( 1 - 2 * self.disk_var ) * self.side
 
         # Update
-        self.update()
-    def Set_Theme( self, theme_value ):
-        self.theme_value = QColor( theme_value )
+        self.resize( ww, hh )
+    def Set_Theme( self, color_1, color_2, color_theme ):
+        self.color_1 = color_1
+        self.color_2 = color_2
+        self.color_theme = color_theme
         self.update()
 
     # Update
@@ -1821,8 +1816,8 @@ class Panel_Gamut( QWidget ):
         self.hex_color = QColor( color["hex6"] )
 
         # Location of Cursor
-        self.event_x, self.event_y = self.Update_Cursor( self.color )
-        self.previous_dist = self.geometry.Trig_2D_Points_Distance( self.event_x, self.event_y, self.w2, self.h2 )
+        self.ex, self.ey = self.Update_Cursor( self.color )
+        self.previous_dist = self.geometry.Trig_2D_Points_Distance( self.ex, self.ey, self.w2, self.h2 )
 
         # Update
         self.update()
@@ -1982,7 +1977,7 @@ class Panel_Gamut( QWidget ):
         self.update()
     def mouseReleaseEvent( self, event ):
         # Previous
-        self.previous_dist = self.geometry.Trig_2D_Points_Distance( self.event_x, self.event_y, self.w2, self.h2 )
+        self.previous_dist = self.geometry.Trig_2D_Points_Distance( self.ex, self.ey, self.w2, self.h2 )
         # Variables
         self.press = False
         self.zoom = False
@@ -2016,15 +2011,15 @@ class Panel_Gamut( QWidget ):
         radius = self.side * self.disk_radius
         if self.region == False: # Ring
             distance = self.previous_dist
-            self.event_x, self.event_y = self.geometry.Trig_2D_Angle_Circle( self.w2, self.h2, self.disk_side, distance, angle )
+            self.ex, self.ey = self.geometry.Trig_2D_Angle_Circle( self.w2, self.h2, self.disk_side, distance, angle )
         if self.region == True: # Disk
             distance = self.geometry.Trig_2D_Points_Distance( ex, ey, self.w2, self.h2 )
             if distance >= radius:
                 distance = radius
-                self.event_x, self.event_y = self.geometry.Trig_2D_Angle_Circle( self.w2, self.h2, self.disk_side, 0.5, angle )
+                self.ex, self.ey = self.geometry.Trig_2D_Angle_Circle( self.w2, self.h2, self.disk_side, 0.5, angle )
             else:
-                self.event_x = ex
-                self.event_y = ey
+                self.ex = ex
+                self.ey = ey
 
         # Variables
         c1 = hue
@@ -2033,8 +2028,8 @@ class Panel_Gamut( QWidget ):
         # Edit Dot
         if self.gamut_index != None:
             # Move
-            mx = ( self.event_x - self.disk_x ) / self.disk_side
-            my = ( self.event_y - self.disk_y ) / self.disk_side
+            mx = ( self.ex - self.disk_x ) / self.disk_side
+            my = ( self.ey - self.disk_y ) / self.disk_side
             # Apply
             lista = self.Gamut_List( self.gamut_mask )
             if ( self.gamut_mask != "2 Circle" and self.gamut_index != 0 ):
@@ -2056,7 +2051,7 @@ class Panel_Gamut( QWidget ):
             self.Cursor_Position( ex, ey, True )
         if self.region == True: # Disk
             # Hue
-            delta_hue = ( ( ex - self.origin_x ) / self.widget_width )
+            delta_hue = ( ( ex - self.origin_x ) / self.ww )
             self.tan_axis = self.geometry.Limit_Float( self.origin_tan_axis + delta_hue )
             # Update
             self.SIGNAL_TAN.emit( self.tan_axis )
@@ -2175,49 +2170,49 @@ class Panel_Gamut( QWidget ):
     def Context_Menu( self, event ):
         if self.press == False:
             # Menu
-            cmenu = QMenu( self )
+            qmenu = QMenu( self )
             # Action 
-            cmenu_gn = cmenu.addAction( "None" )
-            cmenu_gt = cmenu.addAction( "Triangle" )
-            cmenu_gs = cmenu.addAction( "Square" )
-            cmenu_g1c = cmenu.addAction( "Circle" )
-            cmenu_g2c = cmenu.addAction( "2 Circle" )
-            cmenu_g3p = cmenu.addAction( "3 Pie" )
-            cmenu_gr = cmenu.addAction( "Reset" )
-            cmenu_gn.setCheckable( True )
-            cmenu_gt.setCheckable( True )
-            cmenu_gs.setCheckable( True )
-            cmenu_g1c.setCheckable( True )
-            cmenu_g2c.setCheckable( True )
-            cmenu_g3p.setCheckable( True )
-            cmenu_gn.setChecked( self.gamut_mask == "None" )
-            cmenu_gt.setChecked( self.gamut_mask == "Triangle" )
-            cmenu_gs.setChecked( self.gamut_mask == "Square" )
-            cmenu_g1c.setChecked( self.gamut_mask == "Circle" )
-            cmenu_g2c.setChecked( self.gamut_mask == "2 Circle" )
-            cmenu_g3p.setChecked( self.gamut_mask == "3 Pie" )
+            qmenu_gn = qmenu.addAction( "None" )
+            qmenu_gt = qmenu.addAction( "Triangle" )
+            qmenu_gs = qmenu.addAction( "Square" )
+            qmenu_g1c = qmenu.addAction( "Circle" )
+            qmenu_g2c = qmenu.addAction( "2 Circle" )
+            qmenu_g3p = qmenu.addAction( "3 Pie" )
+            qmenu_gr = qmenu.addAction( "Reset" )
+            qmenu_gn.setCheckable( True )
+            qmenu_gt.setCheckable( True )
+            qmenu_gs.setCheckable( True )
+            qmenu_g1c.setCheckable( True )
+            qmenu_g2c.setCheckable( True )
+            qmenu_g3p.setCheckable( True )
+            qmenu_gn.setChecked( self.gamut_mask == "None" )
+            qmenu_gt.setChecked( self.gamut_mask == "Triangle" )
+            qmenu_gs.setChecked( self.gamut_mask == "Square" )
+            qmenu_g1c.setChecked( self.gamut_mask == "Circle" )
+            qmenu_g2c.setChecked( self.gamut_mask == "2 Circle" )
+            qmenu_g3p.setChecked( self.gamut_mask == "3 Pie" )
             # Mapping
-            action = cmenu.exec_( self.mapToGlobal( event.pos() ) )
+            action = qmenu.exec_( self.mapToGlobal( event.pos() ) )
             # Triggers
-            if action == cmenu_gn:
+            if action == qmenu_gn:
                 self.gamut_mask = "None"
                 self.SIGNAL_MASK.emit( self.gamut_mask )
-            if action == cmenu_gt:
+            if action == qmenu_gt:
                 self.gamut_mask = "Triangle"
                 self.SIGNAL_MASK.emit( self.gamut_mask )
-            if action == cmenu_gs:
+            if action == qmenu_gs:
                 self.gamut_mask = "Square"
                 self.SIGNAL_MASK.emit( self.gamut_mask )
-            if action == cmenu_g1c:
+            if action == qmenu_g1c:
                 self.gamut_mask = "Circle"
                 self.SIGNAL_MASK.emit( self.gamut_mask )
-            if action == cmenu_g2c:
+            if action == qmenu_g2c:
                 self.gamut_mask = "2 Circle"
                 self.SIGNAL_MASK.emit( self.gamut_mask )
-            if action == cmenu_g3p:
+            if action == qmenu_g3p:
                 self.gamut_mask = "3 Pie"
                 self.SIGNAL_MASK.emit( self.gamut_mask )
-            if action == cmenu_gr:
+            if action == qmenu_gr:
                 if self.gamut_mask == "Triangle":
                     self.gamut_1tri = self.neutral_1tri.copy()
                 if self.gamut_mask == "Square":
@@ -2238,8 +2233,6 @@ class Panel_Gamut( QWidget ):
 
     # Paint
     def paintEvent( self, event ):
-        # Theme
-        krita_theme( self )
         # Painter
         painter = QPainter( self )
         painter.setRenderHint( QtGui.QPainter.Antialiasing, True )
@@ -2283,16 +2276,16 @@ class Panel_Gamut( QWidget ):
 
         # Outter Mask
         outline = QPainterPath()
-        outline.addEllipse( int( 0 ), int( 0 ), int( self.widget_width ), int( self.widget_height ) )
+        outline.addEllipse( int( 0 ), int( 0 ), int( self.ww ), int( self.hh ) )
         painter.setClipPath( circle_0 )
 
         # Dark Border
         painter.setPen( QtCore.Qt.NoPen )
-        painter.setBrush( QBrush( self.theme_value ) )
+        painter.setBrush( QBrush( self.color_theme ) )
         circle_02 = circle_0.subtracted( circle_2 )
         painter.drawPath( circle_02 )
         # Dark Lines
-        painter.setPen( QPen( self.theme_value, line_width, Qt.SolidLine, Qt.SquareCap, Qt.MiterJoin ) )
+        painter.setPen( QPen( self.color_theme, line_width, Qt.SolidLine, Qt.SquareCap, Qt.MiterJoin ) )
         painter.setBrush( QtCore.Qt.NoBrush )
         if self.wheel_mode == "DIGITAL":
             for i in range( 0, len( self.digital ) ):
@@ -2320,9 +2313,9 @@ class Panel_Gamut( QWidget ):
         # Reset Mask
         square = QPainterPath()
         square.moveTo( int( 0 ), int( 0 ) )
-        square.lineTo( int( self.widget_width ), int( 0 ) )
-        square.lineTo( int( self.widget_width ), int( self.widget_height ) )
-        square.lineTo( int( 0 ), int( self.widget_height ) )
+        square.lineTo( int( self.ww ), int( 0 ) )
+        square.lineTo( int( self.ww ), int( self.hh ) )
+        square.lineTo( int( 0 ), int( self.hh ) )
         painter.setClipPath( square )
 
         # Draw Gradient
@@ -2434,7 +2427,7 @@ class Panel_Gamut( QWidget ):
             ang_a1 = 16 * self.geometry.Trig_2D_Points_Lines_Angle(
                 gdx + self.gamut_3pie[1][0] * gds, gdy + self.gamut_3pie[1][1] * gds,
                 self.w2, self.h2,
-                self.widget_width, self.h2,
+                self.ww, self.h2,
                 )
             ang_a2 = -16 * self.geometry.Trig_2D_Points_Lines_Angle(
                 gdx + self.gamut_3pie[1][0] * gds, gdy + self.gamut_3pie[1][1] * gds,
@@ -2444,7 +2437,7 @@ class Panel_Gamut( QWidget ):
             ang_b1 = 16 * self.geometry.Trig_2D_Points_Lines_Angle(
                 gdx + self.gamut_3pie[3][0] * gds, gdy + self.gamut_3pie[3][1] * gds,
                 self.w2, self.h2,
-                self.widget_width, self.h2,
+                self.ww, self.h2,
                 )
             ang_b2 = -16 * self.geometry.Trig_2D_Points_Lines_Angle(
                 gdx + self.gamut_3pie[3][0] * gds, gdy + self.gamut_3pie[3][1] * gds,
@@ -2454,7 +2447,7 @@ class Panel_Gamut( QWidget ):
             ang_c1 = 16 * self.geometry.Trig_2D_Points_Lines_Angle(
                 gdx + self.gamut_3pie[5][0] * gds, gdy + self.gamut_3pie[5][1] * gds,
                 self.w2, self.h2,
-                self.widget_width, self.h2,
+                self.ww, self.h2,
                 )
             ang_c2 = -16 * self.geometry.Trig_2D_Points_Lines_Angle(
                 gdx + self.gamut_3pie[5][0] * gds, gdy + self.gamut_3pie[5][1] * gds,
@@ -2632,20 +2625,20 @@ class Panel_Hexagon( QWidget ):
     # Init
     def __init__( self, parent ):
         super( Panel_Hexagon, self ).__init__( parent )
-        self.Init_Variables()
+        self.Variables()
     def sizeHint( self ):
         return QtCore.QSize( render_width, render_height )
-    def Init_Variables( self ):
+    def Variables( self ):
         # Widget
-        self.widget_width = 0
-        self.widget_height = 0
+        self.ww = 0
+        self.hh = 0
         self.w2 = 0
         self.h2 = 0
         self.origin_x = 0
         self.origin_y = 0
         self.origin_tan_axis = 0
-        self.event_x = 0
-        self.event_y = 0
+        self.ex = 0
+        self.ey = 0
         self.press = False
         self.pressure = 0
         self.input_pressure = 0.5
@@ -2711,8 +2704,8 @@ class Panel_Hexagon( QWidget ):
 
         # Cursor
         if self.color != None:
-            self.event_x = self.geometry.Limit_Range( self.color[f"uvd_1"] * self.widget_width, 0, self.widget_width )
-            self.event_y = self.geometry.Limit_Range( self.color[f"uvd_2"] * self.widget_height, 0, self.widget_height )
+            self.ex = self.geometry.Limit_Range( self.color[f"uvd_1"] * self.ww, 0, self.ww )
+            self.ey = self.geometry.Limit_Range( self.color[f"uvd_2"] * self.hh, 0, self.hh )
 
         # Read Zip File
         location = os.path.join( self.directory, panel )
@@ -2721,25 +2714,25 @@ class Panel_Hexagon( QWidget ):
 
         # Update
         self.update()
-    def Set_Size( self, widget_width, widget_height ):
+    def Set_Size( self, ww, hh ):
         # Variables
-        self.widget_width = widget_width
-        self.widget_height = widget_height
-        self.w2 = widget_width * 0.5
-        self.h2 = widget_height * 0.5
+        self.ww = ww
+        self.hh = hh
+        self.w2 = ww * 0.5
+        self.h2 = hh * 0.5
         # Frame
-        if self.widget_width >= self.widget_height:
-            self.side = self.widget_height
+        if self.ww >= self.hh:
+            self.side = self.hh
             self.px = self.w2 - ( self.side * 0.5 )
             self.py = 0
         else:
-            self.side = self.widget_width
+            self.side = self.ww
             self.px = 0
             self.py = self.h2 - ( self.side * 0.5 )
         # Origin Points
         self.O1, self.O2, self.O3, self.O4, self.O5, self.O6, C12, C23, C34, C45, C56, self.C61 = self.convert.uvd_hexagon( self.tan_axis, 0.5, 0.5, -1 )
         # Update
-        self.update()
+        self.resize( ww, hh )
     def Set_Zoom( self, boolean ):
         self.press = boolean
         self.zoom = boolean
@@ -2752,8 +2745,8 @@ class Panel_Hexagon( QWidget ):
         # Display
         self.hex_color = QColor( color["hex6"] )
         # Values
-        self.event_x = self.px + ( 0.5 + color["uvd_1"] * 0.5 ) * self.side
-        self.event_y = self.py + ( 0.5 - color["uvd_2"] * 0.5 ) * self.side
+        self.ex = self.px + ( 0.5 + color["uvd_1"] * 0.5 ) * self.side
+        self.ey = self.py + ( 0.5 - color["uvd_2"] * 0.5 ) * self.side
         self.tan_axis = color["uvd_3"]
         # Origin Points
         self.O1, self.O2, self.O3, self.O4, self.O5, self.O6, C12, C23, C34, C45, C56, self.C61 = self.convert.uvd_hexagon( self.tan_axis, 0.5, 0.5, -1 )
@@ -2879,12 +2872,12 @@ class Panel_Hexagon( QWidget ):
     def Cursor_Position( self, ex, ey, pin_index ):
         # Calculation
         if ( self.tan_axis <= 0 or self.tan_axis >= 1 ):
-            self.event_x = self.w2
-            self.event_y = self.h2
+            self.ex = self.w2
+            self.ey = self.h2
         else:
-            self.event_x, self.event_y = self.Hexagon_Inter( ex, ey, self.tan_axis)
-        u = 2 * ( ( self.event_x - self.px ) / self.side ) - 1
-        v = -2 * ( ( self.event_y - self.py ) / self.side ) + 1
+            self.ex, self.ey = self.Hexagon_Inter( ex, ey, self.tan_axis)
+        u = 2 * ( ( self.ex - self.px ) / self.side ) - 1
+        v = -2 * ( ( self.ey - self.py ) / self.side ) + 1
 
         # Signal
         values = { "c1" : u, "c2" : v, "pin_index" : pin_index }
@@ -2893,7 +2886,7 @@ class Panel_Hexagon( QWidget ):
             self.SIGNAL_PIN_EDIT.emit( values )
     def Cursor_Tangent( self, ex ):
         # Hue
-        delta_hue = ( ( ex - self.origin_x ) / self.widget_width )
+        delta_hue = ( ( ex - self.origin_x ) / self.ww )
         self.tan_axis = self.geometry.Limit_Float( self.origin_tan_axis + delta_hue )
         # Update
         self.SIGNAL_TAN.emit( self.tan_axis )
@@ -2983,8 +2976,6 @@ class Panel_Hexagon( QWidget ):
 
     # Paint
     def paintEvent( self, event ):
-        # Theme
-        krita_theme( self )
         # Painter
         painter = QPainter( self )
         painter.setRenderHint( QtGui.QPainter.Antialiasing, True )
@@ -3013,9 +3004,9 @@ class Panel_Hexagon( QWidget ):
             # Reset Mask
             square = QPainterPath()
             square.moveTo( int( 0 ), int( 0 ) )
-            square.lineTo( int( self.widget_width ), int( 0 ) )
-            square.lineTo( int( self.widget_width ), int( self.widget_height ) )
-            square.lineTo( int( 0 ), int( self.widget_height ) )
+            square.lineTo( int( self.ww ), int( 0 ) )
+            square.lineTo( int( self.ww ), int( self.hh ) )
+            square.lineTo( int( 0 ), int( self.hh ) )
             painter.setClipPath( square )
 
         # Analyse Colors
@@ -3034,7 +3025,6 @@ class Panel_Hexagon( QWidget ):
                     px = self.px + ( 0.5 + color["uvd_1"] * 0.5 ) * self.side
                     py = self.py + ( 0.5 - color["uvd_2"] * 0.5 ) * self.side
                     painter.drawEllipse( int( px - dot ), int( py - dot ), int( dot * 2 ), int( dot * 2 ) )
-
 
         # Pinned Colors
         if ( self.color != None and self.pin_list != None ):
@@ -3103,14 +3093,14 @@ class Panel_Dot( QWidget ):
     # Init
     def __init__( self, parent ):
         super( Panel_Dot, self ).__init__( parent )
-        self.Init_Variables()
+        self.Variables()
     def sizeHint( self ):
         return QtCore.QSize( render_width, render_height )
-    def Init_Variables( self ):
+    def Variables( self ):
         # Widget
         self.press = False
-        self.widget_width = 0
-        self.widget_height = 0
+        self.ww = 0
+        self.hh = 0
         self.w2 = 0
         self.h2 = 0
         self.press = False
@@ -3119,8 +3109,8 @@ class Panel_Dot( QWidget ):
         self.input_pressure = 0.5
 
         # Events
-        self.event_x = 0
-        self.event_y = 0
+        self.ex = 0
+        self.ey = 0
         self.dot_x = 0
         self.dot_y = 0
 
@@ -3141,6 +3131,8 @@ class Panel_Dot( QWidget ):
 
         # Color
         self.hex_color = QColor( "#000000" )
+        self.color_black = QColor( "#000000")
+        self.color_white = QColor( "#ffffff")
 
         # Modules
         self.geometry = Geometry()
@@ -3150,15 +3142,15 @@ class Panel_Dot( QWidget ):
         self.update()
 
     # Relay
-    def Set_Size( self, widget_width, widget_height ):
+    def Set_Size( self, ww, hh ):
         # Widget Size
-        self.widget_width = widget_width
-        self.widget_height = widget_height
-        self.w2 = int( widget_width * 0.5 )
-        self.h2 = int( widget_height * 0.5 )
+        self.ww = ww
+        self.hh = hh
+        self.w2 = int( ww * 0.5 )
+        self.h2 = int( hh * 0.5 )
         # Cursor Move
         self.Cursor_Move( self.dot_x, self.dot_y )
-        self.update()
+        self.resize( ww, hh )
     def Set_Interpolation( self, string ):
         self.dot_interpolation = string
         self.update()
@@ -3271,8 +3263,8 @@ class Panel_Dot( QWidget ):
     # Mouse Event
     def Cursor_Move( self, dot_x, dot_y ):
         if self.dot_matrix != None:
-            self.event_x = int( self.w2 - ( self.side * 0.5 ) + ( self.unit*dot_x + self.margin*( dot_x-1 ) ) + ( self.unit * 0.5 ) )
-            self.event_y = int( self.h2 - ( self.side * 0.5 ) + ( self.unit*dot_y + self.margin*( dot_y-1 ) ) + ( self.unit * 0.5 ) )
+            self.ex = int( self.w2 - ( self.side * 0.5 ) + ( self.unit*dot_x + self.margin*( dot_x-1 ) ) + ( self.unit * 0.5 ) )
+            self.ey = int( self.h2 - ( self.side * 0.5 ) + ( self.unit*dot_y + self.margin*( dot_y-1 ) ) + ( self.unit * 0.5 ) )
     def Cursor_Position( self, event ):
         # Read
         ex = event.x()
@@ -3291,8 +3283,8 @@ class Panel_Dot( QWidget ):
             points.sort()
 
             # Input
-            self.event_x = points[0][1]
-            self.event_y = points[0][2]
+            self.ex = points[0][1]
+            self.ey = points[0][2]
             # Lock
             self.dot_x = points[0][4]
             self.dot_y = points[0][5]
@@ -3308,132 +3300,132 @@ class Panel_Dot( QWidget ):
     def Context_Menu( self, event ):
         if self.press == False:
             # Menu
-            cmenu = QMenu( self )
+            qmenu = QMenu( self )
             # Interpolation
-            cmenu_interpolation = cmenu.addMenu( "Interpolation" )
-            cmenu_int_rgb = cmenu_interpolation.addAction( "RGB" )
-            cmenu_int_cmyk = cmenu_interpolation.addAction( "CMYK" )
-            cmenu_int_ryb = cmenu_interpolation.addAction( "RYB" )
-            cmenu_int_yuv = cmenu_interpolation.addAction( "YUV" )
-            cmenu_int_hsv = cmenu_interpolation.addAction( "HSV" )
-            cmenu_int_hsl = cmenu_interpolation.addAction( "HSL" )
-            cmenu_int_hcy = cmenu_interpolation.addAction( "HCY" )
-            cmenu_int_ard = cmenu_interpolation.addAction( "ARD" )
-            cmenu_int_rgb.setCheckable( True )
-            cmenu_int_cmyk.setCheckable( True )
-            cmenu_int_ryb.setCheckable( True )
-            cmenu_int_yuv.setCheckable( True )
-            cmenu_int_hsv.setCheckable( True )
-            cmenu_int_hsl.setCheckable( True )
-            cmenu_int_hcy.setCheckable( True )
-            cmenu_int_ard.setCheckable( True )
-            cmenu_int_rgb.setChecked( self.dot_interpolation == "RGB" )
-            cmenu_int_cmyk.setChecked( self.dot_interpolation == "CMYK" )
-            cmenu_int_ryb.setChecked( self.dot_interpolation == "RYB" )
-            cmenu_int_yuv.setChecked( self.dot_interpolation == "YUV" )
-            cmenu_int_hsv.setChecked( self.dot_interpolation == "HSV" )
-            cmenu_int_hsl.setChecked( self.dot_interpolation == "HSL" )
-            cmenu_int_hcy.setChecked( self.dot_interpolation == "HCY" )
-            cmenu_int_ard.setChecked( self.dot_interpolation == "ARD" )
+            qmenu_interpolation = qmenu.addMenu( "Interpolation" )
+            qmenu_int_rgb = qmenu_interpolation.addAction( "RGB" )
+            qmenu_int_cmyk = qmenu_interpolation.addAction( "CMYK" )
+            qmenu_int_ryb = qmenu_interpolation.addAction( "RYB" )
+            qmenu_int_yuv = qmenu_interpolation.addAction( "YUV" )
+            qmenu_int_hsv = qmenu_interpolation.addAction( "HSV" )
+            qmenu_int_hsl = qmenu_interpolation.addAction( "HSL" )
+            qmenu_int_hcy = qmenu_interpolation.addAction( "HCY" )
+            qmenu_int_ard = qmenu_interpolation.addAction( "ARD" )
+            qmenu_int_rgb.setCheckable( True )
+            qmenu_int_cmyk.setCheckable( True )
+            qmenu_int_ryb.setCheckable( True )
+            qmenu_int_yuv.setCheckable( True )
+            qmenu_int_hsv.setCheckable( True )
+            qmenu_int_hsl.setCheckable( True )
+            qmenu_int_hcy.setCheckable( True )
+            qmenu_int_ard.setCheckable( True )
+            qmenu_int_rgb.setChecked( self.dot_interpolation == "RGB" )
+            qmenu_int_cmyk.setChecked( self.dot_interpolation == "CMYK" )
+            qmenu_int_ryb.setChecked( self.dot_interpolation == "RYB" )
+            qmenu_int_yuv.setChecked( self.dot_interpolation == "YUV" )
+            qmenu_int_hsv.setChecked( self.dot_interpolation == "HSV" )
+            qmenu_int_hsl.setChecked( self.dot_interpolation == "HSL" )
+            qmenu_int_hcy.setChecked( self.dot_interpolation == "HCY" )
+            qmenu_int_ard.setChecked( self.dot_interpolation == "ARD" )
             # Dimension
-            cmenu_dimension = cmenu.addMenu( "Dimension" )
-            cmenu_dim_3 = cmenu_dimension.addAction( "3 x 3" )
-            cmenu_dim_5 = cmenu_dimension.addAction( "5 x 5" )
-            cmenu_dim_7 = cmenu_dimension.addAction( "7 x 7" )
-            cmenu_dim_9 = cmenu_dimension.addAction( "9 x 9" )
-            cmenu_dim_11 = cmenu_dimension.addAction( "11 x 11" )
-            cmenu_dim_13 = cmenu_dimension.addAction( "13 x 13" )
-            cmenu_dim_15 = cmenu_dimension.addAction( "15 x 15" )
-            cmenu_dim_17 = cmenu_dimension.addAction( "17 x 17" )
-            cmenu_dim_19 = cmenu_dimension.addAction( "19 x 19" )
-            cmenu_dim_21 = cmenu_dimension.addAction( "21 x 21" )
-            cmenu_dim_3.setCheckable( True )
-            cmenu_dim_5.setCheckable( True )
-            cmenu_dim_7.setCheckable( True )
-            cmenu_dim_9.setCheckable( True )
-            cmenu_dim_11.setCheckable( True )
-            cmenu_dim_13.setCheckable( True )
-            cmenu_dim_15.setCheckable( True )
-            cmenu_dim_17.setCheckable( True )
-            cmenu_dim_19.setCheckable( True )
-            cmenu_dim_21.setCheckable( True )
-            cmenu_dim_3.setChecked( self.dot_dimension == "3 x 3" )
-            cmenu_dim_5.setChecked( self.dot_dimension == "5 x 5" )
-            cmenu_dim_7.setChecked( self.dot_dimension == "7 x 7" )
-            cmenu_dim_9.setChecked( self.dot_dimension == "9 x 9" )
-            cmenu_dim_11.setChecked( self.dot_dimension == "11 x 11" )
-            cmenu_dim_13.setChecked( self.dot_dimension == "13 x 13" )
-            cmenu_dim_15.setChecked( self.dot_dimension == "15 x 15" )
-            cmenu_dim_17.setChecked( self.dot_dimension == "17 x 17" )
-            cmenu_dim_19.setChecked( self.dot_dimension == "19 x 19" )
-            cmenu_dim_21.setChecked( self.dot_dimension == "21 x 21" )
+            qmenu_dimension = qmenu.addMenu( "Dimension" )
+            qmenu_dim_3 = qmenu_dimension.addAction( "3 x 3" )
+            qmenu_dim_5 = qmenu_dimension.addAction( "5 x 5" )
+            qmenu_dim_7 = qmenu_dimension.addAction( "7 x 7" )
+            qmenu_dim_9 = qmenu_dimension.addAction( "9 x 9" )
+            qmenu_dim_11 = qmenu_dimension.addAction( "11 x 11" )
+            qmenu_dim_13 = qmenu_dimension.addAction( "13 x 13" )
+            qmenu_dim_15 = qmenu_dimension.addAction( "15 x 15" )
+            qmenu_dim_17 = qmenu_dimension.addAction( "17 x 17" )
+            qmenu_dim_19 = qmenu_dimension.addAction( "19 x 19" )
+            qmenu_dim_21 = qmenu_dimension.addAction( "21 x 21" )
+            qmenu_dim_3.setCheckable( True )
+            qmenu_dim_5.setCheckable( True )
+            qmenu_dim_7.setCheckable( True )
+            qmenu_dim_9.setCheckable( True )
+            qmenu_dim_11.setCheckable( True )
+            qmenu_dim_13.setCheckable( True )
+            qmenu_dim_15.setCheckable( True )
+            qmenu_dim_17.setCheckable( True )
+            qmenu_dim_19.setCheckable( True )
+            qmenu_dim_21.setCheckable( True )
+            qmenu_dim_3.setChecked( self.dot_dimension == "3 x 3" )
+            qmenu_dim_5.setChecked( self.dot_dimension == "5 x 5" )
+            qmenu_dim_7.setChecked( self.dot_dimension == "7 x 7" )
+            qmenu_dim_9.setChecked( self.dot_dimension == "9 x 9" )
+            qmenu_dim_11.setChecked( self.dot_dimension == "11 x 11" )
+            qmenu_dim_13.setChecked( self.dot_dimension == "13 x 13" )
+            qmenu_dim_15.setChecked( self.dot_dimension == "15 x 15" )
+            qmenu_dim_17.setChecked( self.dot_dimension == "17 x 17" )
+            qmenu_dim_19.setChecked( self.dot_dimension == "19 x 19" )
+            qmenu_dim_21.setChecked( self.dot_dimension == "21 x 21" )
             # Edit
-            cmenu_edit = cmenu.addAction( "Edit" )
-            cmenu_edit.setCheckable( True )
-            cmenu_edit.setChecked( self.dot_edit )
+            qmenu_edit = qmenu.addAction( "Edit" )
+            qmenu_edit.setCheckable( True )
+            qmenu_edit.setChecked( self.dot_edit )
             # Reset
-            cmenu_zorn = cmenu.addAction( "Zorn Palette" )
+            qmenu_zorn = qmenu.addAction( "Zorn Palette" )
 
             # Actions
-            action = cmenu.exec_( self.mapToGlobal( event.pos() ) )
+            action = qmenu.exec_( self.mapToGlobal( event.pos() ) )
             # Triggers
-            if action == cmenu_int_rgb:
+            if action == qmenu_int_rgb:
                 self.dot_interpolation = "RGB"
                 self.SIGNAL_INTERPOLATION.emit( self.dot_interpolation )
-            if action == cmenu_int_cmyk:
+            if action == qmenu_int_cmyk:
                 self.dot_interpolation = "CMYK"
                 self.SIGNAL_INTERPOLATION.emit( self.dot_interpolation )
-            if action == cmenu_int_ryb:
+            if action == qmenu_int_ryb:
                 self.dot_interpolation = "RYB"
                 self.SIGNAL_INTERPOLATION.emit( self.dot_interpolation )
-            if action == cmenu_int_yuv:
+            if action == qmenu_int_yuv:
                 self.dot_interpolation = "YUV"
                 self.SIGNAL_INTERPOLATION.emit( self.dot_interpolation )
-            if action == cmenu_int_hsv:
+            if action == qmenu_int_hsv:
                 self.dot_interpolation = "HSV"
                 self.SIGNAL_INTERPOLATION.emit( self.dot_interpolation )
-            if action == cmenu_int_hsl:
+            if action == qmenu_int_hsl:
                 self.dot_interpolation = "HSL"
                 self.SIGNAL_INTERPOLATION.emit( self.dot_interpolation )
-            if action == cmenu_int_hcy:
+            if action == qmenu_int_hcy:
                 self.dot_interpolation = "HCY"
                 self.SIGNAL_INTERPOLATION.emit( self.dot_interpolation )
-            if action == cmenu_int_ard:
+            if action == qmenu_int_ard:
                 self.dot_interpolation = "ARD"
                 self.SIGNAL_INTERPOLATION.emit( self.dot_interpolation )
-            if action == cmenu_dim_3:
+            if action == qmenu_dim_3:
                 self.dot_dimension = 3
                 self.SIGNAL_DIMENSION.emit( self.dot_dimension )
-            if action == cmenu_dim_5:
+            if action == qmenu_dim_5:
                 self.dot_dimension = 5
                 self.SIGNAL_DIMENSION.emit( self.dot_dimension )
-            if action == cmenu_dim_7:
+            if action == qmenu_dim_7:
                 self.dot_dimension = 7
                 self.SIGNAL_DIMENSION.emit( self.dot_dimension )
-            if action == cmenu_dim_9:
+            if action == qmenu_dim_9:
                 self.dot_dimension = 9
                 self.SIGNAL_DIMENSION.emit( self.dot_dimension )
-            if action == cmenu_dim_11:
+            if action == qmenu_dim_11:
                 self.dot_dimension = 11
                 self.SIGNAL_DIMENSION.emit( self.dot_dimension )
-            if action == cmenu_dim_13:
+            if action == qmenu_dim_13:
                 self.dot_dimension = 13
                 self.SIGNAL_DIMENSION.emit( self.dot_dimension )
-            if action == cmenu_dim_15:
+            if action == qmenu_dim_15:
                 self.dot_dimension = 15
                 self.SIGNAL_DIMENSION.emit( self.dot_dimension )
-            if action == cmenu_dim_17:
+            if action == qmenu_dim_17:
                 self.dot_dimension = 17
                 self.SIGNAL_DIMENSION.emit( self.dot_dimension )
-            if action == cmenu_dim_19:
+            if action == qmenu_dim_19:
                 self.dot_dimension = 19
                 self.SIGNAL_DIMENSION.emit( self.dot_dimension )
-            if action == cmenu_dim_21:
+            if action == qmenu_dim_21:
                 self.dot_dimension = 21
                 self.SIGNAL_DIMENSION.emit( self.dot_dimension )
-            if action == cmenu_edit:
+            if action == qmenu_edit:
                 self.SIGNAL_EDIT.emit( not self.dot_edit )
-            if action == cmenu_zorn:
+            if action == qmenu_zorn:
                 self.SIGNAL_ZORN.emit( 0 )
 
     # Tablet Interaction
@@ -3443,8 +3435,6 @@ class Panel_Dot( QWidget ):
 
     # Paint
     def paintEvent( self, event ):
-        # Theme
-        krita_theme( self )
         # Painter
         painter = QPainter( self )
         painter.setRenderHint( QtGui.QPainter.Antialiasing, True )
@@ -3486,14 +3476,14 @@ class Panel_Dot( QWidget ):
         # Mask
         mask = QPainterPath()
         mask.addEllipse( 
-            int( self.event_x - s2 ),
-            int( self.event_y - s2 ),
+            int( self.ex - s2 ),
+            int( self.ey - s2 ),
             int( size * 2 ),
             int( size * 2 ),
             )
         mask.addEllipse( 
-            int( self.event_x - s2 + w * 2 ),
-            int( self.event_y - s2 + w * 2 ),
+            int( self.ex - s2 + w * 2 ),
+            int( self.ey - s2 + w * 2 ),
             int( size * 2 - w * 4 ),
             int( size * 2 - w * 4 ),
             )
@@ -3502,8 +3492,8 @@ class Panel_Dot( QWidget ):
         painter.setPen( QtCore.Qt.NoPen )
         painter.setBrush( QBrush( self.color_black ) )
         painter.drawEllipse( 
-            int( self.event_x - s2 ),
-            int( self.event_y - s2 ),
+            int( self.ex - s2 ),
+            int( self.ey - s2 ),
             int( size * 2 ),
             int( size * 2 ),
             )
@@ -3511,8 +3501,8 @@ class Panel_Dot( QWidget ):
         painter.setPen( QtCore.Qt.NoPen )
         painter.setBrush( QBrush( self.color_white ) )
         painter.drawEllipse( 
-            int( self.event_x - s2 + w ),
-            int( self.event_y - s2 + w ),
+            int( self.ex - s2 + w ),
+            int( self.ey - s2 + w ),
             int( size * 2 - w * 2 ),
             int( size * 2 - w * 2 ),
             )
@@ -3521,16 +3511,16 @@ class Panel_Dot( QWidget ):
         painter.setPen( QtCore.Qt.NoPen )
         painter.setBrush( QBrush( self.color_black ) )
         painter.drawEllipse( 
-            int( self.event_x - zoom_size + s2 ),
-            int( self.event_y - zoom_size + s2 ),
+            int( self.ex - zoom_size + s2 ),
+            int( self.ey - zoom_size + s2 ),
             int( zoom_size * 2 ),
             int( zoom_size * 2 ),
             )
         # Hex Color
         painter.setBrush( QBrush( self.hex_color ) )
         painter.drawEllipse( 
-            int( self.event_x - zoom_size + margin_size + s2 ),
-            int( self.event_y - zoom_size + margin_size + s2 ),
+            int( self.ex - zoom_size + margin_size + s2 ),
+            int( self.ey - zoom_size + margin_size + s2 ),
             int( zoom_size * 2 - margin_size * 2 ),
             int( zoom_size * 2 - margin_size * 2 ),
             )
@@ -3546,14 +3536,14 @@ class Panel_Mask( QWidget ):
     # Init
     def __init__( self, parent ):
         super( Panel_Mask, self ).__init__( parent )
-        self.Init_Variables()
+        self.Variables()
     def sizeHint( self ):
         return QtCore.QSize( render_width, render_height )
-    def Init_Variables( self ):
+    def Variables( self ):
             # Widget
         self.press = False
-        self.widget_width = 0
-        self.widget_height = 0
+        self.ww = 0
+        self.hh = 0
         self.w2 = 0
         self.h2 = 0
         self.press = False
@@ -3564,8 +3554,8 @@ class Panel_Mask( QWidget ):
         # Events
         self.origin_x = -10
         self.origin_y = -10
-        self.event_x = -10
-        self.event_y = -10
+        self.ex = -10
+        self.ey = -10
 
         # Mask
         self.mask_edit = True
@@ -3630,14 +3620,14 @@ class Panel_Mask( QWidget ):
         self.qimage = QImage()
 
     # Set
-    def Set_Size( self, widget_width, widget_height ):
-        self.widget_width = widget_width
-        self.widget_height = widget_height
-        self.w2 = widget_width * 0.5
-        self.h2 = widget_height * 0.5
-        self.event_x = -10
-        self.event_y = -10
-        self.update()
+    def Set_Size( self, ww, hh ):
+        self.ww = ww
+        self.hh = hh
+        self.w2 = ww * 0.5
+        self.h2 = hh * 0.5
+        self.ex = -10
+        self.ey = -10
+        self.resize( ww, hh )
     def Set_Directory( self, directory ):
         # Variables
         self.directory = directory
@@ -3732,8 +3722,8 @@ class Panel_Mask( QWidget ):
         # Input
         ex = event.x()
         ey = event.y()
-        self.event_x = ex
-        self.event_y = ey
+        self.ex = ex
+        self.ey = ey
         self.press = True
 
         # LMB Neutral
@@ -3764,8 +3754,8 @@ class Panel_Mask( QWidget ):
         # Input
         ex = event.x()
         ey = event.y()
-        self.event_x = ex
-        self.event_y = ey
+        self.ex = ex
+        self.ey = ey
         self.press = True
 
         # LMB Neutral
@@ -3794,8 +3784,8 @@ class Panel_Mask( QWidget ):
         self.update()
     def mouseReleaseEvent( self, event ):
         # Input
-        self.event_x = event.x()
-        self.event_y = event.y()
+        self.ex = event.x()
+        self.ey = event.y()
 
         # Variables
         self.press = False
@@ -3821,22 +3811,22 @@ class Panel_Mask( QWidget ):
         # Menu
         if self.press == False:
             # Menu
-            cmenu = QMenu( self )
+            qmenu = QMenu( self )
 
             # Mask Sets
-            cmenu_maps = cmenu.addMenu( "Maps" )
+            qmenu_maps = qmenu.addMenu( "Maps" )
             actions = {}
             for i in range( 0, len( sub_folder ) ):
-                actions[i] = cmenu_maps.addAction( sub_folder[i] )
+                actions[i] = qmenu_maps.addAction( sub_folder[i] )
             # Edit
-            cmenu_edit = cmenu.addAction( "Edit" )
-            cmenu_edit.setCheckable( True )
-            cmenu_edit.setChecked( self.mask_edit )
+            qmenu_edit = qmenu.addAction( "Edit" )
+            qmenu_edit.setCheckable( True )
+            qmenu_edit.setChecked( self.mask_edit )
             # Reset
-            cmenu_reset = cmenu.addAction( "Reset" )
+            qmenu_reset = qmenu.addAction( "Reset" )
 
             # Actions
-            action = cmenu.exec_( self.mapToGlobal( event.pos() ) )
+            action = qmenu.exec_( self.mapToGlobal( event.pos() ) )
             # Triggers
             for i in range( 0, len( sub_folder ) ):
                 if action == actions[i]:
@@ -3844,9 +3834,9 @@ class Panel_Mask( QWidget ):
                     self.Update_Path( path )
                     self.SIGNAL_MASKSET.emit( path )
                     break
-            if action == cmenu_edit:
+            if action == qmenu_edit:
                 self.SIGNAL_EDIT.emit( not self.mask_edit )
-            if action == cmenu_reset:
+            if action == qmenu_reset:
                 self.SIGNAL_RESET.emit( True )
 
     # Tablet Interaction
@@ -3856,26 +3846,24 @@ class Panel_Mask( QWidget ):
 
     # Paint
     def paintEvent( self, event ):
-        # Theme
-        krita_theme( self )
         # Painter
         painter = QPainter( self )
         painter.setRenderHint( QtGui.QPainter.Antialiasing, True )
 
         # Background
         painter.setPen( QtCore.Qt.NoPen )
-        bw = QLinearGradient( int( 0 ), int( 0 ), int( 0 ), int( self.widget_height ) )
+        bw = QLinearGradient( int( 0 ), int( 0 ), int( 0 ), int( self.hh ) )
         bw.setColorAt( 0.000, QColor( 0, 0, 0, 0 ) ) # White
-        bw.setColorAt( 1.000, QColor( 0, 0, 0, 100 ) ) # Black
+        bw.setColorAt( 1.000, QColor( 0, 0, 0, 50 ) ) # Black
         painter.setBrush( QBrush( bw ) )
-        painter.drawRect( int( 0 ), int( 0 ), int( self.widget_width ), int( self.widget_height ) )
+        painter.drawRect( int( 0 ), int( 0 ), int( self.ww ), int( self.hh ) )
 
         # Draw Pixmaps
         if self.mask_qpixmaps != None:
             for i in range( 0, len( self.mask_qpixmaps ) ):
                 qpixmap = self.mask_qpixmaps[i]
                 if qpixmap.isNull() == False:
-                    render = qpixmap.scaled( self.widget_width, self.widget_height, Qt.KeepAspectRatio, Qt.FastTransformation )
+                    render = qpixmap.scaled( self.ww, self.hh, Qt.KeepAspectRatio, Qt.FastTransformation )
                     w = render.width()
                     h = render.height()
                     px = int( self.w2 - w * 0.5 )
@@ -3895,6 +3883,389 @@ class Panel_Mask( QWidget ):
         else:
             Cursor_Normal( self, painter, size )
 
+class Panel_Sample_List( QWidget ):
+    SIGNAL_INDEX = QtCore.pyqtSignal( [ int, bool ] )
+
+    # Init
+    def __init__( self, parent ):
+        super( Panel_Sample_List, self ).__init__( parent )
+        self.Variables()
+    def sizeHint( self ):
+        return QtCore.QSize( render_width, render_height )
+    def Variables( self ):
+        # Widget
+        self.ww = 0
+        self.hh = 0
+        # Event
+        self.ex = 0
+        self.ey = 0
+        # Colors
+        self.color_alpha = QColor( 0, 0, 0, 150 )
+        self.color_1 = QColor( "#e5e5e5" )
+        self.color_2 = QColor( "#191919" )
+        # Display
+        self.list_qpixmap = None
+        self.list_text = None
+        # Constants
+        self.operation = None
+        self.origin = 0
+        self.oy = 0
+        self.oh = 0
+        self.height = 0
+        self.margin = 5
+        self.thumb = 120 - 2 * self.margin
+        # Modules
+        self.geometry = Geometry()
+
+    # Relay
+    def Set_Size( self, ww, hh ):
+        self.ww = ww
+        self.hh = hh
+        self.Thumb_Center()
+        self.resize( ww, hh )
+    def Set_Theme( self, color_1, color_2 ):
+        self.color_1 = color_1
+        self.color_2 = color_2
+        self.update()
+    def Set_Display( self, lista ):
+        if lista == None:
+            self.list_qpixmap = None
+            self.list_text = None
+        else:
+            self.list_qpixmap = []
+            self.list_text = []
+            for item in lista:
+                qpixmap = item["render"].scaledToWidth( int( self.thumb ), Qt.FastTransformation )
+                self.height = qpixmap.height() + self.margin
+                self.list_qpixmap.append( qpixmap )
+                self.list_text.append( item["text"] )
+            self.oh = self.height * len( lista )
+            self.Thumb_Center()
+        self.update()
+
+    # Mouse Interaction
+    def mousePressEvent( self, event ):
+        # Event
+        ex = event.x()
+        ey = event.y()
+        self.Cursor_Position( ex, ey )
+        # Inputs
+        if ( event.modifiers() == QtCore.Qt.NoModifier and event.buttons() == QtCore.Qt.LeftButton ):
+            self.operation = "index"
+            self.Cursor_Index( False )
+        if ( event.modifiers() != QtCore.Qt.NoModifier and event.buttons() == QtCore.Qt.LeftButton ) or ( event.buttons() == QtCore.Qt.RightButton ):
+            self.operation = "move"
+            self.origin = ey
+            self.Thumb_Move( ex, ey )
+        self.update()
+    def mouseMoveEvent( self, event ):
+        # Event
+        ex = event.x()
+        ey = event.y()
+        self.Cursor_Position( ex, ey )
+        # Inputs
+        if self.operation == "index":
+            self.Cursor_Index( False )
+        if self.operation == "move":
+            self.Thumb_Move( ex, ey )
+        self.update()
+    def mouseDoubleClickEvent( self, event ):
+        # Event
+        ex = event.x()
+        ey = event.y()
+        self.Cursor_Position( ex, ey )
+        # Input
+        self.Cursor_Index( True )
+        self.update()
+    def mouseReleaseEvent( self, event ):
+        self.ex = 0
+        self.ey = 0
+        self.operation = None
+        self.update()
+
+    # Mouse Event
+    def Cursor_Position( self, ex, ey ):
+        self.ex = self.geometry.Limit_Range( ex, 0, self.ww )
+        self.ey = self.geometry.Limit_Range( ey, 0, self.hh )
+    def Cursor_Index( self, boolean ):
+        if ( self.list_qpixmap != None and self.list_text != None ):
+            if ( self.ey >= self.oy and self.ey <= ( self.oy + self.height * len( self.list_qpixmap ) ) ):
+                index = int( self.geometry.Limit_Range( int( ( self.ey - self.oy ) / self.height ), 0, len( self.list_qpixmap ) - 1 ) )
+                self.SIGNAL_INDEX.emit( index, boolean )
+
+    # Wheel Events
+    def wheelEvent( self, event ):
+        if self.oh > self.hh:
+            # Variables
+            num = 0
+            factor = 10
+            # Read
+            delta_y = event.angleDelta().y()
+            if delta_y > 20:
+                num = -1
+            if delta_y < -20:
+                num = 1
+            # Offset
+            if num != 0:
+                self.oy += num * factor
+                self.oy = self.geometry.Limit_Range( self.oy, ( self.hh - self.oh + self.margin ), 0 )
+                self.update()
+        else:
+            self.Thumb_Center()
+
+    # Thumbnail
+    def Thumb_Move( self, ex, ey ):
+        factor = 10
+        delta = ey - self.origin
+        if self.oh > self.hh:
+            if delta <= -factor or delta >= factor:
+                self.oy = self.geometry.Limit_Range( self.oy + delta, ( self.hh - self.oh + self.margin ), 0 )
+                self.origin = ey
+        else:
+            self.Thumb_Center()
+        self.update()
+    def Thumb_Center( self ):
+        self.oy = ( self.hh * 0.5 ) - ( self.oh * 0.5 )
+        self.update()
+
+    # Painter Event
+    def paintEvent( self, event ):
+        # Painter
+        painter = QPainter( self )
+        painter.setRenderHint( QtGui.QPainter.Antialiasing, True )
+
+        # Variables
+        family = "Ubuntu Mono"
+        size = 12
+        # Render
+        try:
+            if ( self.list_qpixmap != None and self.list_text != None ):
+                for i in range( 0, len( self.list_qpixmap ) ):
+                    # Parsing
+                    qpixmap = self.list_qpixmap[i]
+                    text = self.list_text[i]
+                    # Image
+                    sh = self.height * i + self.oy
+                    painter.drawPixmap( int( self.margin ), int( sh ), qpixmap )
+                    # Text
+                    check_x = ( self.ex >= self.margin ) and ( self.ex <= self.ww - self.margin )
+                    check_y = ( self.ey >= sh ) and ( self.ey <= sh + self.height )
+                    if ( check_x == True and check_y == True ):
+                        # Variables
+                        qrect = QRect( int( self.margin ), int( sh ), int( self.thumb ), int( self.height - self.margin ) )
+                        # Contrast
+                        painter.setPen( QtCore.Qt.NoPen )
+                        painter.setBrush( QBrush( QColor( self.color_alpha ) ) )
+                        painter.drawRect( qrect )
+                        # Text
+                        painter.setPen( self.color_1 )
+                        painter.setFont( QFont( family, size ) )
+                        painter.drawText( qrect, Qt.AlignCenter, text )
+        except:
+            pass
+class Panel_Sample_Image( QWidget ):
+    SIGNAL_POSITION = QtCore.pyqtSignal( [ QPoint ] )
+
+    # Init
+    def __init__( self, parent ):
+        super( Panel_Sample_Image, self ).__init__( parent )
+        self.Variables()
+    def sizeHint( self ):
+        return QtCore.QSize( render_width, render_height )
+    def Variables( self ):
+        # Widget
+        self.ww = 0
+        self.hh = 0
+        self.w2 = 0
+        self.h2 = 0
+        # Event
+        self.ex = 0
+        self.ey = 0
+        # Colors
+        self.color_alpha = QColor( 0, 0, 0, 50 )
+        self.color_1 = QColor( "#e5e5e5" )
+        self.color_2 = QColor( "#191919" )
+        # Display
+        self.qpixmap = None
+        self.background = self.color_alpha
+        # Interaction
+        self.press = False
+        self.operation = None
+        self.zoom = False
+        self.pressure = 0
+        self.input_pressure = 0.5
+        # Modules
+        self.geometry = Geometry()
+
+    # Set
+    def Set_Size( self, ww, hh ):
+        self.ww = ww
+        self.hh = hh
+        self.w2 = ww * 0.5
+        self.h2 = hh * 0.5
+        self.resize( ww, hh )
+    def Set_Theme( self, color_1, color_2 ):
+        self.color_1 = color_1
+        self.color_2 = color_2
+        self.update()
+    def Set_Display( self, qpixmap, cor ):
+        self.qpixmap = qpixmap
+        if cor == False:
+            self.background = self.color_alpha
+        else:
+            self.background = QColor( 255, 0, 0, 50 )
+        self.update()
+
+    # Mouse Interaction
+    def mousePressEvent( self, event ):
+        # Event
+        ex = event.x()
+        ey = event.y()
+
+        # Variables
+        self.press = True
+
+        # Operation
+        if event.buttons() == QtCore.Qt.LeftButton:
+            if event.modifiers() == QtCore.Qt.NoModifier:
+                self.operation = "cursor"
+                self.Cursor_Position( ex, ey )
+            else:
+                self.operation = "zoom"
+                self.zoom = True
+                self.Cursor_Position( ex, ey )
+        if event.buttons() == QtCore.Qt.RightButton:
+            self.SIGNAL_POSITION.emit( event.pos() )
+        self.update()
+    def mouseMoveEvent( self, event ):
+        # Event
+        ex = event.x()
+        ey = event.y()
+
+        # Operation
+        if self.operation == "cursor":
+            self.Cursor_Position( ex, ey )
+        elif self.operation == "zoom":
+            self.zoom = True
+            self.Cursor_Position( ex, ey )
+        self.update()
+    def mouseDoubleClickEvent( self, event ):
+        # Events
+        ex = event.x()
+        ey = event.y()
+
+        # Operation
+        if self.operation == "cursor":
+            self.Cursor_Position( ex, ey )
+        elif self.operation == "zoom":
+            self.zoom = True
+            self.Cursor_Position( ex, ey )
+        self.update()
+    def mouseReleaseEvent( self, event ):
+        # Variables
+        self.press = False
+        self.operation = None
+        self.zoom = False
+        self.pressure = 0
+        # Updates
+        self.update()
+
+    # Mouse Event
+    def Cursor_Position( self, ex, ey ):
+        self.ex = self.geometry.Limit_Range( ex, 0, self.ww )
+        self.ey = self.geometry.Limit_Range( ey, 0, self.hh )
+
+    # Tablet Interaction
+    def tabletEvent( self, event ):
+        self.pressure = event.pressure()
+        self.update()
+
+    # Painter Event
+    def paintEvent( self, event ):
+        # Painter
+        painter = QPainter( self )
+        painter.setRenderHint( QtGui.QPainter.Antialiasing, True )
+
+        # Background Hover
+        painter.setPen( QtCore.Qt.NoPen )
+        painter.setBrush( QBrush( QColor( self.background ) ) )
+        painter.drawRect( 0, 0, self.ww, self.hh )
+
+        # Render
+        try:
+            if self.qpixmap != None:
+                painter.setPen( QtCore.Qt.NoPen )
+                painter.setBrush( QtCore.Qt.NoBrush )
+                if self.qpixmap.isNull() == False:
+                    # Image
+                    render = self.qpixmap.scaled( int( self.ww ), int( self.hh ), Qt.KeepAspectRatio, Qt.FastTransformation )
+                    rw = render.width()
+                    rh = render.height()
+                    px = int( ( self.ww * 0.5 ) - ( rw * 0.5 ) )
+                    py = int( ( self.hh * 0.5 ) - ( rh * 0.5 ) )
+                    painter.drawPixmap( int( px ), int( py ), render )
+
+                    # Zoom Cursor
+                    size = 10
+                    ms1 = 10
+                    ms2 = 2 * ms1
+                    image = False
+                    if ( self.press == True and self.zoom == True ):
+                        image = True
+                        p = 1
+                    elif( self.pressure > self.input_pressure ):
+                        image = True
+                        p = self.pressure
+                    if image == True:
+                        # Variables
+                        zs1 = 100 * p
+                        zs2 = 2 * zs1
+
+                        # Border
+                        painter.setPen( QtCore.Qt.NoPen )
+                        painter.setBrush( QBrush( QColor( "#000000" ) ) )
+                        painter.drawEllipse( 
+                            int( self.ex - zs1 ),
+                            int( self.ey - zs1 ),
+                            int( zs2 ),
+                            int( zs2 ),
+                            )
+
+                        # Variables
+                        dd = - zs1 + ms1
+                        cx = self.ex + dd
+                        cy = self.ey + dd
+                        cs = zs2 - ms2
+                        # Factor
+                        fx = self.qpixmap.width() / rw
+                        fy = self.qpixmap.height() / rh
+                        # Zoom Position
+                        zx = ( self.ex - px ) * fx + dd
+                        zy = ( self.ey - py ) * fy + dd
+                        # Zoom Image
+                        zoom = self.qpixmap.copy( int( zx ), int( zy ), int( cs ), int( cs ) )
+                        zw = zoom.width()
+                        zh = zoom.height()
+                        # Out of Bounds
+                        if ( zw > cs or zh > cs ):
+                            zoom = QPixmap( int( zs1 ), int( zs1 ) )
+                            zoom.fill( Qt.transparent )
+                        # Offset
+                        ox = 0
+                        oy = 0
+                        if ( zw < cs and self.ex < self.w2 ):
+                            ox = cs - zw
+                        if ( zh < cs and self.ey < self.h2 ):
+                            oy = cs - zh
+                        # Mask
+                        circle = QPainterPath()
+                        circle.addEllipse( int( cx ), int( cy ), int( cs ), int( cs ) )
+                        painter.setClipPath( circle, Qt.ReplaceClip )
+                        # Render
+                        painter.drawPixmap( int( cx + ox ), int( cy + oy ), zoom )
+        except:
+            pass
+
 #endregion
 #region Channels ###################################################################
 
@@ -3907,15 +4278,15 @@ class Channel_Slider( QWidget ):
     # Init
     def __init__( self, parent ):
         super( Channel_Slider, self ).__init__( parent )
-        self.Init_Variables()
+        self.Variables()
     def sizeHint( self ):
         return QtCore.QSize( render_width, 100 )
-    def Init_Variables( self ):
+    def Variables( self ):
         # Modules
         self.geometry = Geometry()
         # Widget
-        self.widget_width = 1
-        self.widget_height = 1
+        self.ww = 1
+        self.hh = 1
         # Display
         self.origin_x = 0
         self.origin_stops = 0
@@ -3929,15 +4300,21 @@ class Channel_Slider( QWidget ):
         self.colors = None
         self.alpha = 1
         self.index = None
+        # Colors
+        self.color_black = QColor( "#000000")
+        self.color_white = QColor( "#ffffff")
+        self.color_alpha = QColor( 0, 0, 0, 50 )
+        self.color_1 = QColor( "#191919" )
+        self.color_2 = QColor( "#e5e5e5" )
 
     # Relay
     def Set_Mode( self, mode ):
         self.mode = mode
         self.update()
-    def Set_Size( self, widget_width, widget_height ):
-        self.widget_width = widget_width
-        self.widget_height = widget_height
-        self.update()
+    def Set_Size( self, ww, hh ):
+        self.ww = ww
+        self.hh = hh
+        self.resize( ww, hh )
     def Set_Limits( self, minimum, half, maximum ):
         self.minimum = minimum
         self.half = half
@@ -3951,7 +4328,7 @@ class Channel_Slider( QWidget ):
         self.stops = stops
         self.update()
     def Set_Value( self, value ):
-        self.value = value * self.widget_width
+        self.value = value * self.ww
         self.update()
     def Set_Index( self, index ):
         self.index = index
@@ -4011,9 +4388,9 @@ class Channel_Slider( QWidget ):
         pos_x = event.pos().x()
         # Calculations
         if ( self.mode == "LINEAR" or self.mode == "MIXER" ):
-            value = self.geometry.Limit_Range( pos_x, 0, self.widget_width )
+            value = self.geometry.Limit_Range( pos_x, 0, self.ww )
         if self.mode == "CIRCULAR":
-            value = self.Loop_Hue( pos_x, self.widget_width )
+            value = self.Loop_Hue( pos_x, self.ww )
         return value
     def Loop_Hue( self, value, limit ):
         if value < 0:
@@ -4030,7 +4407,7 @@ class Channel_Slider( QWidget ):
         # Mouse
         self.value = self.Mouse_Position( event )
         # Calculations
-        percent = self.value / self.widget_width
+        percent = self.value / self.ww
         text = str( round( percent*100,2 ) ) + " %"
         # Emission
         self.SIGNAL_VALUE.emit( { "index":self.index, "value":percent } )
@@ -4038,14 +4415,14 @@ class Channel_Slider( QWidget ):
 
     # Snap
     def Snap_Half( self, event ):
-        self.value = self.half * self.widget_width
+        self.value = self.half * self.ww
         self.SIGNAL_VALUE.emit( { "index":self.index, "value":self.half } )
         self.SIGNAL_TEXT.emit( "50 %" )
     def Snap_Stop( self, event ):
         # Mouse
         value = self.Mouse_Position( event )
         # Calculations
-        unit = self.widget_width / self.stops
+        unit = self.ww / self.stops
         distances = []
         for i in range( 0, self.stops+1 ):
             dist = self.geometry.Trig_2D_Points_Distance( value, 0, ( unit * i ), 0 )
@@ -4053,7 +4430,7 @@ class Channel_Slider( QWidget ):
         value_min = min( distances )
         index = distances.index( value_min )
         self.value = unit * index
-        percent = self.value / self.widget_width
+        percent = self.value / self.ww
         text = str( round( percent*100,2 ) ) + " %"
         # Emission
         self.SIGNAL_VALUE.emit( { "index":self.index, "value":percent } )
@@ -4091,10 +4468,10 @@ class Channel_Slider( QWidget ):
             num = -1
         # Calculate
         if ( self.mode == "LINEAR" or self.mode == "MIXER" ):
-            self.value = self.geometry.Limit_Range( self.value + num, 0, self.widget_width )
+            self.value = self.geometry.Limit_Range( self.value + num, 0, self.ww )
         if self.mode == "CIRCULAR":
-            self.value = self.Loop_Hue( self.value + num, self.widget_width )
-        percent = self.value / self.widget_width
+            self.value = self.Loop_Hue( self.value + num, self.ww )
+        percent = self.value / self.ww
         text = str( round( percent*100,2 ) ) + " %"
         # Emit
         self.SIGNAL_VALUE.emit( { "index":self.index, "value":percent } )
@@ -4103,15 +4480,13 @@ class Channel_Slider( QWidget ):
 
     # Paint Style
     def paintEvent( self, event ):
-        # Theme
-        krita_theme( self )
         # Painter
         painter = QPainter( self )
         painter.setRenderHint( QtGui.QPainter.Antialiasing, True )
 
         # Variables
-        ww = self.widget_width
-        hh = self.widget_height
+        ww = self.ww
+        hh = self.hh
         w1 = ww - 1
         w2 = ww - 2
         h1 = hh - 1
@@ -4120,23 +4495,23 @@ class Channel_Slider( QWidget ):
         # Background Style
         painter.setPen( QtCore.Qt.NoPen )
         painter.setBrush( QBrush( self.color_alpha ) )
-        painter.drawRect( int( 0 ), int( 0 ), int( self.widget_width ), int( self.widget_height ) )
+        painter.drawRect( int( 0 ), int( 0 ), int( self.ww ), int( self.hh ) )
 
         # Stops
         painter.setPen( QtCore.Qt.NoPen )
         painter.setBrush( QBrush( self.color_1 ) )
         if self.stops <= 0 :
-            painter.drawRect( int( 0 ), int( 0 ), int( self.widget_width ), int( 1 ) )
+            painter.drawRect( int( 0 ), int( 0 ), int( self.ww ), int( 1 ) )
         else:
             for i in range( 0, self.stops ):
-                percent = self.widget_width * ( i / self.stops )
+                percent = self.ww * ( i / self.stops )
                 painter.drawRect( int( percent ), int( 0 ), int( 1 ), int( 1 ) )
-            painter.drawRect( int( self.widget_width * 1 - 1 ), int( 0 ), int( 1 ), int( 1 ) )
+            painter.drawRect( int( self.ww * 1 - 1 ), int( 0 ), int( 1 ), int( 1 ) )
 
         # Draw Colors Gradient
         if self.colors != None:
             painter.setPen( QtCore.Qt.NoPen )
-            grad = QLinearGradient( int( 0 ), int( 0 ), int( self.widget_width ), int( 0 ) )
+            grad = QLinearGradient( int( 0 ), int( 0 ), int( self.ww ), int( 0 ) )
             number = len( self.colors )
             for i in range( 0, number ):
                 grad.setColorAt( round( i / number, 3 ), QColor( int( self.colors[i][0] * 255 ), int( self.colors[i][1] * 255 ), int( self.colors[i][2] * 255 ), int( self.alpha * 255 ) ) )
@@ -4156,9 +4531,9 @@ class Channel_Slider( QWidget ):
         wl = value - 1
         wr = value + 1
         top1 = 0
-        bot1 = self.widget_height
+        bot1 = self.hh
         top2 = 1
-        bot2 = self.widget_height - 1
+        bot2 = self.hh - 1
         # Black Square
         painter.setPen( QtCore.Qt.NoPen )
         painter.setBrush( QBrush( self.color_black ) )
@@ -4188,15 +4563,15 @@ class Channel_Selection( QWidget ):
     # Init
     def __init__( self, parent ):
         super( Channel_Selection, self ).__init__( parent )
-        self.Init_Variables()
+        self.Variables()
     def sizeHint( self ):
         return QtCore.QSize( render_width, 100 )
-    def Init_Variables( self ):
+    def Variables( self ):
         # Modules
         self.geometry = Geometry()
         # Widget
-        self.widget_width = 1
-        self.widget_height = 1
+        self.ww = 1
+        self.hh = 1
 
         # Variables
         self.mode = "LINEAR" # "LINEAR" "CIRCULAR"
@@ -4207,14 +4582,21 @@ class Channel_Selection( QWidget ):
         self.sele_origin = None
         self.marker = None
 
+        # Colors
+        self.color_black = QColor( "#000000")
+        self.color_white = QColor( "#ffffff")
+        self.color_alpha = QColor( 0, 0, 0, 50 )
+        self.color_1 = QColor( "#e5e5e5" )
+        self.color_2 = QColor( "#191919" )
+
     # Relay
     def Set_Mode( self, mode ):
         self.mode = mode
         self.update()
-    def Set_Size( self, widget_width, widget_height ):
-        self.widget_width = widget_width
-        self.widget_height = widget_height
-        self.update()
+    def Set_Size( self, ww, hh ):
+        self.ww = ww
+        self.hh = hh
+        self.resize( ww, hh )
 
     # Update
     def Update_Value( self, value ):
@@ -4307,7 +4689,7 @@ class Channel_Selection( QWidget ):
             if self.marker[0] <= limit:
                 # Variables
                 index = self.marker[1]
-                ww = self.widget_width
+                ww = self.ww
                 vv = self.value * ww
                 # Markers Normal
                 l0 = vv - self.sele_origin["l0"] * ww
@@ -4328,7 +4710,7 @@ class Channel_Selection( QWidget ):
                         value = self.geometry.Limit_Range( value, n_r0, l1  )
                     else:
                         value = self.geometry.Limit_Range( value, 0, l1  )
-                    percentage = ( vv - value ) / self.widget_width
+                    percentage = ( vv - value ) / self.ww
                     self.sele["l0"] = percentage
                 if index == "l1":
                     delta = ex - l1
@@ -4337,7 +4719,7 @@ class Channel_Selection( QWidget ):
                         value = self.geometry.Limit_Range( value, l0, vv  )
                     else:
                         value = self.geometry.Limit_Range( value, l0, vv  )
-                    percentage = ( vv - value ) / self.widget_width
+                    percentage = ( vv - value ) / self.ww
                     self.sele["l1"] = percentage
                 if index == "r1":
                     delta = ex - r1
@@ -4346,7 +4728,7 @@ class Channel_Selection( QWidget ):
                         value = self.geometry.Limit_Range( value, vv, r0  )
                     else:
                         value = self.geometry.Limit_Range( value, vv, r0  )
-                    percentage = ( value - vv ) / self.widget_width
+                    percentage = ( value - vv ) / self.ww
                     self.sele["r1"] = percentage
                 if index == "r0":
                     delta = ex - r0
@@ -4355,7 +4737,7 @@ class Channel_Selection( QWidget ):
                         value = self.geometry.Limit_Range( value, r1, n_l0  )
                     else:
                         value = self.geometry.Limit_Range( value, r1, ww  )
-                    percentage = ( value - vv ) / self.widget_width
+                    percentage = ( value - vv ) / self.ww
                     self.sele["r0"] = percentage
 
                 if index == "n_l0":
@@ -4365,7 +4747,7 @@ class Channel_Selection( QWidget ):
                         value = self.geometry.Limit_Range( value, n_r0, l1  ) - ww
                     else:
                         value = self.geometry.Limit_Range( value, 0, l1  ) - ww
-                    percentage = ( vv - value - ww ) / self.widget_width
+                    percentage = ( vv - value - ww ) / self.ww
                     self.sele["l0"] = percentage
                 if index == "n_l1":
                     delta = ex - l1
@@ -4374,7 +4756,7 @@ class Channel_Selection( QWidget ):
                         value = self.geometry.Limit_Range( value, l0, vv  ) - ww
                     else:
                         value = self.geometry.Limit_Range( value, l0, vv  ) - ww
-                    percentage = ( vv - value -ww ) / self.widget_width
+                    percentage = ( vv - value - ww ) / self.ww
                     self.sele["l1"] = percentage
                 if index == "n_r1":
                     delta = ex - r1
@@ -4383,7 +4765,7 @@ class Channel_Selection( QWidget ):
                         value = self.geometry.Limit_Range( value, vv, r0  ) + ww
                     else:
                         value = self.geometry.Limit_Range( value, vv, r0  ) + ww
-                    percentage = ( value - vv - ww ) / self.widget_width
+                    percentage = ( value - vv - ww ) / self.ww
                     self.sele["r1"] = percentage
                 if index == "n_r0":
                     delta = ex - r0
@@ -4392,7 +4774,7 @@ class Channel_Selection( QWidget ):
                         value = self.geometry.Limit_Range( value, r1, n_l0  ) + ww
                     else:
                         value = self.geometry.Limit_Range( value, r1, ww  ) + ww
-                    percentage = ( value - vv - ww ) / self.widget_width
+                    percentage = ( value - vv - ww ) / self.ww
                     self.sele["r0"] = percentage
 
                 self.SIGNAL_VALUE.emit( self.sele )
@@ -4403,7 +4785,7 @@ class Channel_Selection( QWidget ):
     # Marker
     def Marker_Index( self, ex, mode ):
         # Markers Normal
-        ww = self.widget_width
+        ww = self.ww
         vv = self.value * ww
         l0 = vv - self.sele["l0"] * ww
         l1 = vv - self.sele["l1"] * ww
@@ -4437,15 +4819,13 @@ class Channel_Selection( QWidget ):
 
     # Paint Style
     def paintEvent( self, event ):
-        # Theme
-        krita_theme( self )
         # Painter
         painter = QPainter( self )
         painter.setRenderHint( QtGui.QPainter.Antialiasing, True )
 
         # Variables
-        ww = self.widget_width
-        hh = self.widget_height
+        ww = self.ww
+        hh = self.hh
         w1 = ww - 1
         w2 = ww - 2
         h1 = hh - 1
@@ -4456,11 +4836,11 @@ class Channel_Selection( QWidget ):
         # Slider
         if ( self.value != None and self.sele != None ):
             # Variables 1
-            vv = self.value * self.widget_width
-            l0 = vv - self.sele["l0"] * self.widget_width
-            l1 = vv - self.sele["l1"] * self.widget_width
-            r1 = vv + self.sele["r1"] * self.widget_width
-            r0 = vv + self.sele["r0"] * self.widget_width
+            vv = self.value * self.ww
+            l0 = vv - self.sele["l0"] * self.ww
+            l1 = vv - self.sele["l1"] * self.ww
+            r1 = vv + self.sele["r1"] * self.ww
+            r0 = vv + self.sele["r0"] * self.ww
             # Variables 2
             l0i = l0 + 1
             l1i = l1 + 1
@@ -4469,8 +4849,9 @@ class Channel_Selection( QWidget ):
 
             # Background Style
             painter.setPen( QtCore.Qt.NoPen )
+
             painter.setBrush( QBrush( self.color_alpha ) )
-            painter.drawRect( int( 0 ), int( h5 ), int( self.widget_width ), int( 5 ) )
+            painter.drawRect( int( 0 ), int( h5 ), int( self.ww ), int( 5 ) )
 
             # Markers Range
             left_full = QPolygon( [
@@ -4602,7 +4983,7 @@ class Channel_Selection( QWidget ):
         # Draw Colors Gradient
         if self.colors != None:
             painter.setPen( QtCore.Qt.NoPen )
-            grad = QLinearGradient( int( 0 ), int( 0 ), int( self.widget_width ), int( 0 ) )
+            grad = QLinearGradient( int( 0 ), int( 0 ), int( self.ww ), int( 0 ) )
             number = len( self.colors )
             for i in range( 0, number ):
                 grad.setColorAt( round( i / number, 3 ), QColor( int( self.colors[i][0] * 255 ), int( self.colors[i][1] * 255 ), int( self.colors[i][2] * 255 ), int( self.alpha * 255 ) ) )
@@ -4617,15 +4998,15 @@ class Channel_Selection( QWidget ):
 
         # Cursor
         if self.value != None:
-            vv = int( self.value * self.widget_width )
+            vv = int( self.value * self.ww )
             bl = vv - 3
             br = vv + 3
             wl = vv - 1
             wr = vv + 1
             top1 = 0
-            bot1 = self.widget_height
+            bot1 = self.hh
             top2 = 1
-            bot2 = self.widget_height - 1
+            bot2 = self.hh - 1
             # Black Square
             painter.setPen( QtCore.Qt.NoPen )
             painter.setBrush( QBrush( self.color_black ) )
@@ -4660,17 +5041,17 @@ class Pin_Color( QWidget ):
     # Init
     def __init__( self, parent ):
         super( Pin_Color, self ).__init__( parent )
-        self.Init_Variables()
+        self.Variables()
     def sizeHint( self ):
         return QtCore.QSize( 500, 500 )
-    def Init_Variables( self ):
+    def Variables( self ):
         # Widget
-        self.widget_width = 1
-        self.widget_height = 1
+        self.ww = 1
+        self.hh = 1
 
         # Events
-        self.event_x = 0
-        self.event_y = 0
+        self.ex = 0
+        self.ey = 0
 
         # States
         self.press = False
@@ -4680,6 +5061,9 @@ class Pin_Color( QWidget ):
         # Color
         self.color = None  # None == no color
         self.alpha = None  # None == no alpha
+        self.color_1 = QColor( "#191919" )
+        self.color_2 = QColor( "#e5e5e5" )
+        self.color_alpha = QColor( 0, 0, 0, 50 )
 
         # Modifier Keys
         self.mod_1 = [ QtCore.Qt.ShiftModifier, QtCore.Qt.ControlModifier, QtCore.Qt.AltModifier ]
@@ -4689,10 +5073,10 @@ class Pin_Color( QWidget ):
         self.geometry = Geometry()
 
     # Relay
-    def Set_Size( self, widget_width, widget_height ):
-        self.widget_width = widget_width
-        self.widget_height = widget_height
-        self.update()
+    def Set_Size( self, ww, hh ):
+        self.ww = ww
+        self.hh = hh
+        self.resize( ww, hh )
     def Set_Index( self, index ):
         self.index = index
     def Set_Active( self, active ):
@@ -4775,9 +5159,9 @@ class Pin_Color( QWidget ):
             ex = event.x()
             ey = event.y()
             # Signals
-            if ( ( ex >= 0 and ex <= self.widget_width ) and ey <= 0 ):
+            if ( ( ex >= 0 and ex <= self.ww ) and ey <= 0 ):
                 self.SIGNAL_TEXT.emit( "APPLY" )
-            elif ( ( ex >= 0 and ex <= self.widget_width ) and ey >= self.widget_height ):
+            elif ( ( ex >= 0 and ex <= self.ww ) and ey >= self.hh ):
                 self.SIGNAL_TEXT.emit( "SAVE" )
             else:
                 self.SIGNAL_TEXT.emit( "" )
@@ -4787,43 +5171,41 @@ class Pin_Color( QWidget ):
             ex = event.x()
             ey = event.y()
             # Signals
-            if ( ( ex >= 0 and ex <= self.widget_width ) and ey <= 0 ):
+            if ( ( ex >= 0 and ex <= self.ww ) and ey <= 0 ):
                 self.SIGNAL_APPLY.emit( self.index )
-            elif ( ( ex >= 0 and ex <= self.widget_width ) and ey >= self.widget_height ):
+            elif ( ( ex >= 0 and ex <= self.ww ) and ey >= self.hh ):
                 self.SIGNAL_SAVE.emit( self.index )
             self.SIGNAL_TEXT.emit( "" )
     def Swipe_Alpha( self, event ):
         if ( self.press == "alpha" and self.alpha != None ):
             # Input
             ex = event.x()
-            ex = self.geometry.Limit_Range( ex, 0, self.widget_width )
+            ex = self.geometry.Limit_Range( ex, 0, self.ww )
             # Signals
-            if self.widget_width != 0:
-                self.alpha = ex / self.widget_width
+            if self.ww != 0:
+                self.alpha = ex / self.ww
                 self.SIGNAL_ALPHA.emit( self.alpha )
             self.update()
     # Context
     def Context_Menu( self, event ):
         if self.press == False:
             # Menu
-            cmenu = QMenu( self )
+            qmenu = QMenu( self )
             # Actions
-            cmenu_apply = cmenu.addAction( "APPLY" )
-            cmenu_save = cmenu.addAction( "SAVE" )
-            cmenu_clean = cmenu.addAction( "CLEAN" )
-            action = cmenu.exec_( self.mapToGlobal( QPoint( 10,5 ) ) )
+            qmenu_apply = qmenu.addAction( "APPLY" )
+            qmenu_save = qmenu.addAction( "SAVE" )
+            qmenu_clean = qmenu.addAction( "CLEAN" )
+            action = qmenu.exec_( self.mapToGlobal( QPoint( 10,5 ) ) )
             # Triggers
-            if action == cmenu_apply:
+            if action == qmenu_apply:
                 self.SIGNAL_APPLY.emit( self.index )
-            if action == cmenu_save:
+            if action == qmenu_save:
                 self.SIGNAL_SAVE.emit( self.index )
-            if action == cmenu_clean:
+            if action == qmenu_clean:
                 self.SIGNAL_CLEAN.emit( self.index )
 
     # Paint Style
     def paintEvent( self, event ):
-        # Theme
-        krita_theme( self )
         # Painter
         painter = QPainter( self )
         painter.setRenderHint( QtGui.QPainter.Antialiasing, True )
@@ -4831,23 +5213,23 @@ class Pin_Color( QWidget ):
         # Background
         painter.setPen( QtCore.Qt.NoPen )
         painter.setBrush( QBrush( self.color_alpha ) )
-        painter.drawRect( int( 0 ), int( 0 ), int( self.widget_width ), int( self.widget_height ) )
+        painter.drawRect( int( 0 ), int( 0 ), int( self.ww ), int( self.hh ) )
 
         # Active
         if self.active == True:
             # Dot
             w1 = 1
-            w3 = self.widget_width-2
+            w3 = self.ww-2
             # Color
             h2 = 2
-            h4 = self.widget_height-3
+            h4 = self.hh-3
         else:
             # Dot
             w1 = 0
             w3 = 1
             # Color
             h2 = 1
-            h4 = self.widget_height-2
+            h4 = self.hh-2
         if self.alpha == None:
             a1 = 0
         else:
@@ -4864,102 +5246,16 @@ class Pin_Color( QWidget ):
             if self.alpha != None:
                 qcolor.setAlphaF( self.alpha )
             painter.setBrush( QBrush( qcolor ) )
-            painter.drawRect( QRect( int( 1 ), int( h2 ), int( self.widget_width - 2 ), int( h4 - a1 ) ) )
+            painter.drawRect( QRect( int( 1 ), int( h2 ), int( self.ww - 2 ), int( h4 - a1 ) ) )
 
         # Alpha
         if self.alpha != None:
             painter.setPen( QtCore.Qt.NoPen )
             # Background
-            painter.setBrush( QBrush( self.color_2 ) )
-            painter.drawRect( QRect( int( 1 ), int( self.widget_height - a1 ), int( self.widget_width - 2 ), int( a1 ) ) )
-            # Slider
             painter.setBrush( QBrush( self.color_1 ) )
-            painter.drawRect( QRect( int( 1 ), int( self.widget_height - a1 ), int( ( self.widget_width * self.alpha ) - 2 ), int( a1 ) ) )
-
-#endregion
-#region Ink #######################################################################
-
-class Sample_Map( QWidget ):
-    SIGNAL_INDEX = QtCore.pyqtSignal( int )
-
-    # Init
-    def __init__( self, parent ):
-        super( Sample_Map, self ).__init__( parent )
-        self.Init_Variables()
-    def sizeHint( self ):
-        return QtCore.QSize( render_width, render_height )
-    def Init_Variables( self ):
-        # Widget
-        self.widget_width = 1
-        self.widget_height = 1
-        # Render
-        self.index = None
-        self.qpixmap = None
-        self.qcolor = QColor( 0, 0, 0, 50 )
-
-    # Relay
-    def Set_Size( self, widget_width, widget_height ):
-        self.widget_width = widget_width
-        self.widget_height = widget_height
-        self.update()
-    def Set_Sample( self, index, qpixmap, qcolor ):
-        self.index = index
-        self.qpixmap = qpixmap
-        if qcolor == True:
-            self.qcolor = QColor( 255, 0, 0, 50 )
-        else:
-            self.qcolor = QColor( 0, 0, 0, 50 )
-        self.update()
-
-    # Context Menu
-    def contextMenuEvent( self, event ):
-        # Variables
-        check = self.index != None and self.qpixmap != None
-
-        # Menu
-        cmenu = QMenu( self )
-        # Actions
-        if check == True:
-            cmenu_insert = cmenu.addAction( "Insert Map" )
-        # Map
-        action = cmenu.exec_( self.mapToGlobal( event.pos() ) )
-        # Triggers
-        if check == True:
-            if action == cmenu_insert:
-                self.SIGNAL_INDEX.emit( self.index )
-
-    # Paint Style
-    def paintEvent( self, event ):
-        # Theme
-        krita_theme( self )
-        # Painter
-        painter = QPainter( self )
-        painter.setRenderHint( QtGui.QPainter.Antialiasing, True )
-
-        # Background
-        painter.setPen( QtCore.Qt.NoPen )
-        painter.setBrush( QBrush( self.qcolor ) )
-        painter.drawRect( int( 0 ), int( 0 ), int( self.widget_width ), int( self.widget_height ) )
-
-        # Render
-        try:
-            # Scale
-            render_pix = self.qpixmap.scaled( int( self.widget_width ), int( self.widget_height ), Qt.KeepAspectRatio, Qt.FastTransformation )
-            # Variables
-            rw = render_pix.width()
-            rh = render_pix.height()
-            px = int( ( self.widget_width * 0.5 ) - ( rw * 0.5 ) )
-            py = int( ( self.widget_height * 0.5 ) - ( rh * 0.5 ) )
-            # Painter settings
-            painter.setPen( QtCore.Qt.NoPen )
-            painter.setBrush( QtCore.Qt.NoBrush )
-            # Image
-            painter.drawPixmap( int( px ), int( py ), render_pix )
-        except:
-            self.Render_None( painter, event )
-    def Render_None( self, painter, event ):
-        painter.setPen( self.color_1 )
-        painter.setFont( QFont( 'Liberation Mono', 10 ) )
-        painter.drawText( event.rect(), Qt.AlignCenter, "None" )
+            painter.drawRect( QRect( int( 1 ), int( self.hh - a1 ), int( self.ww - 2 ), int( a1 ) ) )
+            # Slider
+            painter.setBrush( QBrush( self.color_2 ) )
+            painter.drawRect( QRect( int( 1 ), int( self.hh - a1 ), int( ( self.ww * self.alpha ) - 2 ), int( a1 ) ) )
 
 #endregion
