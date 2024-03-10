@@ -7,7 +7,7 @@ Pigment.O is a Krita plugin Color Picker and Mixer.
 # Features
 
 * Harmony Colors
-* Various GUI Panels
+* Various GUI Panels ( Display, Selectors, Mixers and Channels )
 * Various Channel Sliders
 * Color Mixer
 * Pinned Colors
