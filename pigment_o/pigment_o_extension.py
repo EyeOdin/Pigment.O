@@ -15,22 +15,19 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#region Import Modules #############################################################
+#region Import Modules
 from krita import *
 from PyQt5 import Qt, QtWidgets, QtCore, QtGui, uic
 from PyQt5.Qt import Qt
 
 #endregion
-#region Global Variables ###########################################################
+#region Global Variables
 EXTENSION_ID = 'pykrita_pigment_o_extension'
 
 #endregion
 
 
 class Pigmento_Extension( Extension ):
-    """
-    Extension Shortcuts.
-    """
     SIGNAL_PIN = QtCore.pyqtSignal( int )
     SIGNAL_KEY_1 = QtCore.pyqtSignal( int )
     SIGNAL_KEY_2 = QtCore.pyqtSignal( int )
@@ -38,7 +35,7 @@ class Pigmento_Extension( Extension ):
     SIGNAL_KEY_4 = QtCore.pyqtSignal( int )
     SIGNAL_LOCK = QtCore.pyqtSignal( str )
 
-    #region Initialize #############################################################
+    #region Initialize
 
     def __init__( self, parent ):
         super().__init__( parent )
@@ -46,7 +43,7 @@ class Pigmento_Extension( Extension ):
         pass
 
     #endregion
-    #region Actions ################################################################
+    #region Actions
 
     def createActions( self, window ):
         # Main Menu
@@ -119,7 +116,7 @@ class Pigmento_Extension( Extension ):
         action_lock_kkk.triggered.connect( self.LOCK_KKK )
 
     #endregion
-    #region PIN ##################################################################
+    #region PIN
 
     def PIN_00( self ):
         self.SIGNAL_PIN.emit( 0 )
@@ -145,7 +142,7 @@ class Pigmento_Extension( Extension ):
         self.SIGNAL_PIN.emit( 10 )
 
     #endregion
-    #region KEY ####################################################################
+    #region KEY
 
     def KEY_1_Minus( self ):
         self.SIGNAL_KEY_1.emit( -1 )
@@ -168,7 +165,7 @@ class Pigmento_Extension( Extension ):
         self.SIGNAL_KEY_4.emit( 1 )
 
     #endregion
-    #region LOCK ###################################################################
+    #region LOCK
 
     def LOCK_CMYK( self ):
         self.SIGNAL_LOCK.emit( "CMYK" )

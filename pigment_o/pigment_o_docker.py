@@ -15,7 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#region Import Modules #############################################################
+#region Import Modules
 
 # Python Modules
 import math
@@ -59,20 +59,17 @@ from .pigment_o_modulo import (
     )
 
 #endregion
-#region Global Variables ###########################################################
+#region Global Variables
 
 DOCKER_NAME = "Pigment.O"
-pigment_o_version = "2024_01_20"
+pigment_o_version = "2024_03_07"
 
 #endregion
 
 
 class PigmentO_Docker( DockWidget ):
-    """
-    Color Picker and Mixer
-    """
 
-    #region Initialize #############################################################
+    #region Initialize
 
     def __init__( self ):
         super( PigmentO_Docker, self ).__init__()
@@ -1815,7 +1812,7 @@ class PigmentO_Docker( DockWidget ):
         return read
 
     #endregion
-    #region Menu ###################################################################
+    #region Menu
 
     # Mode Index
     def Mode_Index( self, index ):
@@ -3272,10 +3269,10 @@ class PigmentO_Docker( DockWidget ):
         # Used doing a photoshoot
         width = self.width()
         height = self.height()
-        Message_Log( self, "SIZE", f"{ width } x { height }" )
+        self.Message_Log( "SIZE", f"{ width } x { height }" )
 
     #endregion
-    #region Management #############################################################
+    #region Management
 
     # Communication
     def Message_Log( self, operation, message ):
@@ -3652,7 +3649,7 @@ class PigmentO_Docker( DockWidget ):
             self.mixer_module[i]["m"].Set_Stops( dictionary["mixer"] )
 
     #endregion
-    #region API ####################################################################
+    #region API
 
     def API_Request_FG( self ):
         return kac
@@ -3685,6 +3682,13 @@ class PigmentO_Docker( DockWidget ):
         self.Color_Convert( mode, var_1, var_2, var_3, var_4, self.cor )
         self.Sync_Elements( True, True, True )
         return self.cor
+    def API_Image_Analyse( self, qimage ):
+        try:
+            report = True
+            self.Analyse_Pixel( qimage )
+        except:
+            report = False
+        return report
 
     def API_Printer( self, mode, geo, directory, render, start_from, max_val ):
         # mode - color space of the map
@@ -3827,14 +3831,6 @@ class PigmentO_Docker( DockWidget ):
             # Delete all Render Files
             shutil.rmtree( temporary )
 
-    def API_Image_Analyse( self, qimage ):
-        try:
-            report = True
-            self.Analyse_Pixel( qimage )
-        except:
-            report = False
-        return report
-
     def Pigmento_Sample_Script( self ):
         # Import Pigment.O reference object
         """
@@ -3862,17 +3858,6 @@ class PigmentO_Docker( DockWidget ):
         # Apply Color
         """
         pigment_o.API_Input_FG( "RGB", 0.25, 0.50, 0.75, 0 )
-        """
-
-        # View QPixmap on Pigment.S
-        """
-        pyid = "pykrita_pigment_s_docker"
-        dockers = Krita.instance().dockers()
-        for i in range( 0, len( dockers ) ):
-            if dockers[i].objectName() == pyid:
-                pigment_s = dockers[i]
-                break
-        pigment_s.Preview_QPixmap( QPixmap().fromImage( qimage ) )
         """
     def Krita_Sample_Script( self ):
         # Read Color
@@ -3910,7 +3895,7 @@ class PigmentO_Docker( DockWidget ):
         """
 
     #endregion
-    #region Pigmento & Krita #######################################################
+    #region Pigmento & Krita
 
     def Krita_to_Pigmento( self ):
         # Current Document
@@ -4277,7 +4262,7 @@ class PigmentO_Docker( DockWidget ):
             pass
 
     #endregion
-    #region Pigmento Paths #########################################################
+    #region Pigmento Paths
 
     def Pigmento_READ( self, mode, var_1, var_2, var_3, var_4, color ):
         self.Color_Convert( mode, var_1, var_2, var_3, var_4, color )
@@ -4294,7 +4279,7 @@ class PigmentO_Docker( DockWidget ):
         self.Sync_Elements( True, True, True )
 
     #endregion
-    #region Color ##################################################################
+    #region Color
 
     def Color_Convert( self, mode, var_1, var_2, var_3, var_4, color ):
         # cmyk calculation uses self.lock_cmyk_4
@@ -5006,7 +4991,7 @@ class PigmentO_Docker( DockWidget ):
             self.Pigmento_APPLY( "ARD", hue, self.cor["ard_2"], self.cor["ard_3"], 0, self.cor )
 
     #endregion
-    #region Syncronization  ########################################################
+    #region Syncronization
 
     def Sync_Elements( self, p2k, color_active, color_previous ):
         # Signals
@@ -5717,7 +5702,7 @@ class PigmentO_Docker( DockWidget ):
         self.dialog.kelvin_discription.setText( kelvin["description"] )
 
     #endregion
-    #region Gradients ##############################################################
+    #region Gradients 
 
     def Gradient_Style( self, mode, short, stops, left, right ):
         # mode = color space
@@ -5840,7 +5825,7 @@ class PigmentO_Docker( DockWidget ):
         return output
 
     #endregion
-    #region Header #################################################################
+    #region Header
 
     def Header_Shift( self, SIGNAL_SHIFT ):
         # Shift Foreground and Background
@@ -5857,7 +5842,7 @@ class PigmentO_Docker( DockWidget ):
         self.Pigmento_RELEASE()
 
     #endregion
-    #region Harmony ################################################################
+    #region Harmony
 
     # Context Menu
     def Harmony_Index( self, harmony_index ):
@@ -5913,14 +5898,14 @@ class PigmentO_Docker( DockWidget ):
         self.harmony_swatch.Set_Harmony_Parts( parts, colors )
 
     #endregion
-    #region Panel Fill #############################################################
+    #region Panel Fill
 
     def Update_Panel_Fill( self ):
         # Foreground Color
         self.panel_fill.Update_Panel( self.cor )
 
     #endregion
-    #region Panel Square ###########################################################
+    #region Panel Square
 
     # Send
     def Update_Panel_Square( self ):
@@ -5971,7 +5956,7 @@ class PigmentO_Docker( DockWidget ):
         Krita.instance().writeSetting( "Pigment.O", "pin_cor", str( self.pin_cor ) )
 
     #endregion
-    #region Panel Hue ##############################################################
+    #region Panel Hue
 
     # Send
     def Update_Panel_HueCircle( self ):
@@ -6086,7 +6071,7 @@ class PigmentO_Docker( DockWidget ):
         self.panel_huesubpanel.Set_Size( w, h )
 
     #endregion
-    #region Panel Gamut ############################################################
+    #region Panel Gamut
 
     # Send
     def Update_Panel_Gamut( self ):
@@ -6143,7 +6128,7 @@ class PigmentO_Docker( DockWidget ):
         Krita.instance().writeSetting( "Pigment.O", "pin_cor", str( self.pin_cor ) )
 
     #endregion
-    #region Panel Hexagon ##########################################################
+    #region Panel Hexagon
 
     # Send
     def Update_Panel_Hexagon( self ):
@@ -6188,7 +6173,7 @@ class PigmentO_Docker( DockWidget ):
         Krita.instance().writeSetting( "Pigment.O", "pin_cor", str( self.pin_cor ) )
 
     #endregion
-    #region Panel Luma #############################################################
+    #region Panel Luma
 
     # Send
     def Update_Panel_Luma( self ):
@@ -6237,7 +6222,7 @@ class PigmentO_Docker( DockWidget ):
         Krita.instance().writeSetting( "Pigment.O", "pin_cor", str( self.pin_cor ) )
 
     #endregion
-    #region Panel DOT ##############################################################
+    #region Panel DOT
 
     # UI
     def Dot_Widget( self, boolean ):
@@ -6450,7 +6435,7 @@ class PigmentO_Docker( DockWidget ):
         self.Dot_Update()
 
     #endregion
-    #region Panel MASK #############################################################
+    #region Panel MASK
 
     # UI
     def Mask_Widget( self, boolean ):
@@ -6996,7 +6981,7 @@ class PigmentO_Docker( DockWidget ):
         Krita.instance().writeSetting( "Pigment.O", "mask_alpha", str( self.mask_alpha ) )
 
     #endregion
-    #region Panel Samples ##########################################################
+    #region Panel Samples
 
     # UI
     def Sample_Widget( self, boolean ):
@@ -7890,7 +7875,7 @@ class PigmentO_Docker( DockWidget ):
                 break
 
     #endregion
-    #region Channel Sliders ########################################################
+    #region Channel Sliders
 
     # AAA
     def Channels_AAA_1_Slider( self, sv ):
@@ -7993,7 +7978,7 @@ class PigmentO_Docker( DockWidget ):
         self.Pigmento_PRESS( "LCH", self.cor["lch_1"], self.cor["lch_2"], sv["value"], 0, self.cor )
 
     #endregion
-    #region Channel Stops ##########################################################
+    #region Channel Stops
 
     # AAA
     def Channels_AAA_1_Stops( self, ss ):
@@ -8137,7 +8122,7 @@ class PigmentO_Docker( DockWidget ):
         Krita.instance().writeSetting( "Pigment.O", "stops", str( stops ) )
 
     #endregion
-    #region Channel Values #########################################################
+    #region Channel Values
 
     # AAA
     def Channels_AAA_1_Value( self, sv ):
@@ -8322,7 +8307,7 @@ class PigmentO_Docker( DockWidget ):
         self.Label_String( f"{ round( value * 100, 2 ) } %" )
 
     #endregion
-    #region Channel Non Color ######################################################
+    #region Channel Non Color
 
     # KKK
     def Channels_KKK_1_Slider( self, sv ):
@@ -8346,7 +8331,7 @@ class PigmentO_Docker( DockWidget ):
         kelvin["description"] = cd[1]
 
     #endregion
-    #region Mixer ##################################################################
+    #region Mixer
 
     # Load
     def Mixer_LOAD( self ):
@@ -8470,7 +8455,7 @@ class PigmentO_Docker( DockWidget ):
         Krita.instance().writeSetting( "Pigment.O", "stops", str( stops ) )
 
     #endregion
-    #region Pin ####################################################################
+    #region Pin
 
     def Pin_LOAD( self ):
         for i in range( 0, len( self.pin_cor ) ):
@@ -8495,7 +8480,7 @@ class PigmentO_Docker( DockWidget ):
         Krita.instance().writeSetting( "Pigment.O", "pin_cor", str( self.pin_cor ) )
 
     #endregion
-    #region History ################################################################
+    #region History
 
     def History_List( self, red, green, blue ):
         # Last Entry
@@ -8536,7 +8521,7 @@ class PigmentO_Docker( DockWidget ):
         self.layout.history_list.clear()
 
     #endregion
-    #region Fill Pixels ############################################################
+    #region Fill Pixels
 
     def Fill_Check( self, doc ):
         try:
@@ -8563,7 +8548,7 @@ class PigmentO_Docker( DockWidget ):
         self.layout.fill.blockSignals( False )
 
     #endregion
-    #region Selection ##############################################################
+    #region Selection
 
     # Value Slider
     def Channels_SELE_1_Slider( self, value ):
@@ -8662,10 +8647,10 @@ class PigmentO_Docker( DockWidget ):
         self.update()
 
     #endregion
-    #region Analyse ################################################################
+    #region Analyse
 
     def Analyse_Document( self ):
-        qimage = Select_Alpha( self )
+        qimage = self.Select_Alpha()
         if qimage != None:
             self.Analyse_Pixel( qimage )
         else:
@@ -8673,7 +8658,7 @@ class PigmentO_Docker( DockWidget ):
     def Analyse_Pixel( self, qimage ):
         if qimage.isNull() == False:
             # Display Preview
-            # Imagine_Preview( self, QPixmap().fromImage( qimage ) )
+            # self.Imagine_Preview( QPixmap().fromImage( qimage ) )
 
             # Scale
             size = 200
@@ -8717,10 +8702,10 @@ class PigmentO_Docker( DockWidget ):
             self.color_header.Set_Progress( 1 )
             self.Pigmento_RELEASE()
             # System
-            Message_Log( self, "ANALYSE", "Complete" )
+            self.Message_Log( "ANALYSE", "Complete" )
 
     #endregion
-    #region HEX Codes ##############################################################
+    #region HEX Codes
 
     # Copy-Paste
     def HEX_Copy( self ):
@@ -8784,7 +8769,7 @@ class PigmentO_Docker( DockWidget ):
         self.Pigmento_APPLY( "RGB", rgb[0], rgb[1], rgb[2], 0, self.cor )
 
     #endregion
-    #region Extension ##############################################################
+    #region Extension
 
     # COR
     def Extension_PIN( self, SIGNAL_PIN ):
@@ -8959,8 +8944,9 @@ class PigmentO_Docker( DockWidget ):
                 self.layout.kkk_1_label.setChecked( True )
 
     #endregion
-    #region Notifier ###############################################################
+    #region Notifier
 
+    # Notifier
     def Application_Closing( self ):
         pass
     def Configuration_Changed( self ):
@@ -8976,21 +8962,18 @@ class PigmentO_Docker( DockWidget ):
     def View_Created( self ):
         pass
     def Window_Created( self ):
-        pass
+        # Module
+        self.window = Krita.instance().activeWindow()
+        # Signals
+        self.window.activeViewChanged.connect( self.View_Changed )
+        self.window.themeChanged.connect( self.Theme_Changed )
+        self.window.windowClosed.connect( self.Window_Closed )
+        # Start Position
+        self.Theme_Changed()
     def Window_IsBeingCreated( self ):
         pass
 
-    #endregion
-    #region Window #################################################################
-
-    def Window_Connect( self ):
-        # Window
-        self.window = Krita.instance().activeWindow()
-        if self.window != None:
-            self.window.activeViewChanged.connect( self.View_Changed )
-            self.window.themeChanged.connect( self.Theme_Changed )
-            self.window.windowClosed.connect( self.Window_Closed )
-
+    # Window
     def View_Changed( self ):
         pass
     def Theme_Changed( self ):
@@ -9002,23 +8985,84 @@ class PigmentO_Docker( DockWidget ):
         else:
             self.color_1 = QColor( "#e5e5e5" )
             self.color_2 = QColor( "#191919" )
+
         # Panels
         self.panel_huecircle.Set_Theme( self.color_1, self.color_2, color_theme )
         self.panel_gamut.Set_Theme( self.color_1, self.color_2, color_theme )
-        self.panel_luma.Set_Theme( self.color_1, self.color_2, color_theme )
         self.panel_sample_image.Set_Theme( self.color_1, self.color_2 )
+
+        # AAA
+        self.aaa_1_slider.Set_Theme( self.color_1, self.color_2 )
+        # RGB
+        self.rgb_1_slider.Set_Theme( self.color_1, self.color_2 )
+        self.rgb_2_slider.Set_Theme( self.color_1, self.color_2 )
+        self.rgb_3_slider.Set_Theme( self.color_1, self.color_2 )
+        # CMY
+        self.cmy_1_slider.Set_Theme( self.color_1, self.color_2 )
+        self.cmy_2_slider.Set_Theme( self.color_1, self.color_2 )
+        self.cmy_3_slider.Set_Theme( self.color_1, self.color_2 )
+        # CMYK
+        self.cmyk_1_slider.Set_Theme( self.color_1, self.color_2 )
+        self.cmyk_2_slider.Set_Theme( self.color_1, self.color_2 )
+        self.cmyk_3_slider.Set_Theme( self.color_1, self.color_2 )
+        self.cmyk_4_slider.Set_Theme( self.color_1, self.color_2 )
+        # RYB
+        self.ryb_1_slider.Set_Theme( self.color_1, self.color_2 )
+        self.ryb_2_slider.Set_Theme( self.color_1, self.color_2 )
+        self.ryb_3_slider.Set_Theme( self.color_1, self.color_2 )
+        # YUV
+        self.yuv_1_slider.Set_Theme( self.color_1, self.color_2 )
+        self.yuv_2_slider.Set_Theme( self.color_1, self.color_2 )
+        self.yuv_3_slider.Set_Theme( self.color_1, self.color_2 )
+        # HSV
+        self.hsv_1_slider.Set_Theme( self.color_1, self.color_2 )
+        self.hsv_2_slider.Set_Theme( self.color_1, self.color_2 )
+        self.hsv_3_slider.Set_Theme( self.color_1, self.color_2 )
+        # HSL
+        self.hsl_1_slider.Set_Theme( self.color_1, self.color_2 )
+        self.hsl_2_slider.Set_Theme( self.color_1, self.color_2 )
+        self.hsl_3_slider.Set_Theme( self.color_1, self.color_2 )
+        # HCY
+        self.hcy_1_slider.Set_Theme( self.color_1, self.color_2 )
+        self.hcy_2_slider.Set_Theme( self.color_1, self.color_2 )
+        self.hcy_3_slider.Set_Theme( self.color_1, self.color_2 )
+        # ARD
+        self.ard_1_slider.Set_Theme( self.color_1, self.color_2 )
+        self.ard_2_slider.Set_Theme( self.color_1, self.color_2 )
+        self.ard_3_slider.Set_Theme( self.color_1, self.color_2 )
+        # XYZ
+        self.xyz_1_slider.Set_Theme( self.color_1, self.color_2 )
+        self.xyz_2_slider.Set_Theme( self.color_1, self.color_2 )
+        self.xyz_3_slider.Set_Theme( self.color_1, self.color_2 )
+        # XYY
+        self.xyy_1_slider.Set_Theme( self.color_1, self.color_2 )
+        self.xyy_2_slider.Set_Theme( self.color_1, self.color_2 )
+        self.xyy_3_slider.Set_Theme( self.color_1, self.color_2 )
+        # LAB
+        self.lab_1_slider.Set_Theme( self.color_1, self.color_2 )
+        self.lab_2_slider.Set_Theme( self.color_1, self.color_2 )
+        self.lab_3_slider.Set_Theme( self.color_1, self.color_2 )
+        # LCH
+        self.lch_1_slider.Set_Theme( self.color_1, self.color_2 )
+        self.lch_2_slider.Set_Theme( self.color_1, self.color_2 )
+        self.lch_3_slider.Set_Theme( self.color_1, self.color_2 )
+        # Kelvin
+        self.kkk_1_slider.Set_Theme( self.color_1, self.color_2 )
+
+        # Mixer
+        for item in self.mixer_module:
+            try:item["m"].Set_Theme( self.color_1, self.color_2 )
+            except:pass
+
     def Window_Closed( self ):
         pass
 
     #endregion
-    #region Widget Events ##########################################################
+    #region Widget Events 
 
     def showEvent( self, event ):
         # UI
         self.Update_Size()
-        # Window
-        self.Window_Connect()
-        self.Theme_Changed()
         # QTimer
         if check_timer >= 30:
             self.timer_pulse.start( check_timer )
@@ -9096,14 +9140,11 @@ class PigmentO_Docker( DockWidget ):
 
         return super().eventFilter( source, event )
 
-    #endregion
-    #region Canvas #################################################################
-
     def canvasChanged( self, canvas ):
         pass
 
     #endregion
-    #region Notes ##################################################################
+    #region Notes
 
     """
     # Label Message

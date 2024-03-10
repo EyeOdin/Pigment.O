@@ -10,11 +10,6 @@
     <height>1205</height>
    </rect>
   </property>
-  <property name="font">
-   <font>
-    <family>Liberation Mono</family>
-   </font>
-  </property>
   <layout class="QVBoxLayout" name="pigmento_widget_layout">
    <property name="spacing">
     <number>0</number>
@@ -265,6 +260,11 @@
             <height>100</height>
            </rect>
           </property>
+          <property name="font">
+           <font>
+            <family>MS Shell Dlg 2</family>
+           </font>
+          </property>
          </widget>
         </widget>
         <widget class="QWidget" name="panel_gamut"/>
@@ -295,6 +295,11 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="font">
+             <font>
+              <family>MS Shell Dlg 2</family>
+             </font>
+            </property>
            </widget>
           </item>
           <item>
@@ -310,6 +315,11 @@
               <width>120</width>
               <height>16777215</height>
              </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>MS Shell Dlg 2</family>
+             </font>
             </property>
             <property name="focusPolicy">
              <enum>Qt::NoFocus</enum>
@@ -350,6 +360,11 @@
                  <height>15</height>
                 </size>
                </property>
+               <property name="font">
+                <font>
+                 <family>MS Shell Dlg 2</family>
+                </font>
+               </property>
                <property name="focusPolicy">
                 <enum>Qt::NoFocus</enum>
                </property>
@@ -374,6 +389,11 @@
                  <width>16777215</width>
                  <height>15</height>
                 </size>
+               </property>
+               <property name="font">
+                <font>
+                 <family>MS Shell Dlg 2</family>
+                </font>
                </property>
                <property name="focusPolicy">
                 <enum>Qt::NoFocus</enum>
@@ -400,6 +420,11 @@
                  <height>15</height>
                 </size>
                </property>
+               <property name="font">
+                <font>
+                 <family>MS Shell Dlg 2</family>
+                </font>
+               </property>
                <property name="focusPolicy">
                 <enum>Qt::NoFocus</enum>
                </property>
@@ -425,6 +450,11 @@
                  <height>15</height>
                 </size>
                </property>
+               <property name="font">
+                <font>
+                 <family>MS Shell Dlg 2</family>
+                </font>
+               </property>
                <property name="focusPolicy">
                 <enum>Qt::NoFocus</enum>
                </property>
@@ -449,6 +479,11 @@
                  <width>16777215</width>
                  <height>15</height>
                 </size>
+               </property>
+               <property name="font">
+                <font>
+                 <family>MS Shell Dlg 2</family>
+                </font>
                </property>
                <property name="focusPolicy">
                 <enum>Qt::NoFocus</enum>
@@ -491,6 +526,11 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="font">
+             <font>
+              <family>MS Shell Dlg 2</family>
+             </font>
+            </property>
            </widget>
           </item>
           <item>
@@ -506,6 +546,11 @@
               <width>120</width>
               <height>16777215</height>
              </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>MS Shell Dlg 2</family>
+             </font>
             </property>
             <layout class="QGridLayout" name="edit_mask_layout">
              <property name="leftMargin">
@@ -543,6 +588,11 @@
                  <height>20</height>
                 </size>
                </property>
+               <property name="font">
+                <font>
+                 <family>MS Shell Dlg 2</family>
+                </font>
+               </property>
               </widget>
              </item>
              <item row="7" column="1">
@@ -565,6 +615,11 @@
                  <height>20</height>
                 </size>
                </property>
+               <property name="font">
+                <font>
+                 <family>MS Shell Dlg 2</family>
+                </font>
+               </property>
               </widget>
              </item>
              <item row="1" column="0">
@@ -586,6 +641,11 @@
                  <width>40</width>
                  <height>20</height>
                 </size>
+               </property>
+               <property name="font">
+                <font>
+                 <family>MS Shell Dlg 2</family>
+                </font>
                </property>
                <property name="text">
                 <string>F2</string>
@@ -612,6 +672,11 @@
                  <height>20</height>
                 </size>
                </property>
+               <property name="font">
+                <font>
+                 <family>MS Shell Dlg 2</family>
+                </font>
+               </property>
                <property name="text">
                 <string>B1</string>
                </property>
@@ -636,6 +701,11 @@
                  <width>40</width>
                  <height>20</height>
                 </size>
+               </property>
+               <property name="font">
+                <font>
+                 <family>MS Shell Dlg 2</family>
+                </font>
                </property>
                <property name="text">
                 <string>F1</string>
@@ -662,6 +732,11 @@
                  <height>20</height>
                 </size>
                </property>
+               <property name="font">
+                <font>
+                 <family>MS Shell Dlg 2</family>
+                </font>
+               </property>
               </widget>
              </item>
              <item row="8" column="0">
@@ -683,6 +758,11 @@
                  <width>40</width>
                  <height>20</height>
                 </size>
+               </property>
+               <property name="font">
+                <font>
+                 <family>MS Shell Dlg 2</family>
+                </font>
                </property>
                <property name="text">
                 <string>D1</string>
@@ -709,6 +789,11 @@
                  <height>20</height>
                 </size>
                </property>
+               <property name="font">
+                <font>
+                 <family>MS Shell Dlg 2</family>
+                </font>
+               </property>
               </widget>
              </item>
              <item row="9" column="0">
@@ -730,6 +815,11 @@
                  <width>40</width>
                  <height>20</height>
                 </size>
+               </property>
+               <property name="font">
+                <font>
+                 <family>MS Shell Dlg 2</family>
+                </font>
                </property>
                <property name="text">
                 <string>B3</string>
@@ -756,6 +846,11 @@
                  <height>20</height>
                 </size>
                </property>
+               <property name="font">
+                <font>
+                 <family>MS Shell Dlg 2</family>
+                </font>
+               </property>
               </widget>
              </item>
              <item row="0" column="0">
@@ -777,6 +872,11 @@
                  <width>40</width>
                  <height>20</height>
                 </size>
+               </property>
+               <property name="font">
+                <font>
+                 <family>MS Shell Dlg 2</family>
+                </font>
                </property>
                <property name="text">
                 <string>F3</string>
@@ -803,6 +903,11 @@
                  <height>20</height>
                 </size>
                </property>
+               <property name="font">
+                <font>
+                 <family>MS Shell Dlg 2</family>
+                </font>
+               </property>
               </widget>
              </item>
              <item row="1" column="1">
@@ -825,6 +930,11 @@
                  <height>20</height>
                 </size>
                </property>
+               <property name="font">
+                <font>
+                 <family>MS Shell Dlg 2</family>
+                </font>
+               </property>
               </widget>
              </item>
              <item row="6" column="0">
@@ -846,6 +956,11 @@
                  <width>40</width>
                  <height>20</height>
                 </size>
+               </property>
+               <property name="font">
+                <font>
+                 <family>MS Shell Dlg 2</family>
+                </font>
                </property>
                <property name="text">
                 <string>D3</string>
@@ -872,6 +987,11 @@
                  <height>20</height>
                 </size>
                </property>
+               <property name="font">
+                <font>
+                 <family>MS Shell Dlg 2</family>
+                </font>
+               </property>
                <property name="text">
                 <string>D2</string>
                </property>
@@ -897,6 +1017,11 @@
                  <height>20</height>
                 </size>
                </property>
+               <property name="font">
+                <font>
+                 <family>MS Shell Dlg 2</family>
+                </font>
+               </property>
               </widget>
              </item>
              <item row="10" column="0">
@@ -918,6 +1043,11 @@
                  <width>40</width>
                  <height>20</height>
                 </size>
+               </property>
+               <property name="font">
+                <font>
+                 <family>MS Shell Dlg 2</family>
+                </font>
                </property>
                <property name="text">
                 <string>B2</string>
@@ -944,6 +1074,11 @@
                  <height>20</height>
                 </size>
                </property>
+               <property name="font">
+                <font>
+                 <family>MS Shell Dlg 2</family>
+                </font>
+               </property>
                <property name="text">
                 <string>D5</string>
                </property>
@@ -968,6 +1103,11 @@
                  <width>40</width>
                  <height>20</height>
                 </size>
+               </property>
+               <property name="font">
+                <font>
+                 <family>MS Shell Dlg 2</family>
+                </font>
                </property>
                <property name="text">
                 <string>D4</string>
@@ -994,6 +1134,11 @@
                  <height>20</height>
                 </size>
                </property>
+               <property name="font">
+                <font>
+                 <family>MS Shell Dlg 2</family>
+                </font>
+               </property>
               </widget>
              </item>
              <item row="3" column="0">
@@ -1015,6 +1160,11 @@
                  <width>40</width>
                  <height>20</height>
                 </size>
+               </property>
+               <property name="font">
+                <font>
+                 <family>MS Shell Dlg 2</family>
+                </font>
                </property>
                <property name="text">
                 <string>D6</string>
@@ -1041,6 +1191,11 @@
                  <height>20</height>
                 </size>
                </property>
+               <property name="font">
+                <font>
+                 <family>MS Shell Dlg 2</family>
+                </font>
+               </property>
               </widget>
              </item>
              <item row="2" column="1">
@@ -1063,6 +1218,11 @@
                  <height>20</height>
                 </size>
                </property>
+               <property name="font">
+                <font>
+                 <family>MS Shell Dlg 2</family>
+                </font>
+               </property>
               </widget>
              </item>
              <item row="8" column="1">
@@ -1084,6 +1244,11 @@
                  <width>16777215</width>
                  <height>20</height>
                 </size>
+               </property>
+               <property name="font">
+                <font>
+                 <family>MS Shell Dlg 2</family>
+                </font>
                </property>
               </widget>
              </item>
@@ -6765,13 +6930,13 @@
            <property name="minimumSize">
             <size>
              <width>40</width>
-             <height>25</height>
+             <height>22</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
              <width>40</width>
-             <height>25</height>
+             <height>22</height>
             </size>
            </property>
            <property name="focusPolicy">

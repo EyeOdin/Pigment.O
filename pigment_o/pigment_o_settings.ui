@@ -16,11 +16,6 @@
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
-  <property name="font">
-   <font>
-    <family>Liberation Mono</family>
-   </font>
-  </property>
   <property name="focusPolicy">
    <enum>Qt::NoFocus</enum>
   </property>
@@ -298,7 +293,7 @@
                <x>0</x>
                <y>0</y>
                <width>480</width>
-               <height>407</height>
+               <height>406</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="scroll_area_contents_option_layout">
@@ -842,9 +837,9 @@
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>0</y>
+               <y>-215</y>
                <width>463</width>
-               <height>615</height>
+               <height>621</height>
               </rect>
              </property>
              <property name="sizePolicy">
@@ -4058,8 +4053,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>480</width>
-               <height>407</height>
+               <width>98</width>
+               <height>172</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="scroll_area_contents_system_layout">
@@ -4512,7 +4507,6 @@
        </property>
        <property name="font">
         <font>
-         <family>Liberation Mono</family>
          <pointsize>7</pointsize>
         </font>
        </property>
@@ -4549,7 +4543,6 @@
        </property>
        <property name="font">
         <font>
-         <family>Liberation Mono</family>
          <pointsize>7</pointsize>
         </font>
        </property>

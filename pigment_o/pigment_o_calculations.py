@@ -15,7 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#region Imports ####################################################################
+#region Imports
 
 import math
 from PyQt5 import QtCore
@@ -25,17 +25,14 @@ from .pigment_o_constants import *
 
 
 class Geometry():
-    """
-    Geometric 1D-2D-3D operations
-    """
 
-    #region Init #######################################################################
+    #region Init
 
     def __init__( self ):
         pass
 
     #endregion
-    #region Limiters ###################################################################
+    #region Limiters
 
     def Limit_Unit( self, value ):
         if value <= 1:
@@ -79,7 +76,7 @@ class Geometry():
         return angle
 
     #endregion
-    #region LERP #######################################################################
+    #region LERP
 
     def Lerp_1D( self, percent, bot, top ):
         lerp = bot + ( ( top - bot ) * percent )
@@ -106,7 +103,7 @@ class Geometry():
         return lista
 
     #endregion
-    #region Range ######################################################################
+    #region Range
 
     def Random_Range( self, range ):
         time = int( QtCore.QTime.currentTime().toString( 'hhmmssms' ) )
@@ -115,7 +112,7 @@ class Geometry():
         return random_value
 
     #endregion
-    #region Statistics #################################################################
+    #region Statistics
 
     def Stat_Mean( self, lista ):
         length = len( lista )
@@ -126,7 +123,7 @@ class Geometry():
         return mean
 
     #endregion
-    #region Trignometry ################################################################
+    #region Trignometry
 
     def Trig_2D_Angle_Circle( self, px, py, side, radius, angle ):
         # px - Circle center in X (pixels)
@@ -190,11 +187,9 @@ class Geometry():
 
 
 class Convert():
-    """
-    Convert range 0-1
-    """
+    # Convert range 0-1
 
-    #region Init ###################################################################
+    #region Init
 
     def __init__( self ):
         # Modules
@@ -204,7 +199,7 @@ class Convert():
         self.luminosity = "ITU-R BT.709"
 
     #endregion
-    #region Set ####################################################################
+    #region Set
 
     def Set_Document( self, d_cm, d_cd, d_cp ):
         self.d_cm = d_cm
@@ -361,7 +356,7 @@ class Convert():
             self.ref_z = 1.08883
 
     #endregion
-    #region Ask ####################################################################
+    #region Ask
 
     def Ask_Document( self ):
         return self.d_cm, self.d_cd, self.d_cp
@@ -375,7 +370,7 @@ class Convert():
         return self.m_rgb_xyz, self.m_xyz_rgb, self.ref_x, self.ref_y, self.ref_z
 
     #endregion
-    #region Links ##################################################################
+    #region Links
 
     # Formulas
     # link : http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
@@ -385,7 +380,7 @@ class Convert():
     # link: https://colorizer.org/
 
     #endregion
-    #region Utility ################################################################
+    #region Utility
 
     def Vector_Safe( self, a, b, c ):
         a = self.geometry.Limit_Float( a )
@@ -398,7 +393,7 @@ class Convert():
         return mult
 
     #endregion
-    #region LERP ###################################################################
+    #region LERP
 
     def color_vector( self, mode, color ):
         if mode == "A":
@@ -551,7 +546,7 @@ class Convert():
         return cor
 
     #endregion
-    #region RGB LINEAR #############################################################
+    #region RGB LINEAR
 
     # AAA
     def rgb_to_aaa( self, r, g, b ):
@@ -759,7 +754,7 @@ class Convert():
         return [r,g,b]
 
     #endregion
-    #region RGB HUE ################################################################
+    #region RGB HUE
 
     # HUE RGB
     def rgb_to_hue( self, r, g, b ):
@@ -1574,7 +1569,7 @@ class Convert():
         return c
 
     #endregion
-    #region XYZ LINEAR #############################################################
+    #region XYZ LINEAR
 
     def rgb_to_xyz( self, r, g, b ):
         lrgb = self.srgb_to_lrgb( r, g, b )
@@ -1672,7 +1667,7 @@ class Convert():
         return [ rgb[0], rgb[1], rgb[2] ]
 
     #endregion
-    #region XYZ HUE ################################################################
+    #region XYZ HUE
 
     # LCHab
     def lab_to_lch( self, l, a, b ):
@@ -1718,7 +1713,7 @@ class Convert():
         return [ rgb[0], rgb[1], rgb[2] ]
 
     #endregion
-    #region Non-Color ##############################################################
+    #region Non-Color
 
     # KELVIN ( not physical based )
     def kkk_percent_to_scale( self, percent ):
@@ -1764,7 +1759,7 @@ class Convert():
         return entry
 
     #endregion
-    #region HEX ####################################################################
+    #region HEX
 
     def rgb_to_hex6( self, r, g, b ):
         hex1 = str( hex( int( r * 255 )  )  )[2:4].zfill( 2 )

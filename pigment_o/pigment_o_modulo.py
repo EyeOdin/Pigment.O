@@ -15,7 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#region Imports ####################################################################
+#region Imports
 
 # Python Modules
 import os
@@ -36,7 +36,7 @@ from .pigment_o_calculations import (
 
 #endregion
 
-#region Shared #####################################################################
+#region Shared
 
 # ZIP
 def Read_Zip( self, location, tan_range, space, shape ):
@@ -142,7 +142,7 @@ def Cursor_Zoom( self, painter, zoom_size, margin_size ):
         )
 
 #endregion
-#region Header #####################################################################
+#region Header
 
 class Color_Header( QWidget ):
     SIGNAL_SWAP = QtCore.pyqtSignal( int )
@@ -609,7 +609,7 @@ class Harmony_Spread( QWidget ):
         painter.drawRect( int( px + 1 ), int( 2 ), int( width - 2 ), int( 6 ) )
 
 #endregion
-#region Panels #####################################################################
+#region Panels
 
 class Panel_Fill( QWidget ):
 
@@ -665,6 +665,8 @@ class Panel_Square( QWidget ):
         # Widget
         self.ww = 0
         self.hh = 0
+        self.w2 = 0
+        self.h2 = 0
         self.origin_x = 0
         self.origin_y = 0
         self.origin_tan_axis = 0
@@ -773,15 +775,12 @@ class Panel_Square( QWidget ):
 
         # Update
         self.update()
-    def Set_Theme( self, color_1, color_2, color_theme ):
-        self.color_1 = color_1
-        self.color_2 = color_2
-        self.color_theme = color_theme
-        self.update()
     def Set_Size( self, ww, hh ):
         # Variables
         self.ww = ww
         self.hh = hh
+        self.w2 = ww * 0.5
+        self.h2 = hh * 0.5
         # Mask ( slightly bigger than color display )
         if self.shape == "3":
             polygon = QPolygon( [
@@ -1105,15 +1104,15 @@ class Panel_Square( QWidget ):
                 if self.shape == "3":
                     triangle = QPainterPath()
                     triangle.moveTo( int( 0 ), int( 1 ) )
-                    triangle.lineTo( int( self.ww ), int( self.hh * 0.5 ) )
+                    triangle.lineTo( int( self.ww ), int( self.h2 ) )
                     triangle.lineTo( int( 0 ), int( self.hh ) )
                     painter.setClipPath( triangle )
                 if self.shape == "R":
                     diamond = QPainterPath()
-                    diamond.moveTo( int( self.ww * 0.5 ), int( 0 ) )
-                    diamond.lineTo( int( self.ww ), int( self.hh * 0.5 ) )
-                    diamond.lineTo( int( self.ww * 0.5 ), int( self.hh ) )
-                    diamond.lineTo( int( 0 ), int( self.hh * 0.5 ) )
+                    diamond.moveTo( int( self.w2 ), int( 0 ) )
+                    diamond.lineTo( int( self.ww ), int( self.h2 ) )
+                    diamond.lineTo( int( self.w2 ), int( self.hh ) )
+                    diamond.lineTo( int( 0 ), int( self.h2 ) )
                     painter.setClipPath( diamond )
 
                 # Draw Pixmaps
@@ -1138,8 +1137,8 @@ class Panel_Square( QWidget ):
             w2 = int( w1 * 0.5 )
             h2 = int( h1 * 0.5 )
             # Painter
-            painter.setPen( QPen( self.color_theme, line_size, Qt.SolidLine, Qt.SquareCap, Qt.MiterJoin ) )
-            painter.setBrush( QtCore.Qt.NoBrush )
+            painter.setPen( QPen( self.color_2, line_size, Qt.SolidLine, Qt.SquareCap, Qt.MiterJoin ) )
+            painter.setBrush( QBrush( self.color_1 ) )
             # Draw Cross
             painter.drawLine( int( w2 ), int( 0 ), int( w2 ), int( h1 ) )
             painter.drawLine( int( 0 ), int( h2 ), int( w1 ), int( h2 ) )
@@ -1696,8 +1695,8 @@ class Panel_Gamut( QWidget ):
         # Color
         self.color = None
         self.hex_color = QColor( "#000000" )
-        self.color_1 = QColor( "#e5e5e5" )
-        self.color_2 = QColor( "#191919" )
+        self.white = self.color_1 = QColor( "#e5e5e5" )
+        self.black = self.color_2 = QColor( "#191919" )
         self.color_theme = QColor( "#31363b" )
         # Harmony Colors
         self.harmony_index = None
@@ -2358,8 +2357,8 @@ class Panel_Gamut( QWidget ):
                 ] )
             painter.drawPolygon( poly )
             # Display Subjective Primaries
-            painter.setPen( QPen( self.color_2, line_size, Qt.SolidLine, Qt.SquareCap, Qt.MiterJoin ) )
-            painter.setBrush( QBrush( self.color_1 ) )
+            painter.setPen( QPen( self.black, line_size, Qt.SolidLine, Qt.SquareCap, Qt.MiterJoin ) )
+            painter.setBrush( QBrush( self.white ) )
             painter.drawEllipse( int( gdx + gds * self.gamut_1tri[0][0] - dot ), int( gdy + gds * self.gamut_1tri[0][1] - dot ), int( dot * 2 ), int( dot * 2 ) )
             painter.drawEllipse( int( gdx + gds * self.gamut_1tri[1][0] - dot ), int( gdy + gds * self.gamut_1tri[1][1] - dot ), int( dot * 2 ), int( dot * 2 ) )
             painter.drawEllipse( int( gdx + gds * self.gamut_1tri[2][0] - dot ), int( gdy + gds * self.gamut_1tri[2][1] - dot ), int( dot * 2 ), int( dot * 2 ) )
@@ -2375,8 +2374,8 @@ class Panel_Gamut( QWidget ):
                 ] )
             painter.drawPolygon( poly )
             # Display Subjective Primaries
-            painter.setPen( QPen( self.color_2, line_size, Qt.SolidLine, Qt.SquareCap, Qt.MiterJoin ) )
-            painter.setBrush( QBrush( self.color_1 ) )
+            painter.setPen( QPen( self.black, line_size, Qt.SolidLine, Qt.SquareCap, Qt.MiterJoin ) )
+            painter.setBrush( QBrush( self.white ) )
             painter.drawEllipse( int( gdx + gds * self.gamut_1squ[0][0] - dot ), int( gdy + gds * self.gamut_1squ[0][1] - dot ), int( dot * 2 ), int( dot * 2 ) )
             painter.drawEllipse( int( gdx + gds * self.gamut_1squ[1][0] - dot ), int( gdy + gds * self.gamut_1squ[1][1] - dot ), int( dot * 2 ), int( dot * 2 ) )
             painter.drawEllipse( int( gdx + gds * self.gamut_1squ[2][0] - dot ), int( gdy + gds * self.gamut_1squ[2][1] - dot ), int( dot * 2 ), int( dot * 2 ) )
@@ -2390,8 +2389,8 @@ class Panel_Gamut( QWidget ):
             painter.setPen( QtCore.Qt.NoPen )
             painter.drawPath( path )
             # Display Subjective Primaries
-            painter.setPen( QPen( self.color_2, line_size, Qt.SolidLine, Qt.SquareCap, Qt.MiterJoin ) )
-            painter.setBrush( QBrush( self.color_1 ) )
+            painter.setPen( QPen( self.black, line_size, Qt.SolidLine, Qt.SquareCap, Qt.MiterJoin ) )
+            painter.setBrush( QBrush( self.white ) )
             painter.drawEllipse( int( P0[0] - dot ), int( P0[1] - dot ), int( dot * 2 ), int( dot * 2 ) )
             painter.drawEllipse( int( P1[0] - dot ), int( P1[1] - dot ), int( dot * 2 ), int( dot * 2 ) )
             painter.drawEllipse( int( P2[0] - dot ), int( P2[1] - dot ), int( dot * 2 ), int( dot * 2 ) )
@@ -2407,8 +2406,8 @@ class Panel_Gamut( QWidget ):
             painter.drawPath( path_0 )
             painter.drawPath( path_1 )
             # Display Subjective Primaries
-            painter.setPen( QPen( self.color_2, line_size, Qt.SolidLine, Qt.SquareCap, Qt.MiterJoin ) )
-            painter.setBrush( QBrush( self.color_1 ) )
+            painter.setPen( QPen( self.black, line_size, Qt.SolidLine, Qt.SquareCap, Qt.MiterJoin ) )
+            painter.setBrush( QBrush( self.white ) )
             # Circle 0
             painter.drawEllipse( int( P0_0[0] - dot ), int( P0_0[1] - dot ), int( dot * 2 ), int( dot * 2 ) )
             painter.drawEllipse( int( P1_0[0] - dot ), int( P1_0[1] - dot ), int( dot * 2 ), int( dot * 2 ) )
@@ -2461,8 +2460,8 @@ class Panel_Gamut( QWidget ):
             painter.drawPie( rect, int( ang_b1 ), int( ang_b2 ) )
             painter.drawPie( rect, int( ang_c1 ), int( ang_c2 ) )
             # Display Subjective Primaries
-            painter.setPen( QPen( self.color_2, line_size, Qt.SolidLine, Qt.SquareCap, Qt.MiterJoin ) )
-            painter.setBrush( QBrush( self.color_1 ) )
+            painter.setPen( QPen( self.black, line_size, Qt.SolidLine, Qt.SquareCap, Qt.MiterJoin ) )
+            painter.setBrush( QBrush( self.white ) )
             painter.drawEllipse( int( gdx + gds * self.gamut_3pie[0][0] - dot ), int( gdy + gds * self.gamut_3pie[0][1] - dot ), int( dot * 2 ), int( dot * 2 ) )
             painter.drawEllipse( int( gdx + gds * self.gamut_3pie[1][0] - dot ), int( gdy + gds * self.gamut_3pie[1][1] - dot ), int( dot * 2 ), int( dot * 2 ) )
             painter.drawEllipse( int( gdx + gds * self.gamut_3pie[2][0] - dot ), int( gdy + gds * self.gamut_3pie[2][1] - dot ), int( dot * 2 ), int( dot * 2 ) )
@@ -2479,8 +2478,8 @@ class Panel_Gamut( QWidget ):
             length = len( self.analyse )
 
             # Draw
-            painter.setPen( QPen( self.color_2, line_size, Qt.SolidLine, Qt.SquareCap, Qt.MiterJoin ) )
-            painter.setBrush( QBrush( self.color_1 ) )
+            painter.setPen( QPen( self.black, line_size, Qt.SolidLine, Qt.SquareCap, Qt.MiterJoin ) )
+            painter.setBrush( QBrush( self.white ) )
             for i in range( 0, length ):
                 color = self.analyse[i]
                 if int( self.tan_axis * 255 ) == int( color[f"{self.chan}_3"] * 255 ):
@@ -2500,8 +2499,8 @@ class Panel_Gamut( QWidget ):
             length = len( self.pin_list )
 
             # Draw
-            painter.setPen( QPen( self.color_2, line_size, Qt.SolidLine, Qt.SquareCap, Qt.MiterJoin ) )
-            painter.setBrush( QBrush( self.color_1 ) )
+            painter.setPen( QPen( self.black, line_size, Qt.SolidLine, Qt.SquareCap, Qt.MiterJoin ) )
+            painter.setBrush( QBrush( self.white ) )
             for i in range( 0, length ):
                 if self.pin_list[i]["active"] == True:
                     if self.wheel_mode == "DIGITAL":
@@ -2531,15 +2530,15 @@ class Panel_Gamut( QWidget ):
             length = len( points )
 
             # Draw Line
-            painter.setPen( QPen( self.color_1, line_size, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin ) )
+            painter.setPen( QPen( self.white, line_size, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin ) )
             painter.setBrush( QtCore.Qt.NoBrush )
             for i in range( 1, length ):
                 painter.drawLine( int( points[i-1][0] ), int( points[i-1][1] ), int( points[i][0] ), int( points[i][1] ) )
             if self.harmony_rule in [ "Triadic", "Tetradic" ]:
                 painter.drawLine( int( points[0][0] ), int( points[0][1] ), int( points[length-1][0] ), int( points[length-1][1] ) )
             # Draw Points
-            painter.setPen( QPen( self.color_2, line_size, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin ) )
-            painter.setBrush( QBrush( self.color_1 ) )
+            painter.setPen( QPen( self.black, line_size, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin ) )
+            painter.setBrush( QBrush( self.white ) )
             for i in range( 0, length ):
                 painter.drawEllipse( int( points[i][0] - dot ), int( points[i][1] - dot ), int( dot * 2 ), int( dot * 2 ) )
 
@@ -2669,8 +2668,10 @@ class Panel_Hexagon( QWidget ):
         self.C61 = None
 
         # Colors
-        self.hex_color = QColor( "#000000" )
         self.color = None
+        self.hex_color = QColor( "#000000" )
+        self.color_1 = QColor( "#e5e5e5" )
+        self.color_2 = QColor( "#191919" )
         # Harmony Colors
         self.harmony_rule = None
         self.harmony_index = None
@@ -4267,7 +4268,7 @@ class Panel_Sample_Image( QWidget ):
             pass
 
 #endregion
-#region Channels ###################################################################
+#region Channels
 
 class Channel_Slider( QWidget ):
     SIGNAL_VALUE = QtCore.pyqtSignal( dict )
@@ -4332,6 +4333,10 @@ class Channel_Slider( QWidget ):
         self.update()
     def Set_Index( self, index ):
         self.index = index
+    def Set_Theme( self, color_1, color_2 ):
+        self.color_1 = color_1
+        self.color_2 = color_2
+        self.update()
 
     # Interaction
     def mousePressEvent( self, event ):
@@ -5029,7 +5034,7 @@ class Channel_Selection( QWidget ):
             painter.drawPolygon( white )
 
 #endregion
-#region Pin ########################################################################
+#region Pin
 
 class Pin_Color( QWidget ):
     SIGNAL_APPLY = QtCore.pyqtSignal( int )
