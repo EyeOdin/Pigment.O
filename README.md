@@ -1,30 +1,33 @@
-![Picture](https://github.com/EyeOdin/Pigment.O/blob/master/pigment_o/LOGO/pigment_o_logo_S.png?raw=true)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/LOGO/pigment_o_logo_S.png)
 
-## Purpose
+# Purpose
 
 Pigment.O is a Krita plugin Color Picker and Mixer.
 
-## Features
+# Features
 
 * Harmony Colors
 * Various GUI Panels
-* Various Channel Sliders and Values
+* Various Channel Sliders
 * Color Mixer
 * Pinned Colors
 * Color History
 * Read ![wiki](https://github.com/EyeOdin/Pigment.O/wiki) for more information
 
-## Preview
-![Picture](https://github.com/EyeOdin/Pigment.O/blob/master/pigment_o/PREVIEWS/pigment_o_panel_fill.png?raw=true)
-![Picture](https://github.com/EyeOdin/Pigment.O/blob/master/pigment_o/PREVIEWS/pigment_o_panel_square.png?raw=true)
-![Picture](https://github.com/EyeOdin/Pigment.O/blob/master/pigment_o/PREVIEWS/pigment_o_panel_hue_square.png?raw=true)
-![Picture](https://github.com/EyeOdin/Pigment.O/blob/master/pigment_o/PREVIEWS/pigment_o_panel_gamut.png?raw=true)
-![Picture](https://github.com/EyeOdin/Pigment.O/blob/master/pigment_o/PREVIEWS/pigment_o_panel_hexagon.png?raw=true)
-![Picture](https://github.com/EyeOdin/Pigment.O/blob/master/pigment_o/PREVIEWS/pigment_o_panel_dot.png?raw=true)
-![Picture](https://github.com/EyeOdin/Pigment.O/blob/master/pigment_o/PREVIEWS/pigment_o_panel_mask.png?raw=true)
+# Preview
 
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/po_panel_fill.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/po_panel_square_hsv.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/po_panel_hue_triangle.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/po_panel_gamut_hsv.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/po_panel_hexagon.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/po_panel_luma.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/po_panel_dot_none.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/po_panel_mask_none.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/po_panel_sample_none.png)
 
-## Support
+# Support
+
 This project will remain Open source and available to all users.\
 Support with donations to keep the project alive and maintained.
 
