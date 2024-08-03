@@ -141,11 +141,11 @@ color_false["active"] = False
 kac = color_true.copy()
 kbc = color_true.copy()
 # Harmony Colors
-har_01 = color_false.copy()
-har_02 = color_false.copy()
-har_03 = color_false.copy()
-har_04 = color_false.copy()
-har_05 = color_false.copy()
+har_01 = color_true.copy()
+har_02 = color_true.copy()
+har_03 = color_true.copy()
+har_04 = color_true.copy()
+har_05 = color_true.copy()
 
 # RYB angle conversion stops
 digital_step = [ 0, 35/360,  60/360, 120/360, 180/360, 240/360, 300/360, 1 ]
@@ -347,7 +347,7 @@ kelvin_xyz_1964 = {
 kelvin = { "class" : kelvin_illuminants[6500][0], "description" : kelvin_illuminants[6500][1] }
 
 # Fill
-fill = { "active" : False, "node_name" : None, "alphalock_before" : None }
+fill = { "active" : False, "node_uid" : None, "alphalock_before" : False }
 
 # Selection
 selection = {

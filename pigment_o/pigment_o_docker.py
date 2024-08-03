@@ -522,7 +522,6 @@ class PigmentO_Docker( DockWidget ):
         #region Footer
 
         self.layout.fill.toggled.connect( self.Menu_FILL )
-        # self.layout.selection.clicked.connect( lambda: Sample_Generate( self, "COLORS" ) )
         self.layout.selection.clicked.connect( lambda: self.Sample_Generate( "COLORS" ) )
         self.layout.analyse.clicked.connect( self.Analyse_Document )
         self.layout.settings.clicked.connect( self.Menu_Settings )
@@ -1837,16 +1836,24 @@ class PigmentO_Docker( DockWidget ):
             fill["active"] = boolean
             # UI
             if boolean == True:
-                fill["node_name"] = Krita.instance().activeDocument().activeNode().name()
+                # Variables
+                fill["node_uid"] = Krita.instance().activeDocument().activeNode().uniqueId()
                 fill["alphalock_before"] = Krita.instance().activeDocument().activeNode().alphaLocked()
+                # UI
                 self.layout.fill.setIcon( Krita.instance().icon( "fillLayer" ) )
+                # Layers
                 Krita.instance().activeDocument().activeNode().setAlphaLocked( boolean )
             else:
-                try:Krita.instance().activeDocument().nodeByName( fill["node_name"] ).setAlphaLocked( fill["alphalock_before"] )
-                except:pass
+                # Layers
+                try:
+                    Krita.instance().activeDocument().nodeByUniqueID( fill["node_uid"] ).setAlphaLocked( fill["alphalock_before"] )
+                except:
+                    pass
+                # UI
                 self.layout.fill.setIcon( Krita.instance().icon( "folder-documents" ) )
+                # Variables
+                fill["node_uid"] = None
                 fill["alphalock_before"] = None
-                fill["node_name"] = None
         else:
             self.Fill_None()
 
@@ -3301,6 +3308,7 @@ class PigmentO_Docker( DockWidget ):
             # active document
             d_nt = ad.activeNode().type()
             d_nn = ad.activeNode().name()
+            d_uid = ad.activeNode().uniqueId()
 
             # document color
             d_cm = ad.colorModel()
@@ -3348,6 +3356,7 @@ class PigmentO_Docker( DockWidget ):
                 "vc" : vc,
                 "d_nt" : d_nt,
                 "d_nn" : d_nn,
+                "d_uid" : d_uid,
                 "d_cm" : d_cm,
                 "d_cd" : d_cd,
                 "d_cp" : d_cp,
@@ -4571,197 +4580,197 @@ class PigmentO_Docker( DockWidget ):
         # Return
         return color
     def Color_Harmony( self, span, hue_1, hue_2, hue_3, hue_4, hue_5 ):
-        try:
-            # Variables
-            comp = 0.5
+        # Variables
+        comp = 0.5
 
-            # Wheel
-            if self.wheel_mode == "DIGITAL":index = "hue_d"
-            if self.wheel_mode == "ANALOG" :index = "hue_a"
+        # Wheel
+        if self.wheel_mode == "DIGITAL":index = "hue_d"
+        if self.wheel_mode == "ANALOG" :index = "hue_a"
 
-            # Director Angle
-            if self.harmony_index == 1:angulus = hue_1[ index ]
-            if self.harmony_index == 2:angulus = hue_2[ index ]
-            if self.harmony_index == 3:angulus = hue_3[ index ]
-            if self.harmony_index == 4:angulus = hue_4[ index ]
-            if self.harmony_index == 5:angulus = hue_5[ index ]
+        # Director Angle
+        if self.harmony_index == 1:angulus = hue_1[ index ]
+        if self.harmony_index == 2:angulus = hue_2[ index ]
+        if self.harmony_index == 3:angulus = hue_3[ index ]
+        if self.harmony_index == 4:angulus = hue_4[ index ]
+        if self.harmony_index == 5:angulus = hue_5[ index ]
 
-            # Rules
-            if self.harmony_rule == "Monochromatic":
-                if self.harmony_index in ( 1, 2, 3, 4, 5 ):
-                    angle_1 = angulus
-                    angle_2 = angulus
-                    angle_3 = angulus
-                    angle_4 = angulus
-                    angle_5 = angulus
-            if self.harmony_rule == "Complementary":
-                if self.harmony_index in ( 1, 2, 3 ):
-                    angle_1 = angulus
-                    angle_2 = angulus
-                    angle_3 = angulus
-                    angle_4 = self.geometry.Limit_Looper( angulus + comp , 1 )
-                    angle_5 = self.geometry.Limit_Looper( angulus + comp , 1 )
-                if self.harmony_index in ( 4, 5 ):
-                    angle_1 = self.geometry.Limit_Looper( angulus - comp , 1 )
-                    angle_2 = self.geometry.Limit_Looper( angulus - comp , 1 )
-                    angle_3 = self.geometry.Limit_Looper( angulus - comp , 1 )
-                    angle_4 = angulus
-                    angle_5 = angulus
-            if self.harmony_rule == "Analogous":
-                if self.harmony_index == 1:
-                    angle_1 = angulus
-                    angle_2 = self.geometry.Limit_Looper( angulus + span * 0.25 , 1 )
-                    angle_3 = self.geometry.Limit_Looper( angulus + span * 0.50 , 1 )
-                    angle_4 = self.geometry.Limit_Looper( angulus + span * 0.75 , 1 )
-                    angle_5 = self.geometry.Limit_Looper( angulus + span * 1.00 , 1 )
-                if self.harmony_index == 2:
-                    angle_1 = self.geometry.Limit_Looper( angulus - span * 0.25 , 1 )
-                    angle_2 = angulus
-                    angle_3 = self.geometry.Limit_Looper( angulus + span * 0.25 , 1 )
-                    angle_4 = self.geometry.Limit_Looper( angulus + span * 0.50 , 1 )
-                    angle_5 = self.geometry.Limit_Looper( angulus + span * 0.75 , 1 )
-                if self.harmony_index == 3:
-                    angle_1 = self.geometry.Limit_Looper( angulus - span * 0.50 , 1 )
-                    angle_2 = self.geometry.Limit_Looper( angulus - span * 0.25 , 1 )
-                    angle_3 = angulus
-                    angle_4 = self.geometry.Limit_Looper( angulus + span * 0.25 , 1 )
-                    angle_5 = self.geometry.Limit_Looper( angulus + span * 0.50 , 1 )
-                if self.harmony_index == 4:
-                    angle_1 = self.geometry.Limit_Looper( angulus - span * 0.75 , 1 )
-                    angle_2 = self.geometry.Limit_Looper( angulus - span * 0.50 , 1 )
-                    angle_3 = self.geometry.Limit_Looper( angulus - span * 0.25 , 1 )
-                    angle_5 = self.geometry.Limit_Looper( angulus + span * 0.25 , 1 )
-                    angle_4 = angulus
-                if self.harmony_index == 5:
-                    angle_1 = self.geometry.Limit_Looper( angulus - span * 1.00 , 1 )
-                    angle_2 = self.geometry.Limit_Looper( angulus - span * 0.75 , 1 )
-                    angle_3 = self.geometry.Limit_Looper( angulus - span * 0.50 , 1 )
-                    angle_4 = self.geometry.Limit_Looper( angulus - span * 0.25 , 1 )
-                    angle_5 = angulus
-            if self.harmony_rule == "Triadic":
-                if self.harmony_index == 1:
-                    angle_1 = angulus
-                    angle_2 = self.geometry.Limit_Looper( angulus + comp - span * 0.50 , 1 )
-                    angle_3 = self.geometry.Limit_Looper( angulus + comp + span * 0.50 , 1 )
-                if self.harmony_index == 2:
-                    angle_1 = self.geometry.Limit_Looper( angulus + comp + span * 0.50 , 1 )
-                    angle_2 = angulus
-                    angle_3 = self.geometry.Limit_Looper( angulus + span * 1.00        , 1 )
-                if self.harmony_index == 3:
-                    angle_1 = self.geometry.Limit_Looper( angulus + comp - span * 0.50 , 1 )
-                    angle_2 = self.geometry.Limit_Looper( angulus - span * 1.00        , 1 )
-                    angle_3 = angulus
-                angle_4 = 0
-                angle_5 = 0
-            if self.harmony_rule == "Tetradic":
-                if self.harmony_index == 1:
-                    angle_1 = angulus
-                    angle_2 = self.geometry.Limit_Looper( angulus + span        , 1 )
-                    angle_3 = self.geometry.Limit_Looper( angulus + comp        , 1 )
-                    angle_4 = self.geometry.Limit_Looper( angulus + comp + span , 1 )
-                if self.harmony_index == 2:
-                    angle_1 = self.geometry.Limit_Looper( angulus - span        , 1 )
-                    angle_2 = angulus
-                    angle_3 = self.geometry.Limit_Looper( angulus + comp - span , 1 )
-                    angle_4 = self.geometry.Limit_Looper( angulus + comp        , 1 )
-                if self.harmony_index == 3:
-                    angle_1 = self.geometry.Limit_Looper( angulus + comp        , 1 )
-                    angle_2 = self.geometry.Limit_Looper( angulus + comp + span , 1 )
-                    angle_3 = angulus
-                    angle_4 = self.geometry.Limit_Looper( angulus + span        , 1 )
-                if self.harmony_index == 4:
-                    angle_1 = self.geometry.Limit_Looper( angulus + comp - span , 1 )
-                    angle_2 = self.geometry.Limit_Looper( angulus + comp        , 1 )
-                    angle_3 = self.geometry.Limit_Looper( angulus - span        , 1 )
-                    angle_4 = angulus
-                angle_5 = 0
+        # Rules
+        if self.harmony_rule == "Monochromatic":
+            if self.harmony_index in ( 1, 2, 3, 4, 5 ):
+                angle_1 = angulus
+                angle_2 = angulus
+                angle_3 = angulus
+                angle_4 = angulus
+                angle_5 = angulus
+        if self.harmony_rule == "Complementary":
+            if self.harmony_index in ( 1, 2, 3 ):
+                angle_1 = angulus
+                angle_2 = angulus
+                angle_3 = angulus
+                angle_4 = self.geometry.Limit_Looper( angulus + comp , 1 )
+                angle_5 = self.geometry.Limit_Looper( angulus + comp , 1 )
+            if self.harmony_index in ( 4, 5 ):
+                angle_1 = self.geometry.Limit_Looper( angulus - comp , 1 )
+                angle_2 = self.geometry.Limit_Looper( angulus - comp , 1 )
+                angle_3 = self.geometry.Limit_Looper( angulus - comp , 1 )
+                angle_4 = angulus
+                angle_5 = angulus
+        if self.harmony_rule == "Analogous":
+            if self.harmony_index == 1:
+                angle_1 = angulus
+                angle_2 = self.geometry.Limit_Looper( angulus + span * 0.25 , 1 )
+                angle_3 = self.geometry.Limit_Looper( angulus + span * 0.50 , 1 )
+                angle_4 = self.geometry.Limit_Looper( angulus + span * 0.75 , 1 )
+                angle_5 = self.geometry.Limit_Looper( angulus + span * 1.00 , 1 )
+            if self.harmony_index == 2:
+                angle_1 = self.geometry.Limit_Looper( angulus - span * 0.25 , 1 )
+                angle_2 = angulus
+                angle_3 = self.geometry.Limit_Looper( angulus + span * 0.25 , 1 )
+                angle_4 = self.geometry.Limit_Looper( angulus + span * 0.50 , 1 )
+                angle_5 = self.geometry.Limit_Looper( angulus + span * 0.75 , 1 )
+            if self.harmony_index == 3:
+                angle_1 = self.geometry.Limit_Looper( angulus - span * 0.50 , 1 )
+                angle_2 = self.geometry.Limit_Looper( angulus - span * 0.25 , 1 )
+                angle_3 = angulus
+                angle_4 = self.geometry.Limit_Looper( angulus + span * 0.25 , 1 )
+                angle_5 = self.geometry.Limit_Looper( angulus + span * 0.50 , 1 )
+            if self.harmony_index == 4:
+                angle_1 = self.geometry.Limit_Looper( angulus - span * 0.75 , 1 )
+                angle_2 = self.geometry.Limit_Looper( angulus - span * 0.50 , 1 )
+                angle_3 = self.geometry.Limit_Looper( angulus - span * 0.25 , 1 )
+                angle_5 = self.geometry.Limit_Looper( angulus + span * 0.25 , 1 )
+                angle_4 = angulus
+            if self.harmony_index == 5:
+                angle_1 = self.geometry.Limit_Looper( angulus - span * 1.00 , 1 )
+                angle_2 = self.geometry.Limit_Looper( angulus - span * 0.75 , 1 )
+                angle_3 = self.geometry.Limit_Looper( angulus - span * 0.50 , 1 )
+                angle_4 = self.geometry.Limit_Looper( angulus - span * 0.25 , 1 )
+                angle_5 = angulus
+        if self.harmony_rule == "Triadic":
+            if self.harmony_index == 1:
+                angle_1 = angulus
+                angle_2 = self.geometry.Limit_Looper( angulus + comp - span * 0.50 , 1 )
+                angle_3 = self.geometry.Limit_Looper( angulus + comp + span * 0.50 , 1 )
+            if self.harmony_index == 2:
+                angle_1 = self.geometry.Limit_Looper( angulus + comp + span * 0.50 , 1 )
+                angle_2 = angulus
+                angle_3 = self.geometry.Limit_Looper( angulus + span * 1.00        , 1 )
+            if self.harmony_index == 3:
+                angle_1 = self.geometry.Limit_Looper( angulus + comp - span * 0.50 , 1 )
+                angle_2 = self.geometry.Limit_Looper( angulus - span * 1.00        , 1 )
+                angle_3 = angulus
+            angle_4 = 0
+            angle_5 = 0
+        if self.harmony_rule == "Tetradic":
+            if self.harmony_index == 1:
+                angle_1 = angulus
+                angle_2 = self.geometry.Limit_Looper( angulus + span        , 1 )
+                angle_3 = self.geometry.Limit_Looper( angulus + comp        , 1 )
+                angle_4 = self.geometry.Limit_Looper( angulus + comp + span , 1 )
+            if self.harmony_index == 2:
+                angle_1 = self.geometry.Limit_Looper( angulus - span        , 1 )
+                angle_2 = angulus
+                angle_3 = self.geometry.Limit_Looper( angulus + comp - span , 1 )
+                angle_4 = self.geometry.Limit_Looper( angulus + comp        , 1 )
+            if self.harmony_index == 3:
+                angle_1 = self.geometry.Limit_Looper( angulus + comp        , 1 )
+                angle_2 = self.geometry.Limit_Looper( angulus + comp + span , 1 )
+                angle_3 = angulus
+                angle_4 = self.geometry.Limit_Looper( angulus + span        , 1 )
+            if self.harmony_index == 4:
+                angle_1 = self.geometry.Limit_Looper( angulus + comp - span , 1 )
+                angle_2 = self.geometry.Limit_Looper( angulus + comp        , 1 )
+                angle_3 = self.geometry.Limit_Looper( angulus - span        , 1 )
+                angle_4 = angulus
+            angle_5 = 0
 
-            if self.wheel_mode == "ANALOG":
-                angle_1 = self.convert.huea_to_hued( angle_1 )
-                angle_2 = self.convert.huea_to_hued( angle_2 )
-                angle_3 = self.convert.huea_to_hued( angle_3 )
-                angle_4 = self.convert.huea_to_hued( angle_4 )
-                angle_5 = self.convert.huea_to_hued( angle_5 )
+        if self.wheel_mode == "ANALOG":
+            angle_1 = self.convert.huea_to_hued( angle_1 )
+            angle_2 = self.convert.huea_to_hued( angle_2 )
+            angle_3 = self.convert.huea_to_hued( angle_3 )
+            angle_4 = self.convert.huea_to_hued( angle_4 )
+            angle_5 = self.convert.huea_to_hued( angle_5 )
 
-            # Wheel Mode
-            mode = self.wheel_space
-            if self.panel_index == "Hexagon":
-                mode = "ARD"
-            if self.panel_index == "Luma":
-                mode = "YUV"
-            # Channels
-            c1, c2, c3 = self.Hue_Index( mode )
+        # Wheel Mode
+        mode = self.wheel_space
+        if self.panel_index == "Hexagon":
+            mode = "ARD"
+        if self.panel_index == "Luma":
+            mode = "YUV"
+        # Channels
+        c1, c2, c3 = self.Hue_Index( mode )
 
-            if self.panel_index == "Luma":
-                luma = self.cor[c1]
-
-                # Angulus no Edit
-                if self.harmony_edit == False:
-                    y1, u1, v1 = self.convert.uv_to_hue( self.cor[c1], self.cor[c2], self.cor[c3], angle_1 )
-                    y2, u2, v2 = self.convert.uv_to_hue( self.cor[c1], self.cor[c2], self.cor[c3], angle_2 )
-                    y3, u3, v3 = self.convert.uv_to_hue( self.cor[c1], self.cor[c2], self.cor[c3], angle_3 )
-                    y4, u4, v4 = self.convert.uv_to_hue( self.cor[c1], self.cor[c2], self.cor[c3], angle_4 )
-                    y5, u5, v5 = self.convert.uv_to_hue( self.cor[c1], self.cor[c2], self.cor[c3], angle_5 )
-
-                # Angulus with Edit
-                if self.harmony_edit == True:
-                    y1, u1, v1 = self.convert.uv_to_hue( har_01[c1], har_01[c2], har_01[c3], angle_1 )
-                    y2, u2, v2 = self.convert.uv_to_hue( har_02[c1], har_02[c2], har_02[c3], angle_2 )
-                    y3, u3, v3 = self.convert.uv_to_hue( har_03[c1], har_03[c2], har_03[c3], angle_3 )
-                    y4, u4, v4 = self.convert.uv_to_hue( har_04[c1], har_04[c2], har_04[c3], angle_4 )
-                    y5, u5, v5 = self.convert.uv_to_hue( har_05[c1], har_05[c2], har_05[c3], angle_5 )
-
+        if self.panel_index == "Luma":
+            luma = self.cor[c1]
+            # Angulus no Edit
+            if self.harmony_edit == False:
+                y1, u1, v1 = self.convert.uv_to_hue( self.cor[c1], self.cor[c2], self.cor[c3], angle_1 )
+                y2, u2, v2 = self.convert.uv_to_hue( self.cor[c1], self.cor[c2], self.cor[c3], angle_2 )
+                y3, u3, v3 = self.convert.uv_to_hue( self.cor[c1], self.cor[c2], self.cor[c3], angle_3 )
+                y4, u4, v4 = self.convert.uv_to_hue( self.cor[c1], self.cor[c2], self.cor[c3], angle_4 )
+                y5, u5, v5 = self.convert.uv_to_hue( self.cor[c1], self.cor[c2], self.cor[c3], angle_5 )
+            # Angulus with Edit
+            if self.harmony_edit == True:
+                y1, u1, v1 = self.convert.uv_to_hue( har_01[c1], har_01[c2], har_01[c3], angle_1 )
+                y2, u2, v2 = self.convert.uv_to_hue( har_02[c1], har_02[c2], har_02[c3], angle_2 )
+                y3, u3, v3 = self.convert.uv_to_hue( har_03[c1], har_03[c2], har_03[c3], angle_3 )
+                y4, u4, v4 = self.convert.uv_to_hue( har_04[c1], har_04[c2], har_04[c3], angle_4 )
+                y5, u5, v5 = self.convert.uv_to_hue( har_05[c1], har_05[c2], har_05[c3], angle_5 )
+            # Others
+            if self.harmony_index != 1:self.Color_Convert( mode, luma, u1, v1, 0, har_01 )
+            if self.harmony_index != 2:self.Color_Convert( mode, luma, u2, v2, 0, har_02 )
+            if self.harmony_index != 3:self.Color_Convert( mode, luma, u3, v3, 0, har_03 )
+            if self.harmony_index != 4:self.Color_Convert( mode, luma, u4, v4, 0, har_04 )
+            if self.harmony_index != 5:self.Color_Convert( mode, luma, u5, v5, 0, har_05 )
+            # Active
+            if self.harmony_index == 1:self.Color_Convert( mode, luma, u1, v1, 0, har_01 )
+            if self.harmony_index == 2:self.Color_Convert( mode, luma, u2, v2, 0, har_02 )
+            if self.harmony_index == 3:self.Color_Convert( mode, luma, u3, v3, 0, har_03 )
+            if self.harmony_index == 4:self.Color_Convert( mode, luma, u4, v4, 0, har_04 )
+            if self.harmony_index == 5:self.Color_Convert( mode, luma, u5, v5, 0, har_05 )
+        else:
+            # Angulus no Edit
+            if self.harmony_edit == False:
                 # Others
-                if self.harmony_index != 1:self.Color_Convert( mode, luma, u1, v1, 0, har_01 )
-                if self.harmony_index != 2:self.Color_Convert( mode, luma, u2, v2, 0, har_02 )
-                if self.harmony_index != 3:self.Color_Convert( mode, luma, u3, v3, 0, har_03 )
-                if self.harmony_index != 4:self.Color_Convert( mode, luma, u4, v4, 0, har_04 )
-                if self.harmony_index != 5:self.Color_Convert( mode, luma, u5, v5, 0, har_05 )
+                if self.harmony_index != 1:self.Color_Convert( mode, angle_1, self.cor[c2], self.cor[c3], 0, har_01 )
+                if self.harmony_index != 2:self.Color_Convert( mode, angle_2, self.cor[c2], self.cor[c3], 0, har_02 )
+                if self.harmony_index != 3:self.Color_Convert( mode, angle_3, self.cor[c2], self.cor[c3], 0, har_03 )
+                if self.harmony_index != 4:self.Color_Convert( mode, angle_4, self.cor[c2], self.cor[c3], 0, har_04 )
+                if self.harmony_index != 5:self.Color_Convert( mode, angle_5, self.cor[c2], self.cor[c3], 0, har_05 )
                 # Active
-                if self.harmony_index == 1:self.Color_Convert( mode, luma, u1, v1, 0, har_01 )
-                if self.harmony_index == 2:self.Color_Convert( mode, luma, u2, v2, 0, har_02 )
-                if self.harmony_index == 3:self.Color_Convert( mode, luma, u3, v3, 0, har_03 )
-                if self.harmony_index == 4:self.Color_Convert( mode, luma, u4, v4, 0, har_04 )
-                if self.harmony_index == 5:self.Color_Convert( mode, luma, u5, v5, 0, har_05 )
+                if self.harmony_index == 1:self.Color_Convert( mode, angle_1, self.cor[c2], self.cor[c3], 0, har_01 )
+                if self.harmony_index == 2:self.Color_Convert( mode, angle_2, self.cor[c2], self.cor[c3], 0, har_02 )
+                if self.harmony_index == 3:self.Color_Convert( mode, angle_3, self.cor[c2], self.cor[c3], 0, har_03 )
+                if self.harmony_index == 4:self.Color_Convert( mode, angle_4, self.cor[c2], self.cor[c3], 0, har_04 )
+                if self.harmony_index == 5:self.Color_Convert( mode, angle_5, self.cor[c2], self.cor[c3], 0, har_05 )
+            # Angulus with Edit
+            if self.harmony_edit == True:
+                # Others
+                if self.harmony_index != 1:self.Color_Convert( mode, angle_1, har_01[c2], har_01[c3], 0, har_01 )
+                if self.harmony_index != 2:self.Color_Convert( mode, angle_2, har_02[c2], har_02[c3], 0, har_02 )
+                if self.harmony_index != 3:self.Color_Convert( mode, angle_3, har_03[c2], har_03[c3], 0, har_03 )
+                if self.harmony_index != 4:self.Color_Convert( mode, angle_4, har_04[c2], har_04[c3], 0, har_04 )
+                if self.harmony_index != 5:self.Color_Convert( mode, angle_5, har_05[c2], har_05[c3], 0, har_05 )
+                # Active
+                if self.harmony_index == 1:self.Color_Convert( mode, angle_1, har_01[c2], har_01[c3], 0, har_01 )
+                if self.harmony_index == 2:self.Color_Convert( mode, angle_2, har_02[c2], har_02[c3], 0, har_02 )
+                if self.harmony_index == 3:self.Color_Convert( mode, angle_3, har_03[c2], har_03[c3], 0, har_03 )
+                if self.harmony_index == 4:self.Color_Convert( mode, angle_4, har_04[c2], har_04[c3], 0, har_04 )
+                if self.harmony_index == 5:self.Color_Convert( mode, angle_5, har_05[c2], har_05[c3], 0, har_05 )
 
-            else:
-                # Angulus no Edit
-                if self.harmony_edit == False:
-                    # Others
-                    if self.harmony_index != 1:self.Color_Convert( mode, angle_1, self.cor[c2], self.cor[c3], 0, har_01 )
-                    if self.harmony_index != 2:self.Color_Convert( mode, angle_2, self.cor[c2], self.cor[c3], 0, har_02 )
-                    if self.harmony_index != 3:self.Color_Convert( mode, angle_3, self.cor[c2], self.cor[c3], 0, har_03 )
-                    if self.harmony_index != 4:self.Color_Convert( mode, angle_4, self.cor[c2], self.cor[c3], 0, har_04 )
-                    if self.harmony_index != 5:self.Color_Convert( mode, angle_5, self.cor[c2], self.cor[c3], 0, har_05 )
-                    # Active
-                    if self.harmony_index == 1:self.Color_Convert( mode, angle_1, self.cor[c2], self.cor[c3], 0, har_01 )
-                    if self.harmony_index == 2:self.Color_Convert( mode, angle_2, self.cor[c2], self.cor[c3], 0, har_02 )
-                    if self.harmony_index == 3:self.Color_Convert( mode, angle_3, self.cor[c2], self.cor[c3], 0, har_03 )
-                    if self.harmony_index == 4:self.Color_Convert( mode, angle_4, self.cor[c2], self.cor[c3], 0, har_04 )
-                    if self.harmony_index == 5:self.Color_Convert( mode, angle_5, self.cor[c2], self.cor[c3], 0, har_05 )
-                # Angulus with Edit
-                if self.harmony_edit == True:
-                    # Others
-                    if self.harmony_index != 1:self.Color_Convert( mode, angle_1, har_01[c2], har_01[c3], 0, har_01 )
-                    if self.harmony_index != 2:self.Color_Convert( mode, angle_2, har_02[c2], har_02[c3], 0, har_02 )
-                    if self.harmony_index != 3:self.Color_Convert( mode, angle_3, har_03[c2], har_03[c3], 0, har_03 )
-                    if self.harmony_index != 4:self.Color_Convert( mode, angle_4, har_04[c2], har_04[c3], 0, har_04 )
-                    if self.harmony_index != 5:self.Color_Convert( mode, angle_5, har_05[c2], har_05[c3], 0, har_05 )
-                    # Active
-                    if self.harmony_index == 1:self.Color_Convert( mode, angle_1, har_01[c2], har_01[c3], 0, har_01 )
-                    if self.harmony_index == 2:self.Color_Convert( mode, angle_2, har_02[c2], har_02[c3], 0, har_02 )
-                    if self.harmony_index == 3:self.Color_Convert( mode, angle_3, har_03[c2], har_03[c3], 0, har_03 )
-                    if self.harmony_index == 4:self.Color_Convert( mode, angle_4, har_04[c2], har_04[c3], 0, har_04 )
-                    if self.harmony_index == 5:self.Color_Convert( mode, angle_5, har_05[c2], har_05[c3], 0, har_05 )
+        # Active ( cleanup )
+        har_01[ "active" ] = True
+        har_02[ "active" ] = True
+        har_03[ "active" ] = True
+        har_04[ "active" ] = True
+        har_05[ "active" ] = True
 
-            # Save
-            Krita.instance().writeSetting( "Pigment.O", "har_01", str( har_01 ) )
-            Krita.instance().writeSetting( "Pigment.O", "har_02", str( har_02 ) )
-            Krita.instance().writeSetting( "Pigment.O", "har_03", str( har_03 ) )
-            Krita.instance().writeSetting( "Pigment.O", "har_04", str( har_04 ) )
-            Krita.instance().writeSetting( "Pigment.O", "har_05", str( har_05 ) )
-        except:
-            pass
+        # Save
+        Krita.instance().writeSetting( "Pigment.O", "har_01", str( har_01 ) )
+        Krita.instance().writeSetting( "Pigment.O", "har_02", str( har_02 ) )
+        Krita.instance().writeSetting( "Pigment.O", "har_03", str( har_03 ) )
+        Krita.instance().writeSetting( "Pigment.O", "har_04", str( har_04 ) )
+        Krita.instance().writeSetting( "Pigment.O", "har_05", str( har_05 ) )
     def Color_HEX( self, hex_code ):
         try:
             # Variables
@@ -5637,54 +5646,51 @@ class PigmentO_Docker( DockWidget ):
             self.sele_4_slider.Update_Colors( sele_4, 1 )
     def Mixers_Set_Style( self ):
         for i in range( 0, len( self.mixer_colors ) ):
-            try:
-                # Variables
-                mode = self.mixer_space
-                short = True
-                stops = 20
-                ll = self.mixer_colors[i]["l"]
-                rr = self.mixer_colors[i]["r"]
+            # Variables
+            mode = self.mixer_space
+            short = True
+            stops = 20
+            ll = self.mixer_colors[i]["l"]
+            rr = self.mixer_colors[i]["r"]
 
-                # Active
-                al = ll["active"]
-                ar = rr["active"]
-                # Render Colors
-                if ( al == True and ar == True ):
-                    # Variables
-                    if mode == "A":
-                        mixed = self.Gradient_Style( mode, short, stops, [ ll["aaa_1"] ], [ rr["aaa_1"] ] )
-                    elif ( mode == "RGB" or mode == None ):
-                        mixed = self.Gradient_Style( "RGB", short, stops, [ ll["rgb_1"], ll["rgb_2"], ll["rgb_3"] ], [ rr["rgb_1"], rr["rgb_2"], rr["rgb_3"] ] )
-                    elif mode == "CMY":
-                        mixed = self.Gradient_Style( mode, short, stops, [ ll["cmy_1"], ll["cmy_2"], ll["cmy_3"] ], [ rr["cmy_1"], rr["cmy_2"], rr["cmy_3"] ] )
-                    elif mode == "CMYK":
-                        mixed = self.Gradient_Style( mode, short, stops, [ ll["cmyk_1"], ll["cmyk_2"], ll["cmyk_3"], ll["cmyk_4"] ], [ rr["cmyk_1"], rr["cmyk_2"], rr["cmyk_3"], rr["cmyk_4"] ] )
-                    elif mode == "RYB":
-                        mixed = self.Gradient_Style( mode, short, stops, [ ll["ryb_1"], ll["ryb_2"], ll["ryb_3"] ], [ rr["ryb_1"], rr["ryb_2"], rr["ryb_3"] ] )
-                    elif mode == "YUV":
-                        mixed = self.Gradient_Style( mode, short, stops, [ ll["yuv_1"], ll["yuv_2"], ll["yuv_3"] ], [ rr["yuv_1"], rr["yuv_2"], rr["yuv_3"] ] )
-                    elif mode == "HSV":
-                        mixed = self.Gradient_Style( mode, short, stops, [ ll["hsv_1"], ll["hsv_2"], ll["hsv_3"] ], [ rr["hsv_1"], rr["hsv_2"], rr["hsv_3"] ] )
-                    elif mode == "HSL":
-                        mixed = self.Gradient_Style( mode, short, stops, [ ll["hsl_1"], ll["hsl_2"], ll["hsl_3"] ], [ rr["hsl_1"], rr["hsl_2"], rr["hsl_3"] ] )
-                    elif mode == "HCY":
-                        mixed = self.Gradient_Style( mode, short, stops, [ ll["hcy_1"], ll["hcy_2"], ll["hcy_3"] ], [ rr["hcy_1"], rr["hcy_2"], rr["hcy_3"] ] )
-                    elif mode == "ARD":
-                        mixed = self.Gradient_Style( mode, short, stops, [ ll["ard_1"], ll["ard_2"], ll["ard_3"] ], [ rr["ard_1"], rr["ard_2"], rr["ard_3"] ] )
-                    elif mode == "XYZ":
-                        mixed = self.Gradient_Style( mode, short, stops, [ ll["xyz_1"], ll["xyz_2"], ll["xyz_3"] ], [ rr["xyz_1"], rr["xyz_2"], rr["xyz_3"] ] )
-                    elif mode == "XYY":
-                        mixed = self.Gradient_Style( mode, short, stops, [ ll["xyy_1"], ll["xyy_2"], ll["xyy_3"] ], [ rr["xyy_1"], rr["xyy_2"], rr["xyy_3"] ] )
-                    elif mode == "LAB":
-                        mixed = self.Gradient_Style( mode, short, stops, [ ll["lab_1"], ll["lab_2"], ll["lab_3"] ], [ rr["lab_1"], rr["lab_2"], rr["lab_3"] ] )
-                    elif mode == "LCH":
-                        mixed = self.Gradient_Style( mode, short, stops, [ ll["lch_1"], ll["lch_2"], ll["lch_3"] ], [ rr["lch_1"], rr["lch_2"], rr["lch_3"] ] )
-                    # Render
-                    self.mixer_module[i]["m"].Set_Colors( mixed, 1 )
-                else:
-                    self.mixer_module[i]["m"].Set_Colors( None, 1 )
-            except:
-                pass
+            # Active
+            al = ll["active"]
+            ar = rr["active"]
+            # Render Colors
+            if ( al == True and ar == True ):
+                # Variables
+                if mode == "A":
+                    mixed = self.Gradient_Style( mode, short, stops, [ ll["aaa_1"] ], [ rr["aaa_1"] ] )
+                elif ( mode == "RGB" or mode == None ):
+                    mixed = self.Gradient_Style( "RGB", short, stops, [ ll["rgb_1"], ll["rgb_2"], ll["rgb_3"] ], [ rr["rgb_1"], rr["rgb_2"], rr["rgb_3"] ] )
+                elif mode == "CMY":
+                    mixed = self.Gradient_Style( mode, short, stops, [ ll["cmy_1"], ll["cmy_2"], ll["cmy_3"] ], [ rr["cmy_1"], rr["cmy_2"], rr["cmy_3"] ] )
+                elif mode == "CMYK":
+                    mixed = self.Gradient_Style( mode, short, stops, [ ll["cmyk_1"], ll["cmyk_2"], ll["cmyk_3"], ll["cmyk_4"] ], [ rr["cmyk_1"], rr["cmyk_2"], rr["cmyk_3"], rr["cmyk_4"] ] )
+                elif mode == "RYB":
+                    mixed = self.Gradient_Style( mode, short, stops, [ ll["ryb_1"], ll["ryb_2"], ll["ryb_3"] ], [ rr["ryb_1"], rr["ryb_2"], rr["ryb_3"] ] )
+                elif mode == "YUV":
+                    mixed = self.Gradient_Style( mode, short, stops, [ ll["yuv_1"], ll["yuv_2"], ll["yuv_3"] ], [ rr["yuv_1"], rr["yuv_2"], rr["yuv_3"] ] )
+                elif mode == "HSV":
+                    mixed = self.Gradient_Style( mode, short, stops, [ ll["hsv_1"], ll["hsv_2"], ll["hsv_3"] ], [ rr["hsv_1"], rr["hsv_2"], rr["hsv_3"] ] )
+                elif mode == "HSL":
+                    mixed = self.Gradient_Style( mode, short, stops, [ ll["hsl_1"], ll["hsl_2"], ll["hsl_3"] ], [ rr["hsl_1"], rr["hsl_2"], rr["hsl_3"] ] )
+                elif mode == "HCY":
+                    mixed = self.Gradient_Style( mode, short, stops, [ ll["hcy_1"], ll["hcy_2"], ll["hcy_3"] ], [ rr["hcy_1"], rr["hcy_2"], rr["hcy_3"] ] )
+                elif mode == "ARD":
+                    mixed = self.Gradient_Style( mode, short, stops, [ ll["ard_1"], ll["ard_2"], ll["ard_3"] ], [ rr["ard_1"], rr["ard_2"], rr["ard_3"] ] )
+                elif mode == "XYZ":
+                    mixed = self.Gradient_Style( mode, short, stops, [ ll["xyz_1"], ll["xyz_2"], ll["xyz_3"] ], [ rr["xyz_1"], rr["xyz_2"], rr["xyz_3"] ] )
+                elif mode == "XYY":
+                    mixed = self.Gradient_Style( mode, short, stops, [ ll["xyy_1"], ll["xyy_2"], ll["xyy_3"] ], [ rr["xyy_1"], rr["xyy_2"], rr["xyy_3"] ] )
+                elif mode == "LAB":
+                    mixed = self.Gradient_Style( mode, short, stops, [ ll["lab_1"], ll["lab_2"], ll["lab_3"] ], [ rr["lab_1"], rr["lab_2"], rr["lab_3"] ] )
+                elif mode == "LCH":
+                    mixed = self.Gradient_Style( mode, short, stops, [ ll["lch_1"], ll["lch_2"], ll["lch_3"] ], [ rr["lch_1"], rr["lch_2"], rr["lch_3"] ] )
+                # Render
+                self.mixer_module[i]["m"].Set_Colors( mixed, 1 )
+            else:
+                self.mixer_module[i]["m"].Set_Colors( None, 1 )
     def Pin_Active( self ):
         # Variables
         rgb_cor = self.cor["hex6"]
@@ -8525,21 +8531,23 @@ class PigmentO_Docker( DockWidget ):
 
     def Fill_Check( self, doc ):
         try:
-            check_alpha = Krita.instance().activeDocument().nodeByName( fill["node_name"] ).alphaLocked()
-            check_fill = fill["active"] == True and fill["node_name"] == doc["d_nn"] and check_alpha == True
+            check_alpha = Krita.instance().activeDocument().nodeByUniqueID( fill["node_uid"] ).alphaLocked()
+            check_fill = fill["active"] == True and fill["node_uid"] == doc["d_uid"] and check_alpha == True
         except:
             check_fill = False
         return check_fill
     def Fill_None( self ):
         # Layers
         try:
-            try:Krita.instance().activeDocument().nodeByName( fill["node_name"] ).setAlphaLocked( fill["alphalock_before"] )
-            except:Krita.instance().activeDocument().nodeByName( fill["node_name"] ).setAlphaLocked( False )
+            node = Krita.instance().activeDocument().nodeByUniqueID( fill["node_uid"] )
+            try:node.setAlphaLocked( fill["alphalock_before"] )
+            except:node.setAlphaLocked( False )
+            else:pass
         except:
             pass
         # Variables
         fill["active"] = False
-        fill["node_name"] = None
+        fill["node_uid"] = None
         fill["alphalock_before"] = None
         # UI
         self.layout.fill.blockSignals( True )
@@ -9182,5 +9190,13 @@ Investigate Krita
 
 Idea :
 Color Picking outside Krita
+
+Bug:
+- Mixer in 16 bit goes crazy.
+
+New:
+- Fixed sample hue maps when perfect black is present so not to use the last self.hue but instead the value zero.
+- Harmony colors being set to ( True, False, True, False, True ) reason unknown
+- some Try and Excepts were lifted so if it crashes it will crash but will say what
 
 """

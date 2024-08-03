@@ -479,6 +479,7 @@ class Convert():
         yuv = None
         xyz = None
         lab = None
+        self.hue = 0
 
         # Lists
         list_rgb = [ "A", "RGB", "CMY", "CMYK", "RYB", "YUV", "HSV", "HSL", "HCY", "ARD" ]
