@@ -1647,6 +1647,7 @@ class PigmentO_Docker( DockWidget ):
         self.dialog.analyse_display.setChecked( self.Set_Read( "EVAL", "analyse_display", False ) )
         # Mixers
         self.dialog.mixer_space.setCurrentText( self.Set_Read( "STR", "mixer_space", "HSV" ) )
+        self.dialog.mixer_count.setValue( self.Set_Read( "INT", "mixer_count", self.mixer_count ) )
 
         #endregion
         #region Dialog Color
@@ -2061,30 +2062,40 @@ class PigmentO_Docker( DockWidget ):
         self.Mixers_Set_Style()
         # Save
         Krita.instance().writeSetting( "Pigment.O", "mixer_space", str( self.mixer_space ) )
-    def Mixer_Count( self, mixer_count ):
-        # Construct
-        if self.mixer_count < mixer_count:
-            self.Count_Construct( self.mixer_count, mixer_count )
-        # Clear
-        elif self.mixer_count > mixer_count:
-            self.Count_Clear( mixer_count, self.mixer_count )
-
+    def Mixer_Count( self, count ):
+        # Widget
+        self.dialog.mixer_count.setEnabled( False )
+        # Construct Widgets
+        self.Count_Construct( self.mixer_count, count )
         # Variables
-        self.mixer_count = mixer_count
+        self.mixer_count = count
         # Update
         self.Update_Size()
         # Save
         Krita.instance().writeSetting( "Pigment.O", "mixer_count", str( self.mixer_count ) )
+        # Widget
+        self.dialog.mixer_count.setEnabled( True )
     def Count_Construct( self, old, new ):
+        # Widgets
+        check = int( new - old )
+        if check > 0: # Create
+            self.Count_Plus( old, new )
+        elif check < 0: # Delete
+            self.Count_Subtract( old, new )
+        # Variables
+        self.mixer_colors = self.mixer_colors[0:new]
+        self.mixer_module = self.mixer_module[0:new]
+        self.mixer_widget = self.mixer_widget[0:new]
+    def Count_Plus( self, old, new ):
         for i in range( old, new ):
             # Widegts
             left = QWidget()
             middle = QWidget()
             right = QWidget()
             # Dimensions
-            left = self.Count_Square( left, i )
-            middle = self.Count_Slider( middle, i )
-            right = self.Count_Square( right, i )
+            left = self.Geo_Square( left, i )
+            middle = self.Geo_Slider( middle, i )
+            right = self.Geo_Square( right, i )
             # Layout
             self.layout.mixer_set_layout.addWidget( left, i, 0 )
             self.layout.mixer_set_layout.addWidget( middle, i, 1 )
@@ -2122,7 +2133,12 @@ class PigmentO_Docker( DockWidget ):
             del left
             del middle
             del right
-    def Count_Square( self, square, r ):
+    def Count_Subtract( self, old, new ):
+        for i in range( new, old ):
+            self.layout.mixer_set_layout.removeWidget( self.mixer_widget[i]["l"] )
+            self.layout.mixer_set_layout.removeWidget( self.mixer_widget[i]["m"] )
+            self.layout.mixer_set_layout.removeWidget( self.mixer_widget[i]["r"] )
+    def Geo_Square( self, square, r ):
         # Dimensions
         square.setMinimumHeight( 15 )
         square.setMaximumHeight( 20 )
@@ -2131,7 +2147,7 @@ class PigmentO_Docker( DockWidget ):
         square.setSizePolicy( QSizePolicy.Fixed, QSizePolicy.Preferred )
         # Return
         return square
-    def Count_Slider( self, slider, r ):
+    def Geo_Slider( self, slider, r ):
         # Geometry
         width = self.layout.mixer_m_000.width()
         slider.setGeometry( 0, 0, width, 20)
@@ -2142,16 +2158,6 @@ class PigmentO_Docker( DockWidget ):
         slider.setSizePolicy( QSizePolicy.Ignored, QSizePolicy.Preferred )
         # Return
         return slider
-    def Count_Clear( self, old, new ):
-        for i in range( old, new ):
-            # Widgets
-            self.layout.mixer_set_layout.removeWidget( self.mixer_widget[-1]["l"] )
-            self.layout.mixer_set_layout.removeWidget( self.mixer_widget[-1]["m"] )
-            self.layout.mixer_set_layout.removeWidget( self.mixer_widget[-1]["r"] )
-            # Delete Entries
-            self.mixer_colors.pop( -1 )
-            self.mixer_module.pop( -1 )
-            self.mixer_widget.pop( -1 )
 
     # Selection
     def Selection_Mode( self, sele_mode ):
@@ -5657,40 +5663,45 @@ class PigmentO_Docker( DockWidget ):
             al = ll["active"]
             ar = rr["active"]
             # Render Colors
-            if ( al == True and ar == True ):
-                # Variables
-                if mode == "A":
-                    mixed = self.Gradient_Style( mode, short, stops, [ ll["aaa_1"] ], [ rr["aaa_1"] ] )
-                elif ( mode == "RGB" or mode == None ):
-                    mixed = self.Gradient_Style( "RGB", short, stops, [ ll["rgb_1"], ll["rgb_2"], ll["rgb_3"] ], [ rr["rgb_1"], rr["rgb_2"], rr["rgb_3"] ] )
-                elif mode == "CMY":
-                    mixed = self.Gradient_Style( mode, short, stops, [ ll["cmy_1"], ll["cmy_2"], ll["cmy_3"] ], [ rr["cmy_1"], rr["cmy_2"], rr["cmy_3"] ] )
-                elif mode == "CMYK":
-                    mixed = self.Gradient_Style( mode, short, stops, [ ll["cmyk_1"], ll["cmyk_2"], ll["cmyk_3"], ll["cmyk_4"] ], [ rr["cmyk_1"], rr["cmyk_2"], rr["cmyk_3"], rr["cmyk_4"] ] )
-                elif mode == "RYB":
-                    mixed = self.Gradient_Style( mode, short, stops, [ ll["ryb_1"], ll["ryb_2"], ll["ryb_3"] ], [ rr["ryb_1"], rr["ryb_2"], rr["ryb_3"] ] )
-                elif mode == "YUV":
-                    mixed = self.Gradient_Style( mode, short, stops, [ ll["yuv_1"], ll["yuv_2"], ll["yuv_3"] ], [ rr["yuv_1"], rr["yuv_2"], rr["yuv_3"] ] )
-                elif mode == "HSV":
-                    mixed = self.Gradient_Style( mode, short, stops, [ ll["hsv_1"], ll["hsv_2"], ll["hsv_3"] ], [ rr["hsv_1"], rr["hsv_2"], rr["hsv_3"] ] )
-                elif mode == "HSL":
-                    mixed = self.Gradient_Style( mode, short, stops, [ ll["hsl_1"], ll["hsl_2"], ll["hsl_3"] ], [ rr["hsl_1"], rr["hsl_2"], rr["hsl_3"] ] )
-                elif mode == "HCY":
-                    mixed = self.Gradient_Style( mode, short, stops, [ ll["hcy_1"], ll["hcy_2"], ll["hcy_3"] ], [ rr["hcy_1"], rr["hcy_2"], rr["hcy_3"] ] )
-                elif mode == "ARD":
-                    mixed = self.Gradient_Style( mode, short, stops, [ ll["ard_1"], ll["ard_2"], ll["ard_3"] ], [ rr["ard_1"], rr["ard_2"], rr["ard_3"] ] )
-                elif mode == "XYZ":
-                    mixed = self.Gradient_Style( mode, short, stops, [ ll["xyz_1"], ll["xyz_2"], ll["xyz_3"] ], [ rr["xyz_1"], rr["xyz_2"], rr["xyz_3"] ] )
-                elif mode == "XYY":
-                    mixed = self.Gradient_Style( mode, short, stops, [ ll["xyy_1"], ll["xyy_2"], ll["xyy_3"] ], [ rr["xyy_1"], rr["xyy_2"], rr["xyy_3"] ] )
-                elif mode == "LAB":
-                    mixed = self.Gradient_Style( mode, short, stops, [ ll["lab_1"], ll["lab_2"], ll["lab_3"] ], [ rr["lab_1"], rr["lab_2"], rr["lab_3"] ] )
-                elif mode == "LCH":
-                    mixed = self.Gradient_Style( mode, short, stops, [ ll["lch_1"], ll["lch_2"], ll["lch_3"] ], [ rr["lch_1"], rr["lch_2"], rr["lch_3"] ] )
-                # Render
-                self.mixer_module[i]["m"].Set_Colors( mixed, 1 )
-            else:
-                self.mixer_module[i]["m"].Set_Colors( None, 1 )
+            try:
+                if ( al == False or ar == False ):
+                    self.mixer_module[i]["m"].Set_Colors( None, 1 )
+                elif ( al == True and ar == True ):
+                    # Variables
+                    if mode == "A":
+                        mixed = self.Gradient_Style( mode, short, stops, [ ll["aaa_1"] ], [ rr["aaa_1"] ] )
+                    elif ( mode == "RGB" or mode == None ):
+                        mixed = self.Gradient_Style( "RGB", short, stops, [ ll["rgb_1"], ll["rgb_2"], ll["rgb_3"] ], [ rr["rgb_1"], rr["rgb_2"], rr["rgb_3"] ] )
+                    elif mode == "CMY":
+                        mixed = self.Gradient_Style( mode, short, stops, [ ll["cmy_1"], ll["cmy_2"], ll["cmy_3"] ], [ rr["cmy_1"], rr["cmy_2"], rr["cmy_3"] ] )
+                    elif mode == "CMYK":
+                        mixed = self.Gradient_Style( mode, short, stops, [ ll["cmyk_1"], ll["cmyk_2"], ll["cmyk_3"], ll["cmyk_4"] ], [ rr["cmyk_1"], rr["cmyk_2"], rr["cmyk_3"], rr["cmyk_4"] ] )
+                    elif mode == "RYB":
+                        mixed = self.Gradient_Style( mode, short, stops, [ ll["ryb_1"], ll["ryb_2"], ll["ryb_3"] ], [ rr["ryb_1"], rr["ryb_2"], rr["ryb_3"] ] )
+                    elif mode == "YUV":
+                        mixed = self.Gradient_Style( mode, short, stops, [ ll["yuv_1"], ll["yuv_2"], ll["yuv_3"] ], [ rr["yuv_1"], rr["yuv_2"], rr["yuv_3"] ] )
+                    elif mode == "HSV":
+                        mixed = self.Gradient_Style( mode, short, stops, [ ll["hsv_1"], ll["hsv_2"], ll["hsv_3"] ], [ rr["hsv_1"], rr["hsv_2"], rr["hsv_3"] ] )
+                    elif mode == "HSL":
+                        mixed = self.Gradient_Style( mode, short, stops, [ ll["hsl_1"], ll["hsl_2"], ll["hsl_3"] ], [ rr["hsl_1"], rr["hsl_2"], rr["hsl_3"] ] )
+                    elif mode == "HCY":
+                        mixed = self.Gradient_Style( mode, short, stops, [ ll["hcy_1"], ll["hcy_2"], ll["hcy_3"] ], [ rr["hcy_1"], rr["hcy_2"], rr["hcy_3"] ] )
+                    elif mode == "ARD":
+                        mixed = self.Gradient_Style( mode, short, stops, [ ll["ard_1"], ll["ard_2"], ll["ard_3"] ], [ rr["ard_1"], rr["ard_2"], rr["ard_3"] ] )
+                    elif mode == "XYZ":
+                        mixed = self.Gradient_Style( mode, short, stops, [ ll["xyz_1"], ll["xyz_2"], ll["xyz_3"] ], [ rr["xyz_1"], rr["xyz_2"], rr["xyz_3"] ] )
+                    elif mode == "XYY":
+                        mixed = self.Gradient_Style( mode, short, stops, [ ll["xyy_1"], ll["xyy_2"], ll["xyy_3"] ], [ rr["xyy_1"], rr["xyy_2"], rr["xyy_3"] ] )
+                    elif mode == "LAB":
+                        mixed = self.Gradient_Style( mode, short, stops, [ ll["lab_1"], ll["lab_2"], ll["lab_3"] ], [ rr["lab_1"], rr["lab_2"], rr["lab_3"] ] )
+                    elif mode == "LCH":
+                        mixed = self.Gradient_Style( mode, short, stops, [ ll["lch_1"], ll["lch_2"], ll["lch_3"] ], [ rr["lch_1"], rr["lch_2"], rr["lch_3"] ] )
+
+                    # Render
+                    self.mixer_module[i]["m"].Set_Colors( mixed, 1 )
+            except:
+                pass
+
     def Pin_Active( self ):
         # Variables
         rgb_cor = self.cor["hex6"]
@@ -8341,38 +8352,21 @@ class PigmentO_Docker( DockWidget ):
 
     # Load
     def Mixer_LOAD( self ):
-        # Clean Non Active Rows
-        length = len( self.mixer_colors )
-        to_pop = []
-        for i in range( 1, length ):
-            try:al = self.mixer_colors[i]["l"]["active"]
-            except:al = False
-            try:ar = self.mixer_colors[i]["r"]["active"]
-            except:ar = False
-            check = ( al == False and ar == False )
-            if check == True:
-                to_pop.append( i )
-        to_pop.sort(reverse=True)
-        for i in range( 0, len( to_pop ) ):
-            self.mixer_colors.pop( to_pop[i] )
-
-        # Widgets
-        self.mixer_count = len( self.mixer_colors )
-        self.dialog.mixer_count.setValue( self.mixer_count )
-        self.Count_Construct( 1, self.mixer_count )
-
         # Render
-        for i in range( 0, len( self.mixer_colors ) ):
+        length = len( self.mixer_colors )
+        for i in range( 0, length ):
             # Variables
-            al = self.mixer_colors[i]["l"]["active"]
-            ar = self.mixer_colors[i]["r"]["active"]
+            item = self.mixer_colors[i]
+            al = item["l"]["active"]
+            ar = item["r"]["active"]
+            # Modules
             if al == True:
-                try:self.mixer_module[i]["l"].Set_Color( self.mixer_colors[i]["l"]["hex6"] )
+                try:self.mixer_module[i]["l"].Set_Color( item["l"]["hex6"] )
                 except:pass
             if ar == True:
-                try:self.mixer_module[i]["r"].Set_Color( self.mixer_colors[i]["r"]["hex6"] )
+                try:self.mixer_module[i]["r"].Set_Color( item["r"]["hex6"] )
                 except:pass
-            try:self.mixer_module[i]["m"].Set_Value( self.mixer_colors[i]["m"] )
+            try:self.mixer_module[i]["m"].Set_Value( item["m"] )
             except:pass
 
     # Pin LEFT
@@ -9193,10 +9187,5 @@ Color Picking outside Krita
 
 Bug:
 - Mixer in 16 bit goes crazy.
-
-New:
-- Fixed sample hue maps when perfect black is present so not to use the last self.hue but instead the value zero.
-- Harmony colors being set to ( True, False, True, False, True ) reason unknown
-- some Try and Excepts were lifted so if it crashes it will crash but will say what
 
 """

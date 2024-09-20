@@ -4515,19 +4515,24 @@ class Channel_Slider( QWidget ):
 
         # Draw Colors Gradient
         if self.colors != None:
-            painter.setPen( QtCore.Qt.NoPen )
-            grad = QLinearGradient( int( 0 ), int( 0 ), int( self.ww ), int( 0 ) )
-            number = len( self.colors )
-            for i in range( 0, number ):
-                grad.setColorAt( round( i / number, 3 ), QColor( int( self.colors[i][0] * 255 ), int( self.colors[i][1] * 255 ), int( self.colors[i][2] * 255 ), int( self.alpha * 255 ) ) )
-            painter.setBrush( QBrush( grad ) )
-            square = QPolygon( [
-                QPoint( int( 1 ),  int( 1 ) ),
-                QPoint( int( w1 ), int( 1 ) ),
-                QPoint( int( w1 ), int( h1 ) ),
-                QPoint( int( 1 ),  int( h1 ) ),
-                ] )
-            painter.drawPolygon( square )
+            try:
+                painter.setPen( QtCore.Qt.NoPen )
+                grad = QLinearGradient( int( 0 ), int( 0 ), int( self.ww ), int( 0 ) )
+
+                number = len( self.colors )
+                for i in range( 0, number ):
+                    grad.setColorAt( round( i / number, 3 ), QColor( int( self.colors[i][0] * 255 ), int( self.colors[i][1] * 255 ), int( self.colors[i][2] * 255 ), int( self.alpha * 255 ) ) )
+
+                painter.setBrush( QBrush( grad ) )
+                square = QPolygon( [
+                    QPoint( int( 1 ),  int( 1 ) ),
+                    QPoint( int( w1 ), int( 1 ) ),
+                    QPoint( int( w1 ), int( h1 ) ),
+                    QPoint( int( 1 ),  int( h1 ) ),
+                    ] )
+                painter.drawPolygon( square )
+            except Exception as e:
+                QtCore.qDebug( f"error = { e }" )
 
         # Cursor
         value = int( self.value )
