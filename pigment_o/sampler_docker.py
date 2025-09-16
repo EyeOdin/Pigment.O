@@ -1102,7 +1102,7 @@ class Sampler_Docker( DockWidget ):
         self.Import_Pigment_O()
         self.Update_Size()
     def resizeEvent( self, event ):
-        self.Resize_Print( event )
+        # self.Resize_Print( event )
         self.Update_Size()
     def enterEvent( self, event ):
         self.Color_READ()
