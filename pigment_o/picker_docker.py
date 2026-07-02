@@ -164,10 +164,14 @@ class Picker_Docker( DockWidget ):
         self.panel_luma.SIGNAL_PIN_INDEX.connect( self.Pin_Apply )
         self.panel_luma.SIGNAL_PIN_EDIT.connect( self.Pin_Panel )
 
-        # Panel Dot View
-        self.panel_dot = Panel_Dot( self.layout.panel_dot )
-        self.panel_dot.SIGNAL_VALUE.connect( self.Panel_Dot_Value )
-        self.panel_dot.SIGNAL_RELEASE.connect( self.Pigmento_SYNC )
+        # Panel Plane
+        self.panel_plane = Panel_Plane( self.layout.panel_plane )
+        self.panel_plane.SIGNAL_VALUE.connect( self.Panel_Plane_Value )
+        self.panel_plane.SIGNAL_RELEASE.connect( self.Pigmento_SYNC )
+        self.panel_plane.SIGNAL_INDEX.connect( self.Panel_Plane_Index )
+        self.panel_plane.SIGNAL_SWAP.connect( self.Panel_Plane_Swap )
+        self.panel_plane.SIGNAL_RANDOM.connect( self.Panel_Plane_Random )
+        self.panel_plane.SIGNAL_RESET.connect( self.Panel_Plane_Reset )
 
         # Panel Mask View
         self.panel_mask = Panel_Mask( self.layout.panel_mask )
@@ -177,23 +181,6 @@ class Picker_Docker( DockWidget ):
 
         #endregion
         #region Panel Pins
-
-        # Panel Dot Pins
-        self.dot_widget = [
-            self.layout.dot_00,
-            self.layout.dot_01,
-            self.layout.dot_02,
-            self.layout.dot_03,
-            ]
-        self.dot_module = list()
-        count = len( self.dot_widget )
-        for i in range( 0, count ):
-            self.dot_module.append( Pin_Color( self.dot_widget[i] ) )
-            self.dot_module[i].Set_Index( i )
-            self.dot_module[i].SIGNAL_APPLY.connect( self.Dot_Apply )
-            self.dot_module[i].SIGNAL_SAVE.connect( self.Dot_Save )
-            self.dot_module[i].SIGNAL_CLEAN.connect( self.Dot_Clean )
-            self.dot_module[i].SIGNAL_TEXT.connect( self.Label_String )
 
         # Panel Mask Pins
         self.mask_widget = [
@@ -676,7 +663,7 @@ class Picker_Docker( DockWidget ):
         self.dialog.panel_mode.addItem( panel_gamut )
         self.dialog.panel_mode.addItem( panel_hexagon )
         self.dialog.panel_mode.addItem( panel_luma )
-        self.dialog.panel_mode.addItem( panel_dot )
+        self.dialog.panel_mode.addItem( panel_plane )
         self.dialog.panel_mode.addItem( panel_mask )
         # Panel Icons
         qpixmap_fill = QPixmap( 100, 100 )
@@ -687,7 +674,7 @@ class Picker_Docker( DockWidget ):
         path_gamut      = os.path.join( icon_path, "GAMUT.png" )
         path_hexagon    = os.path.join( icon_path, "HEXAGON.png" )
         path_luma       = os.path.join( icon_path, "LUMA.png" )
-        path_dot        = os.path.join( icon_path, "DOT.png" )
+        path_plane      = os.path.join( icon_path, "PLANE.png" )
         path_mask       = os.path.join( icon_path, "MASK.png" )
         self.dialog.panel_mode.setItemIcon( 0, QIcon( qpixmap_fill ) )
         self.dialog.panel_mode.setItemIcon( 1, QIcon( path_square ) )
@@ -695,7 +682,7 @@ class Picker_Docker( DockWidget ):
         self.dialog.panel_mode.setItemIcon( 3, QIcon( path_gamut ) )
         self.dialog.panel_mode.setItemIcon( 4, QIcon( path_hexagon ) )
         self.dialog.panel_mode.setItemIcon( 5, QIcon( path_luma ) )
-        self.dialog.panel_mode.setItemIcon( 6, QIcon( path_dot ) )
+        self.dialog.panel_mode.setItemIcon( 6, QIcon( path_plane ) )
         self.dialog.panel_mode.setItemIcon( 7, QIcon( path_mask ) )
 
         # Panel Mask Entries
@@ -787,9 +774,19 @@ class Picker_Docker( DockWidget ):
             ]
         self.gamut_profile = Kritarc_Read( DOCKER_PICKER, "gamut_profile", gamut_profile, eval )
 
-        # Panel Dot
-        dot_color = [ self.zorn_y.copy(), self.zorn_r.copy(), self.zorn_w.copy(), self.zorn_b.copy() ]
-        self.dot_color = Kritarc_Read( DOCKER_PICKER, "dot_color", dot_color, eval )
+        # Panel Plane
+        plane_color = [ self.zorn_w.copy(), self.zorn_y.copy(), self.zorn_r.copy(), self.zorn_b.copy() ]
+        self.plane_color = Kritarc_Read( DOCKER_PICKER, "plane_color", plane_color, eval )
+        self.plane_matrix = None
+        self.plane_margin = 10
+        self.plane_split = 2
+        self.plane_unit = 22 # square size pixels
+        self.plane_dx = 0
+        self.plane_dy = 0
+        self.plane_ux = self.plane_unit
+        self.plane_uy = self.plane_unit
+        self.plane_ww = 1
+        self.plane_hh = 1
 
         # Panel Mask
         self.mask_file = None # URL
@@ -861,8 +858,6 @@ class Picker_Docker( DockWidget ):
         # Panel Options
         self.hue_shape     = Kritarc_Read( DOCKER_PICKER, "hue_shape",     "TRIANGLE",   str ) # "None" "TRIANGLE" "SQUARE" "DIAMOND"
         self.gamut_mask    = Kritarc_Read( DOCKER_PICKER, "gamut_mask",    "FULL",       str ) # "FULL" "TRIANGLE" "SQUARE" "HEXAGON" "CIRCLE_1" "CIRCLE_2" "NONE"
-        self.dot_dimension = Kritarc_Read( DOCKER_PICKER, "dot_dimension", 11,           eval )
-        self.dot_edit      = Kritarc_Read( DOCKER_PICKER, "dot_edit",      False,        eval )
         self.mask_folder   = Kritarc_Read( DOCKER_PICKER, "mask_folder",   "SPHERE",     str ) # "SPHERE" "USER"
         self.mask_edit     = Kritarc_Read( DOCKER_PICKER, "mask_edit",     False,        eval )
         # Mixer
@@ -911,9 +906,6 @@ class Picker_Docker( DockWidget ):
         # Panel Gamut
         self.panel_gamut.Set_Profile( self.gamut_profile )
 
-        # Panel Dot
-        self.Dot_Load( self.dot_color )
-
         # Panel Mask
         self.Mask_Load( self.mask_url )
 
@@ -932,9 +924,6 @@ class Picker_Docker( DockWidget ):
     def Connection( self ):
         #region Layout
 
-        # Panel Dot
-        self.layout.dot_swap.clicked.connect( self.Dot_Swap )
-        self.layout.dot_reset.clicked.connect( self.Dot_Reset )
         # Panel Mask
         self.layout.f3_live.toggled.connect( self.Live_F3 )
         self.layout.f2_live.toggled.connect( self.Live_F2 )
@@ -1039,8 +1028,6 @@ class Picker_Docker( DockWidget ):
         self.dialog.hue_shape.currentTextChanged.connect( self.Hue_Shape );       self.dialog.hue_shape.setCurrentText( self.hue_shape );       self.Hue_Shape( self.hue_shape )
         self.dialog.gamut_mask.currentTextChanged.connect( self.Gamut_Mask );     self.dialog.gamut_mask.setCurrentText( self.gamut_mask );     self.Gamut_Mask( self.gamut_mask )
         self.dialog.gamut_reset.clicked.connect( self.Gamut_Reset )
-        self.dialog.dot_dimension.valueChanged.connect( self.Dot_Dimension );     self.dialog.dot_dimension.setValue( self.dot_dimension );     self.Dot_Dimension( self.dot_dimension )
-        self.dialog.dot_edit.toggled.connect( self.Dot_Edit );                    self.dialog.dot_edit.setChecked( self.dot_edit );             self.Dot_Edit( self.dot_edit )
         self.dialog.mask_folder.currentTextChanged.connect( self.Mask_Folder );   self.dialog.mask_folder.setCurrentText( self.mask_folder );   self.Mask_Folder( self.mask_folder )
         self.dialog.mask_edit.toggled.connect( self.Mask_Edit );                  self.dialog.mask_edit.setChecked( self.mask_edit );           self.Mask_Edit( self.mask_edit )
         # Mixer
@@ -1132,7 +1119,6 @@ class Picker_Docker( DockWidget ):
 
         # Panel
         self.layout.panel_set.installEventFilter( self )
-        self.layout.panel_dot.installEventFilter( self )
         self.layout.panel_mask.installEventFilter( self )
         # Channel
         self.layout.gray_slider.installEventFilter( self )
@@ -1285,8 +1271,9 @@ class Picker_Docker( DockWidget ):
 
     # Resize Event
     def Size_Print( self ):
-        width = self.width()
-        height = self.height()
+        widget = self
+        width = widget.width()
+        height = widget.height()
         Message_Log( "SIZE", f"{ width } x { height }" )
     def Size_Standard( self ):
         if self.isFloating() == True:
@@ -1306,13 +1293,11 @@ class Picker_Docker( DockWidget ):
     def Style_Icon( self ):
         # Variables
         ki = Krita.instance()
-
         # Icons
         self.qicon_on               = ki.icon( "showColoring" )
         self.qicon_write            = ki.icon( "media-playback-start" )
         self.qicon_read             = ki.icon( "system-help" )
         self.qicon_off              = ki.icon( "showColoringOff" )
-        self.qicon_swap             = ki.icon( "fileLayer" )
         self.qicon_fill_off         = ki.icon( "folder-documents" )
         self.qicon_fill_on          = ki.icon( "fillLayer" )
         self.qicon_sample_screen    = ki.icon( "sample-screen" )
@@ -1321,10 +1306,7 @@ class Picker_Docker( DockWidget ):
         self.qicon_lock_layout      = ki.icon( "layer-locked" )
         self.qicon_lock_dialog      = ki.icon( "docker_lock_b" )
         self.qicon_none             = QIcon()
-
-
         # Widgets
-        self.layout.dot_swap.setIcon( self.qicon_swap )
         self.layout.fill_pixel.setIcon( self.qicon_fill_off )
         self.layout.sample_screen.setIcon( self.qicon_sample_screen )
         self.layout.settings.setIcon( self.qicon_settings )
@@ -1428,6 +1410,7 @@ class Picker_Docker( DockWidget ):
         self.panel_hue_circle.Set_Theme( t_window, w_window )
         self.panel_gamut.Set_Theme( t_window, w_window )
         self.panel_hexagon.Set_Theme( t_window, w_window )
+        self.panel_plane.Set_Theme( dim )
         self.panel_mask.Set_Theme( w_midlight, w_dark )
 
         # Panel Backgrounds
@@ -1437,8 +1420,8 @@ class Picker_Docker( DockWidget ):
         self.layout.panel_gamut.setStyleSheet( "#panel_gamut{ background-color: " + backdrop + "; }" )
         self.layout.panel_hexagon.setStyleSheet( "#panel_hexagon{ background-color: " + backdrop + "; }" )
         self.layout.panel_luma.setStyleSheet( "#panel_luma{ background-color: " + backdrop + "; }" )
-        self.layout.panel_dot.setStyleSheet( "#panel_dot{ background-color: " + backdrop + "; }" )
         self.layout.panel_mask.setStyleSheet( "#panel_mask{ background-color: " + backdrop + "; }" )
+        self.layout.panel_plane.setStyleSheet( "#panel_plane{ background-color: " + backdrop + "; }" )
 
         # GRAY
         self.gray_1_slider.Set_Theme( t_window, backdrop )
@@ -1533,6 +1516,15 @@ class Picker_Docker( DockWidget ):
         style_sheet += "QProgressBar { background-color: " + background + "; border-radius: 0px; }"
         style_sheet += "QProgressBar::chunk { background-color: " + percentage + "; }"
         return style_sheet
+
+    # Random
+    def Random_Channels( self ):
+        time_seed = time.time()
+        random.seed( time_seed )
+        c1 = random.randrange( 0, 255, 1 ) / 255
+        c2 = random.randrange( 0, 255, 1 ) / 255
+        c3 = random.randrange( 0, 255, 1 ) / 255
+        return c1, c2, c3
 
     #endregion
     #region API
@@ -2796,10 +2788,8 @@ class Picker_Docker( DockWidget ):
             self.panel_hexagon.Set_Size( self.layout.panel_hexagon.width(), self.layout.panel_hexagon.height(), uvd_hexagon )
         elif self.panel_mode == panel_luma:
             self.panel_luma.Set_Size( self.layout.panel_luma.width(), self.layout.panel_luma.height() )
-        elif self.panel_mode == panel_dot:
-            self.panel_dot.Set_Size( self.layout.panel_dot.width(), self.layout.panel_dot.height() )
-            for i in range( 0, len( self.dot_module ) ):
-                self.dot_module[i].Set_Size( self.dot_widget[i].width(), self.dot_widget[i].height() )
+        elif self.panel_mode == panel_plane:
+            self.Panel_Plane_Gradient()
         elif self.panel_mode == panel_mask:
             self.panel_mask.Set_Size( self.layout.panel_mask.width(), self.layout.panel_mask.height() )
             for i in range( 0, len( self.mask_module ) ):
@@ -2864,7 +2854,7 @@ class Picker_Docker( DockWidget ):
         elif self.panel_mode == panel_gamut:    self.Panel_Gamut_Color()
         elif self.panel_mode == panel_hexagon:  self.Panel_Hexagon_Color()
         elif self.panel_mode == panel_luma:     self.Panel_Luma_Color()
-        elif self.panel_mode == panel_dot:      pass
+        elif self.panel_mode == panel_plane:    pass
         elif self.panel_mode == panel_mask:     self.Panel_Mask_Live()
     def Panel_Document( self, kdocument ):
         kmodel = kdocument[ "cmodel" ]
@@ -2879,7 +2869,7 @@ class Picker_Docker( DockWidget ):
         self.Panel_Gamut_Gradient( kmodel, self.wheel_space, self.wheel_mode )
         self.Panel_Hexagon_Gradient( kmodel )
         self.Panel_Luma_Gradient( kmodel )
-        self.Panel_Dot_Gradient()
+        self.Panel_Plane_Gradient()
         self.Panel_Mask_Gradient()
     # Channel
     def Channel_Size( self ):
@@ -3384,11 +3374,7 @@ class Picker_Docker( DockWidget ):
         self.header_mode = active
         self.Pigmento_SYNC()
     def Header_Random( self ):
-        time_seed = time.time()
-        random.seed( time_seed )
-        c1 = random.randrange( 0, 255, 1 ) / 255
-        c2 = random.randrange( 0, 255, 1 ) / 255
-        c3 = random.randrange( 0, 255, 1 ) / 255
+        c1, c2, c3 = self.Random_Channels()
         self.Pigmento_APPLY( "SRGB", c1, c2, c3, 0, self.color_index )
     def Header_Complementary( self ):
         # Wheel Mode
@@ -3653,95 +3639,135 @@ class Picker_Docker( DockWidget ):
         self.Sync_Elements( not self.performance_release, True, False )
 
     #endregion
-    #region UI LAYOUT PANEL Dot
+    #region UI LAYOUT PANEL Plane
 
     # Update
-    def Panel_Dot_Gradient( self ):
-        # Variables
-        dot_00 = self.dot_color[0]
-        dot_01 = self.dot_color[1]
-        dot_02 = self.dot_color[2]
-        dot_03 = self.dot_color[3]
-        # Color Lines
-        line_top = list()
-        for i in range( 0, self.dot_dimension ):
-            line_top.append( dot_02 )
-        line_mid = list()
-        for i in range( 0, self.dot_dimension ):
-            if i == self.dot_dimension: color = dot_01
-            else:                       color = self.Color_Interpolate_2( self.mixer_space, dot_00, dot_01, i / ( self.dot_dimension-1 ) )
-            line_mid.append( color )
-        line_bot = list()
-        for i in range( 0, self.dot_dimension ):
-            line_bot.append( dot_03 )
-        # Color Matrix
-        dot_matrix = list()
-        value_top = 0
-        value_mid = int( self.dot_dimension * 0.5 )
-        value_bot = self.dot_dimension - 1
-        for y in range( 0, self.dot_dimension ):
-            line = list()
-            for x in range( 0, self.dot_dimension ):
-                if y == value_top:
-                    line.append( line_top[x]["hex6"] )
-                if ( y > value_top and y < value_mid ):
-                    color = self.Color_Interpolate_2( self.mixer_space, line_top[x], line_mid[x], y / value_mid )
-                    line.append( color["hex6"] )
-                if y == value_mid:
-                    line.append( line_mid[x]["hex6"] )
-                if ( y > value_mid and y < value_bot ):
-                    color = self.Color_Interpolate_2( self.mixer_space, line_mid[x], line_bot[x], ( y-value_mid ) / value_mid )
-                    line.append( color["hex6"] )
-                if y == value_bot:
-                    line.append( line_bot[x]["hex6"] )
-            dot_matrix.append( line )
-        if len( dot_matrix ) == 0:
-            dot_matrix = None
-        # Update
-        self.panel_dot.Update_Gradient( dot_matrix, self.dot_dimension )
-    # Signals
-    def Panel_Dot_Value( self, hex_code ):
-        self.Color_Convert( "HEX", hex_code, 0, 0, 0, self.color_index )
-        self.Sync_Elements( not self.performance_release, True, True )
+    def Panel_Plane_Gradient( self, update=False ):
+        # Variable
+        mini = 2 # amount of square
+        maxi = 30 # amount of squares
+        # Range Calculation
+        ww = self.layout.panel_plane.width()
+        hh = self.layout.panel_plane.height()
+        width = ww - 2 * self.plane_margin
+        height = hh - 2 * self.plane_margin
+        dx = int( width / ( self.plane_unit + self.plane_split ) )
+        dy = int( height / ( self.plane_unit + self.plane_split ) )
+        plane_dx = Limit_Range( dx, mini, maxi )
+        plane_dy = Limit_Range( dy, mini, maxi )
+        if dx > maxi:   plane_ux = int( width / ( maxi + self.plane_split ) )
+        else:           plane_ux = self.plane_unit
+        if dy > maxi:   plane_uy = int( height / ( maxi + self.plane_split ) )
+        else:           plane_uy = self.plane_unit
 
-    # Pin Edit
-    def Dot_Load( self, dot_color ):
-        for i in range( 0, len( dot_color ) ):
-            if dot_color[i]["active"] == True:  self.dot_module[i].Update_Color( dot_color[i]["display"], 1 )
-            else:                               self.dot_module[i].Update_Clean()
-    def Dot_Apply( self, index ):
-        if self.dot_color[index]["active"] == True:
-            self.Dict_Copy( self.color_index, self.dot_color[index] )
-            self.Pigmento_SYNC()
-    def Dot_Save( self, index ):
-        self.Dict_Copy( self.dot_color[index], self.color_index )
-        self.dot_module[index].Update_Color( self.dot_color[index]["display"], 1 )
-        self.Panel_Dot_Gradient()
-        self.Pigmento_SYNC()
-        Kritarc_Write( DOCKER_PICKER, "dot_color", self.dot_color )
-    def Dot_Clean( self, index ):
-        self.Dict_Copy( self.dot_color[index], color_false )
-        self.dot_module[index].Update_Clean()
-        self.Panel_Dot_Gradient()
-        self.Pigmento_SYNC()
-        Kritarc_Write( DOCKER_PICKER, "dot_color", self.dot_color )
-    # Buttons
-    def Dot_Swap( self ):
-        self.dot_color = [ self.dot_color[2].copy(), self.dot_color[3].copy(), self.dot_color[0].copy(), self.dot_color[1].copy() ]
-        self.dot_module[0].Update_Color( self.dot_color[0]["display"], 1 )
-        self.dot_module[1].Update_Color( self.dot_color[1]["display"], 1 )
-        self.dot_module[2].Update_Color( self.dot_color[2]["display"], 1 )
-        self.dot_module[3].Update_Color( self.dot_color[3]["display"], 1 )
-        self.Panel_Dot_Gradient()
-        Kritarc_Write( DOCKER_PICKER, "dot_color", self.dot_color )
-    def Dot_Reset( self ):
-        self.dot_module[0].Update_Color( self.zorn_y["display"], 1 )
-        self.dot_module[1].Update_Color( self.zorn_r["display"], 1 )
-        self.dot_module[2].Update_Color( self.zorn_w["display"], 1 )
-        self.dot_module[3].Update_Color( self.zorn_b["display"], 1 )
-        self.dot_color = [ self.zorn_y.copy(), self.zorn_r.copy(), self.zorn_w.copy(), self.zorn_b.copy() ]
-        self.Panel_Dot_Gradient()
-        Kritarc_Write( DOCKER_PICKER, "dot_color", self.dot_color )
+        # Calculation Interpolation of Colors
+        check_widget = ( self.plane_ww != ww ) or ( self.plane_hh != hh )
+        check_delta = ( self.plane_dx != plane_dx ) or ( self.plane_dy != plane_dy )
+        check_unit = ( self.plane_ux != plane_ux ) or ( self.plane_uy != plane_uy )
+        if check_widget == True or check_delta == True or check_unit == True or update == True:
+            # Variables
+            self.plane_ww = ww
+            self.plane_hh = hh
+            self.plane_dx = plane_dx
+            self.plane_dy = plane_dy
+            self.plane_ux = plane_ux
+            self.plane_uy = plane_uy
+            # Left
+            plane_left = list()
+            for i in range( 0, plane_dy ):
+                factor = i / ( plane_dy - 1 )
+                color = self.Color_Interpolate_2( self.mixer_space, self.plane_color[0], self.plane_color[2], factor )
+                plane_left.append( color )
+            # Right
+            plane_right = list()
+            for i in range( 0, plane_dy ):
+                factor = i / ( plane_dy - 1 )
+                color = self.Color_Interpolate_2( self.mixer_space, self.plane_color[1], self.plane_color[3], factor )
+                plane_right.append( color )
+            # Matrix
+            self.plane_matrix = list()
+            for y in range( 0, plane_dy ):
+                line = list()
+                for x in range( 0, plane_dx ):
+                    factor = x / ( plane_dx - 1 )
+                    color = self.Color_Interpolate_2( self.mixer_space, plane_left[y], plane_right[y], factor )
+                    line.append( [ color["hex6"] ] )
+                self.plane_matrix.append( line )
+
+        # Error correction
+        sx = int( 2 * self.plane_margin ) + ( self.plane_ux * self.plane_dx ) + ( self.plane_split * ( self.plane_dx - 1 ) )
+        sy = int( 2 * self.plane_margin ) + ( self.plane_uy * self.plane_dy ) + ( self.plane_split * ( self.plane_dy - 1 ) )
+        ex = max( ww - sx, 0 )
+        ey = max( hh - sy, 0 )
+        cx = math.ceil( ex / self.plane_dx )
+        cy = math.ceil( ey / self.plane_dy )
+
+        # Geometry
+        pr = self.plane_margin
+        pd = self.plane_margin
+        # Cycle
+        for y in range( 0, self.plane_dy ):
+            for x in range( 0, self.plane_dx ):
+                # Variables
+                if x == 0: ox = ex; pr = self.plane_margin
+                if y == 0: oy = ey; pd = self.plane_margin
+                tx = cx
+                ty = cy
+                if ox >= 0 and ox < cx: tx = ox
+                if oy >= 0 and oy < cy: ty = oy
+                # Calculation
+                px = int( pr )
+                py = int( pd )
+                pw = int( self.plane_ux + tx )
+                ph = int( self.plane_uy + ty )
+                pr = int( px + pw )
+                pb = int( py + ph )
+                self.plane_matrix[y][x].extend( [ px, py, pw, ph, pr, pb ] )
+                # Next Cycle X
+                pr = px + pw + self.plane_split
+                ox = max( ox - cx, 0 )
+            # Next Cycle Y
+            pd = py + ph + self.plane_split
+            oy = max( oy - cy, 0 )
+
+        # Update
+        self.panel_plane.Update_Gradient( ww, hh, self.plane_matrix, self.plane_margin, self.plane_split )
+    # Signals
+    def Panel_Plane_Value( self, hex_code ):
+        self.Color_Convert( "HEX", hex_code, 0, 0, 0, self.color_index )
+        self.Sync_Elements( not self.performance_release, True, False )
+    def Panel_Plane_Index( self, index ):
+        self.plane_color[index] = self.color_index.copy()
+        self.Panel_Plane_Gradient( True )
+        Kritarc_Write( DOCKER_PICKER, "plane_color", self.plane_color )
+    def Panel_Plane_Swap( self, ia, ib ):
+        self.plane_color[ia], self.plane_color[ib] = self.plane_color[ib], self.plane_color[ia]
+        self.Panel_Plane_Gradient( True )
+        Kritarc_Write( DOCKER_PICKER, "plane_color", self.plane_color )
+    def Panel_Plane_Random( self ):
+        # Random
+        tl_c1, tl_c2, tl_c3 = self.Random_Channels()
+        tr_c1, tr_c2, tr_c3 = self.Random_Channels()
+        bl_c1, bl_c2, bl_c3 = self.Random_Channels()
+        br_c1, br_c2, br_c3 = self.Random_Channels()
+        # Convert
+        color_tl = self.Color_Convert( "HEX", "#000000", 0, 0, 0, color_true.copy() )
+        color_tr = self.Color_Convert( "HEX", "#000000", 0, 0, 0, color_true.copy() )
+        color_bl = self.Color_Convert( "HEX", "#000000", 0, 0, 0, color_true.copy() )
+        color_br = self.Color_Convert( "HEX", "#000000", 0, 0, 0, color_true.copy() )
+        # Apply
+        self.Pigmento_APPLY( "SRGB", tl_c1, tl_c2, tl_c3, 0, color_tl )
+        self.Pigmento_APPLY( "SRGB", tr_c1, tr_c2, tr_c3, 0, color_tr )
+        self.Pigmento_APPLY( "SRGB", bl_c1, bl_c2, bl_c3, 0, color_bl )
+        self.Pigmento_APPLY( "SRGB", br_c1, br_c2, br_c3, 0, color_br )
+        # Update
+        self.plane_color = [ color_tl, color_tr, color_bl, color_br ]
+        self.Panel_Plane_Gradient( True )
+        Kritarc_Write( DOCKER_PICKER, "plane_color", self.plane_color )
+    def Panel_Plane_Reset( self ):
+        self.plane_color = [ self.zorn_w.copy(), self.zorn_y.copy(), self.zorn_r.copy(), self.zorn_b.copy() ]
+        self.Panel_Plane_Gradient( True )
+        Kritarc_Write( DOCKER_PICKER, "plane_color", self.plane_color )
 
     #endregion
     #region UI LAYOUT PANEL Mask
@@ -3755,7 +3781,7 @@ class Picker_Docker( DockWidget ):
     # Signals
     def Panel_Mask_Value( self, hex_code ):
         self.Color_Convert( "HEX", hex_code, 0, 0, 0, self.color_index )
-        self.Sync_Elements( not self.performance_release, True, True )
+        self.Sync_Elements( not self.performance_release, True, False )
 
     # Live
     def Panel_Mask_Live( self ):
@@ -5189,7 +5215,7 @@ class Picker_Docker( DockWidget ):
         if panel_mode == panel_gamut:   self.layout.panel_set.setCurrentIndex( 3 )
         if panel_mode == panel_hexagon: self.layout.panel_set.setCurrentIndex( 4 )
         if panel_mode == panel_luma:    self.layout.panel_set.setCurrentIndex( 5 )
-        if panel_mode == panel_dot:     self.layout.panel_set.setCurrentIndex( 6 )
+        if panel_mode == panel_plane:   self.layout.panel_set.setCurrentIndex( 6 )
         if panel_mode == panel_mask:    self.layout.panel_set.setCurrentIndex( 7 )
         # Update
         if self.panel_mode != panel_mode:
@@ -5226,18 +5252,6 @@ class Picker_Docker( DockWidget ):
         Kritarc_Write( DOCKER_PICKER, "gamut_mask", self.gamut_mask )
     def Gamut_Reset( self ):
         self.panel_gamut.Set_Reset( self.gamut_mask )
-    # Options Dot
-    def Dot_Dimension( self, dot_dimension ):
-        self.dot_dimension = dot_dimension
-        self.Panel_Dot_Gradient()
-        # self.Mixer_Gradient() # Kelvin Pole Linear
-        Kritarc_Write( DOCKER_PICKER, "dot_dimension", self.dot_dimension )
-    def Dot_Edit( self, dot_edit ):
-        self.dot_edit = dot_edit
-        self.Edit_Layout( self.layout.edit_dot, self.dot_edit )
-        self.Panel_Dot_Gradient()
-        self.Size_Update()
-        Kritarc_Write( DOCKER_PICKER, "dot_edit", self.dot_edit )
     # Options Mask
     def Mask_Folder( self, folder ):
         self.mask_folder = folder
@@ -5255,7 +5269,7 @@ class Picker_Docker( DockWidget ):
     # Mixer
     def Mixer_Space( self, mixer_space ):
         self.mixer_space = mixer_space
-        self.Panel_Dot_Gradient() # Panel Dot
+        self.Panel_Plane_Gradient( True ) # Panel Plane
         self.Mixer_Gradient() # Kelvin Pole Linear
         Kritarc_Write( DOCKER_PICKER, "mixer_space", self.mixer_space )
 
@@ -6362,7 +6376,6 @@ class Picker_Docker( DockWidget ):
         panels = [
             # Panel
             self.layout.panel_set,
-            self.layout.panel_dot,
             self.layout.panel_mask,
             # Channel
             self.layout.gray_slider,
@@ -6752,32 +6765,7 @@ Ideas:
 - Hexagon have 2 cursors, one for Gamma and another projected in sRGB to correct the conversion
 
 New:
-O U8
-O U16
-O F16
-O F32
-- Sample Screen
-- Faster display ( circles and cursor )
-- New implementation of copy paste hex
-- new masks on Hue and Gamut
-- Sum is a seperate entity
-- Pole Mixer with 3 colors. 1 dynamic color
-- auto hex copy with new history color
-- bug fixed mask reset
-- qol Panel Mask Pin when saved sets the Alpha back to 1
-- settings new look
-- LRGB instead of CMY
-- Channel patch mode
-- Integrated Panel Printer
-- Conformed to Kritas D50 for XYZ sake
-- Dialog header highlight
-- Difference between Alpha and Gray color spaces now
-- Mixer is updated. no infinite channels. kelvin is a mixer now. pole mixer is new. linear mixer remains solo.
-- YUV formular are fixed. added yuv rec.2100. Pigmento with YUV documents is fixed ( FINALLY )
-- Mixer works in 16 bit and up now
-- LCH gradient is correct now
-- Less context menus and more Settings
-- Fixed Analyse display speed
+- Panel Dot is now Panel Plane ( more CSP like )
 
 Problems:
 - Dialog History has no space

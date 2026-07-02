@@ -26,6 +26,12 @@ from .engine_constants import *
 from .engine_calculations import *
 
 #endregion
+#region Variables
+
+cursor_black = QColor( "#000000" )
+cursor_white = QColor( "#ffffff" )
+
+#endregion
 
 
 #region Shared
@@ -55,16 +61,14 @@ def Circles( px, py, side ):
     # Return
     return circle_0, circle_1, circle_2, circle_3
 # Cursor
-def Cursor_Display( self, painter, offset=False ):
+def Cursor_Display( self, painter ):
     # Variables
-    size = 10
-    half = int( size * 0.5 * offset )
-    zoom_size = 100
+    size_normal = 10
+    size_zoom = 100
     margin_size = 10
-    input_limit = 0.5
     # Switch
-    if self.zoom == True:   Cursor_Zoom( painter, int( self.ex + half ), int( self.ey + half ), zoom_size, margin_size, self.hex_color )
-    else:                   Cursor_Normal( painter, int( self.ex + half ), int( self.ey + half ), size )
+    if self.zoom == True:   Cursor_Zoom( painter, int( self.ex ), int( self.ey ), size_zoom, margin_size, self.hex_code )
+    else:                   Cursor_Normal( painter, int( self.ex ), int( self.ey ), size_normal )
 def Cursor_Normal( painter, ex, ey, size1 ):
     # Variables
     w1 = 2
@@ -88,7 +92,7 @@ def Cursor_Normal( painter, ex, ey, size1 ):
     painter.setClipPath( mask )
     # Black Circle
     painter.setPen( QtCore.Qt.NoPen )
-    painter.setBrush( QBrush( QColor( "#000000" ) ) )
+    painter.setBrush( QBrush( cursor_black ) )
     painter.drawEllipse( 
         int( ex - size1 ),
         int( ey - size1 ),
@@ -97,30 +101,30 @@ def Cursor_Normal( painter, ex, ey, size1 ):
         )
     # White Circle
     painter.setPen( QtCore.Qt.NoPen )
-    painter.setBrush( QBrush( QColor( "#ffffff" ) ) )
+    painter.setBrush( QBrush( cursor_white ) )
     painter.drawEllipse( 
         int( ex - size1 + w1 ),
         int( ey - size1 + w1 ),
         int( size2 - w2 ),
         int( size2 - w2 ),
         )
-def Cursor_Zoom( painter, ex, ey, zoom_size, margin_size, hex_color ):
+def Cursor_Zoom( painter, ex, ey, size_zoom, margin_size, hex_code ):
     # Border
     painter.setPen( QtCore.Qt.NoPen )
-    painter.setBrush( QBrush( QColor( "#000000" ) ) )
+    painter.setBrush( QBrush( cursor_black ) )
     painter.drawEllipse( 
-        int( ex - zoom_size ),
-        int( ey - zoom_size ),
-        int( zoom_size * 2 ),
-        int( zoom_size * 2 ),
+        int( ex - size_zoom ),
+        int( ey - size_zoom ),
+        int( size_zoom * 2 ),
+        int( size_zoom * 2 ),
         )
     # Hex Color
-    painter.setBrush( QBrush( hex_color ) )
+    painter.setBrush( QBrush( QColor( hex_code ) ) )
     painter.drawEllipse( 
-        int( ex - zoom_size + margin_size ),
-        int( ey - zoom_size + margin_size ),
-        int( zoom_size * 2 - margin_size * 2 ),
-        int( zoom_size * 2 - margin_size * 2 ),
+        int( ex - size_zoom + margin_size ),
+        int( ey - size_zoom + margin_size ),
+        int( size_zoom * 2 - margin_size * 2 ),
+        int( size_zoom * 2 - margin_size * 2 ),
         )
 # Wheel
 def Wheel_Angle( mode, color ):
@@ -535,7 +539,7 @@ class Panel_Fill( QWidget ):
         self.ww = 0
         self.hh = 0
         # Display
-        self.hex_color = QColor( "#000000" )
+        self.hex_code = QColor( "#000000" )
     # Set
     def Set_Size( self, ww, hh ):
         self.ww = int( ww )
@@ -543,7 +547,7 @@ class Panel_Fill( QWidget ):
         self.resize( ww, hh )
     # Updates
     def Update_Gradient( self, hex_code ):
-        self.hex_color = QColor( hex_code )
+        self.hex_code = QColor( hex_code )
         self.update()
     # Paint
     def paintEvent( self, event ):
@@ -552,7 +556,7 @@ class Panel_Fill( QWidget ):
         painter.setRenderHint( QtGui.QPainter.Antialiasing, True )
         # Draw Pixmaps
         painter.setPen( QtCore.Qt.NoPen )
-        painter.setBrush( QBrush( self.hex_color ) )
+        painter.setBrush( QBrush( self.hex_code ) )
         painter.drawRect( 0, 0, self.ww, self.hh )
 
 class Panel_Square( QWidget ):
@@ -597,7 +601,7 @@ class Panel_Square( QWidget ):
         self.c_white = QColor( "#ffffff" )
         self.c_gray = QColor( "#b0b0b0" )
         self.c_black = QColor( "#000000" )
-        self.hex_color = QColor( "#000000" )
+        self.hex_code = QColor( "#000000" )
         self.color_index = None
         # Harmony
         self.harmony_rule = None
@@ -653,7 +657,7 @@ class Panel_Square( QWidget ):
         self.wheel_space = wheel_space
         self.hue_shape = hue_shape
         self.color_index = color_index
-        self.hex_color = QColor( self.color_index["display"] )
+        self.hex_code = QColor( self.color_index["display"] )
         # self.chan = wheel_space.lower()
         self.id1, self.id2, self.id3 = Space_Index( self.wheel_space )
         # Shape
@@ -1002,7 +1006,7 @@ class Panel_Square( QWidget ):
                 painter.drawEllipse( int( points[i][0] - dot1 ), int( points[i][1] - dot1 ), int( dot2 ), int( dot2 ) )
 
         # Cursor
-        Cursor_Display( self, painter, False )
+        Cursor_Display( self, painter )
 
 class Panel_Hue_Circle( QWidget ):
     SIGNAL_ANGLE = QtCore.pyqtSignal( float )
@@ -1042,7 +1046,7 @@ class Panel_Hue_Circle( QWidget ):
         self.c_dark = QColor( "#000000" )
         self.c_white = QColor( "#ffffff" )
         self.c_black = QColor( "#000000" )
-        self.hex_color = QColor( "#000000" )
+        self.hex_code = QColor( "#000000" )
         self.color_index = None
         # Harmony Colors
         self.harmony_rule = None # harmony_1 harmony_2 harmony_3 harmony_4 harmony_5
@@ -1398,7 +1402,7 @@ class Panel_Gamut( QWidget ):
         self.c_white = QColor( "#ffffff" )
         self.c_gray = QColor( "#b0b0b0" )
         self.c_black = QColor( "#000000" )
-        self.hex_color = QColor( "#000000" )
+        self.hex_code = QColor( "#000000" )
         self.color_index = None
         # Harmony
         self.harmony_rule = None
@@ -1461,7 +1465,7 @@ class Panel_Gamut( QWidget ):
         self.wheel_mode = wheel_mode
         self.wheel_space = wheel_space
         self.color_index = color_index
-        self.hex_color = QColor( self.color_index[ "display" ] )
+        self.hex_code = QColor( self.color_index[ "display" ] )
         self.id1, self.id2, self.id3 = Space_Index( self.wheel_space )
         # Angle
         if self.wheel_mode == "DIGITAL": angle = self.color_index[ "hue_d" ] * 360
@@ -2044,7 +2048,7 @@ class Panel_Gamut( QWidget ):
                 painter.drawEllipse( int( list_harmony[i][0] - dot1 ), int( list_harmony[i][1] - dot1 ), int( dot2 ), int( dot2 ) )
 
         # Cursor
-        Cursor_Display( self, painter, False )
+        Cursor_Display( self, painter )
     def Render_Circle( self, px, py, side, points, circle ):
         # Points from User
         P0 = [ px + points[0][0] * side, py + points[0][1] * side ]
@@ -2154,7 +2158,7 @@ class Panel_Hexagon( QWidget ):
         self.c_white = QColor( "#ffffff" )
         self.c_gray = QColor( "#b0b0b0" )
         self.c_black = QColor( "#000000" )
-        self.hex_color = QColor( "#000000" )
+        self.hex_code = QColor( "#000000" )
         self.color_index = None
         # Harmony
         self.harmony_rule = None
@@ -2201,7 +2205,7 @@ class Panel_Hexagon( QWidget ):
     def Update_Color( self, color_index, point ):
         # Variables
         self.color_index = color_index
-        self.hex_color = QColor( self.color_index[ "display" ] )
+        self.hex_code = QColor( self.color_index[ "display" ] )
         # Values
         self.v1 = self.color_index["uvd_1"]
         self.v2 = self.color_index["uvd_2"]
@@ -2482,7 +2486,7 @@ class Panel_Hexagon( QWidget ):
                 painter.drawEllipse( int( points[i][0] - dot1 ), int( points[i][1] - dot1 ), int( dot2 ), int( dot2 ) )
 
         # Cursor
-        Cursor_Display( self, painter, False )
+        Cursor_Display( self, painter )
 
 class Panel_Luma( QWidget ):
     SIGNAL_VALUE = QtCore.pyqtSignal( str, float, float, float )
@@ -2524,7 +2528,7 @@ class Panel_Luma( QWidget ):
         self.c_white = QColor( "#ffffff" )
         self.c_gray = QColor( "#b0b0b0" )
         self.c_black = QColor( "#000000" )
-        self.hex_color = QColor( "#000000" )
+        self.hex_code = QColor( "#000000" )
         self.color_index = None
         # Harmony
         self.harmony_rule = None
@@ -2560,7 +2564,7 @@ class Panel_Luma( QWidget ):
     def Update_Color( self, color_index ):
         # Variables
         self.color_index = color_index
-        self.hex_color = QColor( self.color_index["display"] )
+        self.hex_code = QColor( self.color_index["display"] )
         # Values
         self.v1 = self.color_index[ self.id1 ]
         self.ex = self.color_index[ self.id2 ] * self.ww
@@ -2757,15 +2761,19 @@ class Panel_Luma( QWidget ):
                 painter.drawEllipse( int( points[i][0] - dot1 ), int( points[i][1] - dot1 ), int( dot2 ), int( dot2 ) )
 
         # Cursor
-        Cursor_Display( self, painter, False )
+        Cursor_Display( self, painter )
 
-class Panel_Dot( QWidget ):
+class Panel_Plane( QWidget ):
     SIGNAL_VALUE = QtCore.pyqtSignal( str )
     SIGNAL_RELEASE = QtCore.pyqtSignal()
+    SIGNAL_INDEX = QtCore.pyqtSignal( int )
+    SIGNAL_SWAP = QtCore.pyqtSignal( int, int )
+    SIGNAL_RANDOM = QtCore.pyqtSignal()
+    SIGNAL_RESET = QtCore.pyqtSignal()
 
     # Init
     def __init__( self, parent ):
-        super( Panel_Dot, self ).__init__( parent )
+        super( Panel_Plane, self ).__init__( parent )
         self.Variables()
     def sizeHint( self ):
         return QtCore.QSize( render_width, render_height )
@@ -2776,7 +2784,6 @@ class Panel_Dot( QWidget ):
         self.hh = 0
         self.w2 = 0
         self.h2 = 0
-        self.side = 0
         # Event
         self.ex = 0
         self.ey = 0
@@ -2784,18 +2791,22 @@ class Panel_Dot( QWidget ):
         self.oy = 0
         # State
         self.zoom = False
-        # Dot
-        self.dot_dimension = 11
-        self.dot_unit = 24
-        self.dot_margin = 5
-        self.dx = 0
-        self.dy = 0
-        # Color
-        self.color_index = None
-        self.c_black = QColor( "#000000" )
-        self.c_white = QColor( "#ffffff" )
-        self.c_gray = QColor( "#b0b0b0" )
-        self.hex_color = QColor( "#000000" )
+        self.state_box = False
+        self.state_tl = False
+        self.state_tr = False
+        self.state_bl = False
+        self.state_br = False
+        # Plane
+        self.plane_matrix = None
+        self.plane_margin = 0
+        self.plane_split = 0
+        self.plane_dx = 0
+        self.plane_dy = 0
+        self.plane_index = None
+        self.plane_swap = [ None, None ]
+        # Colors
+        self.c_dark = QColor( "#000000" )
+        self.hex_code = QColor( "#000000" )
     # Set
     def Set_Size( self, ww, hh ):
         # Variables
@@ -2803,116 +2814,282 @@ class Panel_Dot( QWidget ):
         self.hh = int( hh )
         self.w2 = int( ww * 0.5 )
         self.h2 = int( hh * 0.5 )
-        self.Update_Grid()
         # Update
         self.resize( ww, hh )
-    # Update
-    def Update_Gradient( self, dot_matrix, dot_dimension ):
-        self.dot_matrix = dot_matrix
-        self.dot_dimension = dot_dimension
-        self.Update_Grid()
+    def Set_Theme( self, c_dark ):
+        self.c_dark = QColor( c_dark )
         self.update()
-    def Update_Grid( self ):
-        self.side = ( self.dot_unit * self.dot_dimension ) + ( self.dot_margin * ( self.dot_dimension - 1 ) )
-        if self.ww >= self.hh:
-            self.px = self.w2 - ( self.side * 0.5 )
-            self.py = 0
-        else:
-            self.px = 0
-            self.py = self.h2 - ( self.side * 0.5 )
-        # Cursor
-        self.ex, self.ey = self.Cursor_Move( self.dx, self.dy )
-    # Mouse
+    # Update
+    def Update_Gradient( self, ww, hh, plane_matrix, plane_margin, plane_split ):
+        # Size
+        self.Set_Size( ww, hh )
+        # Variables
+        self.plane_matrix = plane_matrix
+        self.plane_margin = int( plane_margin )
+        self.plane_split = int( plane_split )
+        self.plane_dx = len( self.plane_matrix[0] )
+        self.plane_dy = len( self.plane_matrix )
+        self.ex = -100
+        self.ey = -100
+        # Update
+        self.update()
+    # Mouse Event
     def mousePressEvent( self, event ):
         # Event
         em = event.modifiers()
         eb = event.buttons()
         ex = event.x()
         ey = event.y()
+        self.ox = ex
+        self.oy = ey
+        # Variables
+        self.Cursor_Location( ex, ey )
         # LMB
-        if ( em == QtCore.Qt.NoModifier and eb == QtCore.Qt.LeftButton ):       self.Cursor_Position( ex, ey )
-        if ( em == QtCore.Qt.ShiftModifier and eb == QtCore.Qt.LeftButton ):    self.Cursor_Position( ex, ey ); self.zoom = True
-        if ( em == QtCore.Qt.ControlModifier and eb == QtCore.Qt.LeftButton ):  self.Cursor_Position( ex, ey )
-        if ( em == QtCore.Qt.AltModifier and eb == QtCore.Qt.LeftButton ):      self.Cursor_Position( ex, ey )
-        # Update
+        if ( em == QtCore.Qt.NoModifier and eb == QtCore.Qt.LeftButton ):       self.Cursor_Position( ex, ey, False )
+        if ( em == QtCore.Qt.ShiftModifier and eb == QtCore.Qt.LeftButton ):    self.Cursor_Position( ex, ey, True )
+        if ( em == QtCore.Qt.ControlModifier and eb == QtCore.Qt.LeftButton ):  self.Cursor_Index()
+        if ( em == QtCore.Qt.AltModifier and eb == QtCore.Qt.LeftButton ):      self.Cursor_Source( ex, ey )
+        # RMB
+        if em == QtCore.Qt.NoModifier and eb == QtCore.Qt.RightButton:
+            self.operation = None
+            self.Context_Menu( event )
         self.update()
     def mouseMoveEvent( self, event ):
-        # Event
+        # Events
         em = event.modifiers()
         eb = event.buttons()
         ex = event.x()
         ey = event.y()
         # LMB
-        if ( em == QtCore.Qt.NoModifier and eb == QtCore.Qt.LeftButton ):       self.Cursor_Position( ex, ey )
-        if ( em == QtCore.Qt.ShiftModifier and eb == QtCore.Qt.LeftButton ):    self.Cursor_Position( ex, ey ); self.zoom = True
-        if ( em == QtCore.Qt.ControlModifier and eb == QtCore.Qt.LeftButton ):  self.Cursor_Position( ex, ey )
-        if ( em == QtCore.Qt.AltModifier and eb == QtCore.Qt.LeftButton ):      self.Cursor_Position( ex, ey )
-        # Update
+        if ( em == QtCore.Qt.NoModifier and eb == QtCore.Qt.LeftButton ):       self.Cursor_Position( ex, ey, False )
+        if ( em == QtCore.Qt.ShiftModifier and eb == QtCore.Qt.LeftButton ):    self.Cursor_Position( ex, ey, True )
+        if ( em == QtCore.Qt.ControlModifier and eb == QtCore.Qt.LeftButton ):  pass
+        if ( em == QtCore.Qt.AltModifier and eb == QtCore.Qt.LeftButton ):      self.Cursor_Swap( ex, ey )
         self.update()
     def mouseDoubleClickEvent( self, event ):
-        # Event
+        # Events
         em = event.modifiers()
         eb = event.buttons()
         ex = event.x()
         ey = event.y()
+        # Variables
+        self.Cursor_Location( ex, ey )
         # LMB
-        if ( em == QtCore.Qt.NoModifier and eb == QtCore.Qt.LeftButton ):       self.Cursor_Position( ex, ey )
-        if ( em == QtCore.Qt.ShiftModifier and eb == QtCore.Qt.LeftButton ):    self.Cursor_Position( ex, ey ); self.zoom = True
-        if ( em == QtCore.Qt.ControlModifier and eb == QtCore.Qt.LeftButton ):  self.Cursor_Position( ex, ey )
-        if ( em == QtCore.Qt.AltModifier and eb == QtCore.Qt.LeftButton ):      self.Cursor_Position( ex, ey )
-        # Update
+        if ( em == QtCore.Qt.NoModifier and eb == QtCore.Qt.LeftButton ):       self.Cursor_Index()
+        if ( em == QtCore.Qt.ShiftModifier and eb == QtCore.Qt.LeftButton ):    self.Cursor_Index()
+        if ( em == QtCore.Qt.ControlModifier and eb == QtCore.Qt.LeftButton ):  pass
+        if ( em == QtCore.Qt.AltModifier and eb == QtCore.Qt.LeftButton ):      pass
         self.update()
     def mouseReleaseEvent( self, event ):
+        # Variables
         self.zoom = False
+        self.state_box = False
+        self.state_tl = False
+        self.state_tr = False
+        self.state_bl = False
+        self.state_br = False
+        self.plane_index = None
+        # Swap
+        if self.plane_swap[0] != None and self.plane_swap[1] != None:
+            self.SIGNAL_SWAP.emit( self.plane_swap[0], self.plane_swap[1] )
+            self.plane_swap = [ None, None ]
+        # Updates
         self.SIGNAL_RELEASE.emit()
         self.update()
-    # Interaction
-    def Cursor_Position( self, ex, ey ):
-        if self.dot_matrix != None:
-            # Points
-            points = list()
-            for y in range( 0, self.dot_dimension ):
-                for x in range( 0, self.dot_dimension ):
-                    px, py = self.Cursor_Move( x, y )
-                    dist = Trig_2D_Points_Distance( px, py, ex, ey )
-                    hex_code = self.dot_matrix[y][x]
-                    points.append( [ dist, px, py, hex_code, x, y ] )
-            points.sort()
+    # Mouse Function
+    def Cursor_Location( self, ex, ey ):
+        if self.plane_matrix != None:
             # Variables
-            self.ex = points[0][1]
-            self.ey = points[0][2]
-            hex_code = points[0][3]
-            self.dx = points[0][4]
-            self.dy = points[0][5]
-            # Signal
-            self.hex_color = QColor( hex_code )
-            self.SIGNAL_VALUE.emit( hex_code )
-            self.update()
-    def Cursor_Move( self, x, y ):
-        if self.dot_matrix != None:
-            px = int( self.w2 - ( self.side * 0.5 ) + ( self.dot_unit * x + self.dot_margin * ( x - 1 ) ) + ( self.dot_unit * 0.5 ) )
-            py = int( self.h2 - ( self.side * 0.5 ) + ( self.dot_unit * y + self.dot_margin * ( y - 1 ) ) + ( self.dot_unit * 0.5 ) )
-            return px, py
+            pm = self.plane_margin
+            wm = self.ww - self.plane_margin
+            hm = self.hh - self.plane_margin
+            # Read
+            tl = self.plane_matrix[0][0]
+            tr = self.plane_matrix[0][-1]
+            bl = self.plane_matrix[-1][0]
+            br = self.plane_matrix[-1][-1]
+            tl_hc, tl_px, tl_py, tl_pw, tl_ph, tl_pr, tl_pb = tl[0], tl[1], tl[2], tl[3], tl[4], tl[5], tl[6]
+            tr_hc, tr_px, tr_py, tr_pw, tr_ph, tr_pr, tr_pb = tr[0], tr[1], tr[2], tr[3], tr[4], tr[5], tr[6]
+            bl_hc, bl_px, bl_py, bl_pw, bl_ph, bl_pr, bl_pb = bl[0], bl[1], bl[2], bl[3], bl[4], bl[5], bl[6]
+            br_hc, br_px, br_py, br_pw, br_ph, br_pr, br_pb = br[0], br[1], br[2], br[3], br[4], br[5], br[6]
+            # Check Color
+            check_box = ( tl_px < ex < wm ) and ( tl_py < ey < hm )
+            check_tl = ( ex <= tl_pr ) and ( ey <= tl_pb )
+            check_tr = ( ex >= tr_px ) and ( ey <= tr_pb )
+            check_bl = ( ex <= bl_pr ) and ( ey >= bl_pb )
+            check_br = ( ex >= br_px ) and ( ey >= br_pb )
+            # Check Color
+            if   check_box == True: self.plane_index = None; self.state_box = True
+            elif check_tl == True:  self.plane_index = 0;    self.state_tl = True
+            elif check_tr == True:  self.plane_index = 1;    self.state_tr = True
+            elif check_bl == True:  self.plane_index = 2;    self.state_bl = True
+            elif check_br == True:  self.plane_index = 3;    self.state_br = True
+    def Cursor_Position( self, ex, ey, zoom ):
+        # Variables
+        self.zoom = zoom
+        # Input
+        if self.plane_matrix != None and self.state_box == True:
+            # Search Y
+            for y in range( 0, self.plane_dy ):
+                line = self.plane_matrix[y][0]
+                py, pb = line[2], line[6]
+                if py <= ey <= pb:
+                    # Search X
+                    for x in range( 0, self.plane_dx ):
+                        column = self.plane_matrix[y][x]
+                        px, pr = column[1], column[5]
+                        if px <= ex <= pr:
+                            item = self.plane_matrix[y][x]
+                            self.hex_code, px, py, pw, ph = item[0], item[1], item[2], item[3], item[4]
+                            self.ex = int( px + 0.5 * pw )
+                            self.ey = int( py + 0.5 * ph )
+                            self.SIGNAL_VALUE.emit( self.hex_code )
+    def Cursor_Index( self ):
+        if self.plane_index != None:
+            self.SIGNAL_INDEX.emit( self.plane_index )
+    def Cursor_Source( self, ex, ey ):
+        if   ( ex < self.w2 and ey < self.h2 ): self.plane_swap[0] = 0
+        elif ( ex > self.w2 and ey < self.h2 ): self.plane_swap[0] = 1
+        elif ( ex < self.w2 and ey > self.h2 ): self.plane_swap[0] = 2
+        elif ( ex > self.w2 and ey > self.h2 ): self.plane_swap[0] = 3
+        else:                                   self.plane_swap[0] = None
+    def Cursor_Swap( self, ex, ey ):
+        if   ( ex < self.w2 and ey < self.h2 ):
+            self.plane_swap[1] = 0
+            self.state_tl = True
+            self.state_tr = False
+            self.state_bl = False
+            self.state_br = False
+        elif ( ex > self.w2 and ey < self.h2 ):
+            self.plane_swap[1] = 1
+            self.state_tl = False
+            self.state_tr = True
+            self.state_bl = False
+            self.state_br = False
+        elif ( ex < self.w2 and ey > self.h2 ):
+            self.plane_swap[1] = 2
+            self.state_tl = False
+            self.state_tr = False
+            self.state_bl = True
+            self.state_br = False
+        elif ( ex > self.w2 and ey > self.h2 ):
+            self.plane_swap[1] = 3
+            self.state_tl = False
+            self.state_tr = False
+            self.state_bl = False
+            self.state_br = True
+        else:
+            self.plane_swap[1] = None
+    # Menu
+    def Context_Menu( self, event ):
+        # Menu
+        qmenu = QMenu( self )
+        # General
+        action_random = qmenu.addAction( "Random" )
+        action_reset = qmenu.addAction( "Reset" )
+        # Mapping
+        action = qmenu.exec_( self.mapToGlobal( event.pos() ) )
+        # General
+        if action == action_random: self.SIGNAL_RANDOM.emit()
+        if action == action_reset:  self.SIGNAL_RESET.emit()
     # Paint
     def paintEvent( self, event ):
+        # Variables
+        m = self.plane_margin
+        s = self.plane_split
+        mm = m + m
+        ss = s + s
+        ms = m + s
+        wm = self.ww - mm + ss
+        hm = self.hh - mm + ss
+
         # Painter
         painter = QPainter( self )
         painter.setRenderHint( QtGui.QPainter.Antialiasing, True )
+
         # Dots
-        if self.dot_matrix != None:
+        if self.plane_matrix != None:
+            # Read
+            tl = self.plane_matrix[0][0]
+            tr = self.plane_matrix[0][-1]
+            bl = self.plane_matrix[-1][0]
+            br = self.plane_matrix[-1][-1]
+            tl_hc, tl_px, tl_py, tl_pw, tl_ph, tl_pr, tl_pb = tl[0], tl[1], tl[2], tl[3], tl[4], tl[5], tl[6]
+            tr_hc, tr_px, tr_py, tr_pw, tr_ph, tr_pr, tr_pb = tr[0], tr[1], tr[2], tr[3], tr[4], tr[5], tr[6]
+            bl_hc, bl_px, bl_py, bl_pw, bl_ph, bl_pr, bl_pb = bl[0], bl[1], bl[2], bl[3], bl[4], bl[5], bl[6]
+            br_hc, br_px, br_py, br_pw, br_ph, br_pr, br_pb = br[0], br[1], br[2], br[3], br[4], br[5], br[6]
+            # Rectangles
+            qrect_tl = QRect( 0,     0,     tl_pw+m, tl_ph+m )
+            qrect_tr = QRect( tr_px, 0,     tr_pw+m, tr_ph+m )
+            qrect_bl = QRect( 0,     bl_py, bl_pw+m, bl_ph+m )
+            qrect_br = QRect( br_px, br_py, br_pw+m, br_ph+m )
+            qrect_tl_bg = QRect( 0,       0,       tl_pw+ms, tl_ph+ms )
+            qrect_tr_bg = QRect( tr_px-s, 0,       tr_pw+ms, tr_ph+ms )
+            qrect_bl_bg = QRect( 0,       bl_py-s, bl_pw+ms, bl_ph+ms )
+            qrect_br_bg = QRect( br_px-s, br_py-s, br_pw+ms, br_ph+ms )
+
+            # Mask
+            mask = QPainterPath()
+            mask.addRect( 1, 1, self.ww-1, self.hh-1 )
+            mask.addRect( m-s, m-s, br_px+br_pw-m+ss, br_py+br_ph-m+ss )
+            painter.setClipPath( mask )
+
+            # Background Squares
             painter.setPen( QtCore.Qt.NoPen )
-            for y in range( 0, self.dot_dimension ):
-                for x in range( 0, self.dot_dimension ):
-                    try:
-                        hex_code = self.dot_matrix[y][x]
-                        painter.setBrush( QBrush( QColor( hex_code ) ) )
-                        px = int( self.w2 - ( self.side * 0.5 ) + ( self.dot_unit * x + self.dot_margin * x ) )
-                        py = int( self.h2 - ( self.side * 0.5 ) + ( self.dot_unit * y + self.dot_margin * y ) )
-                        painter.drawEllipse( int( px ), int( py ), self.dot_unit, self.dot_unit )
-                    except:
-                        pass
-        # Cursor
-        Cursor_Display( self, painter, True )
+            painter.setBrush( QBrush( QColor( self.c_dark ) ) )
+            painter.drawRect( qrect_tl_bg )
+            painter.drawRect( qrect_tr_bg )
+            painter.drawRect( qrect_bl_bg )
+            painter.drawRect( qrect_br_bg )
+
+            # Top Left
+            painter.setPen( QtCore.Qt.NoPen )
+            painter.setBrush( QBrush( QColor( tl_hc ) ) )
+            painter.drawRect( qrect_tl )
+            # Top Right
+            painter.setPen( QtCore.Qt.NoPen )
+            painter.setBrush( QBrush( QColor( tr_hc ) ) )
+            painter.drawRect( qrect_tr )
+            # Bottom Left
+            painter.setPen( QtCore.Qt.NoPen )
+            painter.setBrush( QBrush( QColor( bl_hc ) ) )
+            painter.drawRect( qrect_bl )
+            # Bottom Right
+            painter.setPen( QtCore.Qt.NoPen )
+            painter.setBrush( QBrush( QColor( br_hc ) ) )
+            painter.drawRect( qrect_br )
+
+            # Clean Mask
+            painter.setClipping( False )
+
+            # Interpolation
+            painter.setPen( QtCore.Qt.NoPen )
+            for y in range( 0, self.plane_dy ):
+                for x in range( 0, self.plane_dx ):
+                    # Read
+                    item = self.plane_matrix[y][x]
+                    hex_code, px, py, pw, ph = item[0], item[1], item[2], item[3], item[4]
+                    # Draw
+                    painter.setBrush( QBrush( QColor( hex_code ) ) )
+                    painter.drawRect( px, py, pw, ph )
+
+            # Regions
+            painter.setPen( QtCore.Qt.NoPen )
+            if self.state_tl == True:
+                painter.setBrush( QBrush( self.c_dark, Qt.FDiagPattern ) )
+                painter.drawRect( 0, 0, self.w2, self.h2 )
+            if self.state_tr == True:
+                painter.setBrush( QBrush( self.c_dark, Qt.BDiagPattern ) )
+                painter.drawRect( self.w2, 0, self.w2, self.h2 )
+            if self.state_bl == True:
+                painter.setBrush( QBrush( self.c_dark, Qt.BDiagPattern ) )
+                painter.drawRect( 0, self.h2, self.w2, self.h2 )
+            if self.state_br == True:
+                painter.setBrush( QBrush( self.c_dark, Qt.FDiagPattern ) )
+                painter.drawRect( self.w2, self.h2, self.w2, self.h2 )
+
+            # Cursor
+            Cursor_Display( self, painter )
 
 class Panel_Mask( QWidget ):
     SIGNAL_VALUE = QtCore.pyqtSignal( str )
@@ -2967,7 +3144,7 @@ class Panel_Mask( QWidget ):
         self.c_white = QColor( "#ffffff" )
         self.c_gray = QColor( "#b0b0b0" )
         self.c_black = QColor( "#000000" )
-        self.hex_color = QColor( "#000000" )
+        self.hex_code = QColor( "#000000" )
     # Set
     def Set_Size( self, ww, hh ):
         self.ww = int( ww )
@@ -3074,7 +3251,7 @@ class Panel_Mask( QWidget ):
         self.ey = Limit_Range( ey, 0, self.hh )
         pixel = qimage.pixelColor( self.ex, self.ey )
         hex_code = pixel.name()
-        self.hex_color = QColor( hex_code )
+        self.hex_code = QColor( hex_code )
         self.SIGNAL_VALUE.emit( hex_code )
     def Cursor_Move( self, ex, ey ):
         dx = ex - self.ox
@@ -3102,7 +3279,7 @@ class Panel_Mask( QWidget ):
                     py = int( self.h2 - render.height() * 0.5 )
                     painter.drawPixmap( int( px ), int( py ), render )
         # Cursor
-        Cursor_Display( self, painter, False )
+        Cursor_Display( self, painter )
 
 #endregion
 #region Channels & Pin

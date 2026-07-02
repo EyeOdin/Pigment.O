@@ -38,7 +38,7 @@ panel_hue     = "Selector : Hue"
 panel_gamut   = "Selector : Gamut"
 panel_hexagon = "Selector : Hexagon"
 panel_luma    = "Selector : Luma"
-panel_dot     = "Mixer : Dot"
+panel_plane   = "Mixer : Plane"
 panel_mask    = "Mixer : Mask"
 
 # Timer Variable
