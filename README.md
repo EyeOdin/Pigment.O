@@ -25,7 +25,7 @@ Pigment.O is a Krita plugin Color Picker, Mixer and Sampler.
 ![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/picker_panel_gamut_digital_hsv.png)
 ![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/picker_panel_hexagon.png)
 ![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/picker_panel_luma.png)
-![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/picker_panel_dot_none.png)
+![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/picker_panel_plane.png)
 ![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/picker_panel_mask_none.png)
 ![Picture](https://raw.githubusercontent.com/EyeOdin/Pigment.O/master/pigment_o/PREVIEWS/sampler_interface_1.png)
 
